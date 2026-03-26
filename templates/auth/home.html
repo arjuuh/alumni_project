@@ -107,7 +107,7 @@ body::after {
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     position: relative;
     overflow: hidden;
     min-height: 578px;
@@ -211,31 +211,7 @@ body::after {
 .feat-icon svg { width: 15px; height: 15px; stroke: rgba(255,255,255,0.88); fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .feat-text { font-size: 13.5px; color: rgba(255,255,255,0.80); }
 
-/* Stats */
-.stats-row {
-    display: flex; gap: 0;
-    border-top: 1px solid rgba(255,255,255,0.09);
-    padding-top: 24px;
-    animation: fadeUp 0.55s 0.42s both;
-}
-.stat { flex: 1; padding-right: 20px; border-right: 1px solid rgba(255,255,255,0.08); }
-.stat:last-child  { border-right: none; padding-right: 0; padding-left: 20px; }
-.stat:nth-child(2){ padding-left: 20px; }
-.stat-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 24px; font-weight: 800;
-    line-height: 1; margin-bottom: 5px;
-    background: linear-gradient(135deg, #fff 30%, rgba(196,181,253,0.85));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.stat-label { font-size: 10.5px; color: rgba(255,255,255,0.42); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
 
-/* Left footer */
-.left-footer {
-    font-size: 11px; color: rgba(255,255,255,0.26);
-    line-height: 1.65; margin-top: 22px;
-    animation: fadeUp 0.55s 0.5s both;
-}
 
 /* ══ RIGHT PANEL ══════════════════════════════ */
 .right {
@@ -547,27 +523,6 @@ body::after {
                 </div>
             </div>
         </div>
-
-        <div>
-            <div class="stats-row">
-                <div class="stat">
-                    <div class="stat-num">2,400+</div>
-                    <div class="stat-label">Alumni</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">40+</div>
-                    <div class="stat-label">Departments</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">Since '82</div>
-                    <div class="stat-label">Legacy</div>
-                </div>
-            </div>
-            <div class="left-footer">
-                Nehru Arts &amp; Science College, Kanhangad<br>
-                Alumni Network &copy; 2025
-            </div>
-        </div>
     </div>
 
     <!-- ══ RIGHT ══ -->
@@ -578,7 +533,7 @@ body::after {
                 <span class="pulse-dot"></span>
                 Secure Login
             </div>
-            <h2>Welcome back 👋</h2>
+            <h2>Welcome back </h2>
             <p>Sign in to access your NASC Alumni account and reconnect with your community.</p>
         </div>
 
@@ -697,13 +652,7 @@ document.querySelectorAll('.feat-item').forEach((el, i) => {
     setTimeout(() => { el.style.opacity='1'; el.style.transform='translateX(0)'; }, 420 + i * 80);
 });
 
-/* Stagger stats */
-document.querySelectorAll('.stat').forEach((el, i) => {
-    el.style.cssText = 'opacity:0;transform:translateY(10px);transition:opacity 0.38s ease,transform 0.38s ease;';
-    setTimeout(() => { el.style.opacity='1'; el.style.transform='translateY(0)'; }, 680 + i * 90);
-});
 </script>
 
 </body>
 </html>
-    

@@ -38,7 +38,6 @@
             min-height: 100vh;
         }
 
-        /* ── SIDEBAR ── */
         .sidebar {
             width: 220px;
             background: var(--sidebar-bg);
@@ -147,7 +146,6 @@
             width: 100%;
         }
 
-        /* ── MAIN WRAPPER ── */
         .main-wrapper {
             margin-left: 220px;
             flex: 1;
@@ -156,7 +154,6 @@
             min-height: 100vh;
         }
 
-        /* ── TOPBAR ── */
         .topbar {
             background: var(--card);
             padding: 14px 32px;
@@ -230,10 +227,8 @@
 
         .user-name { font-size: 13px; font-weight: 600; }
 
-        /* ── PAGE CONTENT ── */
         .page-content { padding: 28px 32px; }
 
-        /* ── HERO BANNER ── */
         .hero {
             background: linear-gradient(135deg, #6C63FF 0%, #9B8FFF 100%);
             border-radius: var(--radius);
@@ -285,7 +280,6 @@
 
         .hero-illustration { width: 155px; height: 135px; z-index: 1; flex-shrink: 0; }
 
-        /* ── STATS ROW ── */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -320,7 +314,6 @@
         .stat-value { font-size: 20px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
         .stat-label { font-size: 11.5px; color: var(--text-muted); }
 
-        /* ── TWO COLUMN ── */
         .two-col {
             display: grid;
             grid-template-columns: 1fr 295px;
@@ -331,7 +324,6 @@
         .left-col  { display: flex; flex-direction: column; gap: 20px; }
         .right-col { display: flex; flex-direction: column; gap: 20px; }
 
-        /* ── CARD ── */
         .card {
             background: var(--card);
             border-radius: var(--radius);
@@ -339,7 +331,6 @@
             box-shadow: var(--shadow);
         }
 
-        /* ── PROFILE CARD ── */
         .profile-top { display: flex; gap: 20px; align-items: flex-start; }
 
         .profile-photo {
@@ -408,7 +399,6 @@
         .pstat-value { font-size: 17px; font-weight: 700; }
         .pstat-label { font-size: 11px; color: var(--text-muted); }
 
-        /* ── TABS ── */
         .tabs-wrap {
             background: var(--bg);
             border-radius: 30px;
@@ -440,11 +430,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        /* ── SECTION VISIBILITY ── */
         .section { display: none; }
         .active-section { display: block; }
 
-        /* ── POSTS ── */
         .post-card {
             background: var(--card);
             border-radius: var(--radius);
@@ -493,7 +481,6 @@
             object-fit: cover;
         }
 
-        /* ── DETAIL CARD ── */
         .detail-card {
             background: var(--card);
             border-radius: var(--radius);
@@ -524,7 +511,6 @@
         .detail-value { font-weight: 600; text-align: right; }
         .detail-value a { color: var(--primary); text-decoration: none; }
 
-        /* ── EMPTY STATE ── */
         .empty-state {
             text-align: center;
             padding: 36px 20px;
@@ -534,7 +520,6 @@
 
         .empty-state i { font-size: 34px; margin-bottom: 10px; opacity: 0.35; display: block; }
 
-        /* ── CALENDAR ── */
         .cal-header {
             display: flex;
             align-items: center;
@@ -594,7 +579,6 @@
         .cal-day.other-month { color: #ccc; }
         .cal-day.today { background: var(--primary); color: #fff; font-weight: 700; }
 
-        /* ── SIDE PROFILE ── */
         .side-profile { text-align: center; }
 
         .side-avatar {
@@ -655,7 +639,6 @@
         .sm-label { color: var(--text-muted); }
         .sm-value { font-weight: 600; }
 
-        /* ── ANIMATIONS ── */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(16px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -725,46 +708,45 @@
             text-decoration: none;
         }
 
-
         .notif-wrapper{
             position:relative;
             cursor:pointer;
-            }
+        }
 
-            .notif-title{
+        .notif-title{
             margin-bottom:10px;
             font-size:14px;
             font-weight:700;
-            }
+        }
 
-            .notif-item{
+        .notif-item{
             display:flex;
             justify-content:space-between;
             align-items:center;
             padding:10px 0;
             border-bottom:1px solid #eee;
             font-size:13px;
-            }
+        }
 
-            .notif-item:last-child{
+        .notif-item:last-child{
             border-bottom:none;
-            }
+        }
 
-            .notif-unread{
+        .notif-unread{
             background:#f7f7ff;
-            }
+        }
 
-            .notif-text{
+        .notif-text{
             display:flex;
             flex-direction:column;
-            }
+        }
 
-            .notif-sub{
+        .notif-sub{
             font-size:11px;
             color:#888;
-            }
+        }
 
-            .follow-btn{
+        .follow-btn{
             background:#6C63FF;
             color:white;
             border:none;
@@ -772,24 +754,24 @@
             border-radius:8px;
             font-size:12px;
             cursor:pointer;
-            }
+        }
 
-            .follow-btn:hover{
+        .follow-btn:hover{
             background:#574fe6;
-            }
+        }
 
-            .following-label{
+        .following-label{
             font-size:12px;
             color:#4f46e5;
             font-weight:600;
-            }
+        }
 
-            .notif-empty{
+        .notif-empty{
             padding:10px;
             text-align:center;
             color:#888;
             font-size:13px;
-            }
+        }
     </style>
 
     {% block head_extra %}{% endblock %}
@@ -809,23 +791,19 @@
         <i class="fas fa-th-large"></i> Dashboard
     </a>
 
-    {# ✅ active condition fixed to alumni_list #}
     <a href="{% url 'alumni_list' %}" class="nav-item {% if request.resolver_match.url_name == 'alumni_list' %}active{% endif %}">
         <i class="fas fa-users"></i> Alumni
     </a>
 
-    <a href="{% url 'jobs' %}" 
-    class="nav-item {% if request.resolver_match.url_name == 'jobs' %}active{% endif %}">
+    <a href="{% url 'jobs' %}" class="nav-item {% if request.resolver_match.url_name == 'jobs' %}active{% endif %}">
         <i class="fas fa-briefcase"></i> Jobs
     </a>
 
-    <a href="{% url 'events' %}" 
-    class="nav-item {% if request.resolver_match.url_name == 'events' %}active{% endif %}">
+    <a href="{% url 'events' %}" class="nav-item {% if request.resolver_match.url_name == 'events' %}active{% endif %}">
         <i class="fas fa-flag"></i> Events
     </a>
 
-    <a href="{% url 'messages' %}"
-    class="nav-item {% if request.resolver_match.url_name == 'messages' or request.resolver_match.url_name == 'messages_conv' %}active{% endif %}">
+    <a href="{% url 'messages' %}" class="nav-item {% if request.resolver_match.url_name == 'messages' or request.resolver_match.url_name == 'messages_conv' %}active{% endif %}">
         <i class="fas fa-comments"></i> Messages
     </a>
 
@@ -852,13 +830,11 @@
 
     <div class="topbar-right">
 
-
         <div class="topbar-icon">
             <i class="fas fa-envelope"></i>
             <span class="badge-dot"></span>
         </div>
 
-        <!-- 🔔 NOTIFICATION WRAPPER -->
         <div class="topbar-icon notif-wrapper">
 
             <i class="fas fa-bell" id="notifBell"></i>
@@ -869,7 +845,6 @@
             </span>
             {% endif %}
 
-            <!-- 🔽 DROPDOWN -->
             <div id="notifDropdown" class="notif-dropdown">
 
                 <h4 class="notif-title">Notifications</h4>
@@ -918,20 +893,32 @@
 
         <!-- USER -->
         <div class="user-pill">
-            {% if profile and profile.photo %}
-                <img src="{{ profile.photo.url }}" class="user-avatar-sm" alt="avatar">
-            {% else %}
-                <div class="user-avatar-init">
-                    {% if profile %}
-                        {{ profile.first_name|first|upper }}{{ profile.last_name|first|upper }}
+            {% if request.user.is_authenticated %}
+                {% with p=request.user.alumniprofile %}
+                    {% if p.photo %}
+                        <img src="{{ p.photo.url }}" class="user-avatar-sm" alt="avatar">
                     {% else %}
-                        AU
+                        <div class="user-avatar-init">
+                            {% if p.first_name %}
+                                {{ p.first_name|first|upper }}
+                            {% else %}
+                                {{ request.user.username|first|upper }}
+                            {% endif %}
+                        </div>
                     {% endif %}
-                </div>
+
+                    <span class="user-name">
+                        {% if p.first_name %}
+                            {{ p.first_name }}
+                        {% else %}
+                            {{ request.user.username }}
+                        {% endif %}
+                    </span>
+                {% endwith %}
+            {% else %}
+                <div class="user-avatar-init">U</div>
+                <span class="user-name">User</span>
             {% endif %}
-            <span class="user-name">
-                {% if profile %}{{ profile.first_name }}{% else %}User{% endif %}
-            </span>
         </div>
 
     </div>
@@ -956,7 +943,6 @@ document.addEventListener("DOMContentLoaded", function () {
             e.stopPropagation();
             dropdown.classList.toggle("show");
 
-            // 🔥 Mark notifications as read
             fetch("{% url 'mark_notifications_read' %}")
                 .then(response => response.json())
                 .then(data => {

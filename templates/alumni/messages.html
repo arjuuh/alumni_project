@@ -4,614 +4,798 @@
 
 {% block content %}
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-  :root {
-    --primary:        #6C63FF;
-    --primary-light:  #ede9ff;
-    --primary-dark:   #5a52e8;
-    --primary-glow:   rgba(108,99,255,0.22);
-    --primary-soft:   rgba(108,99,255,0.08);
-    --green:          #10b981;
-    --green-glow:     rgba(16,185,129,0.25);
-    --red:            #ef4444;
-    --text-main:      #0f0e1a;
-    --text-sub:       #64748b;
-    --text-light:     #a8b3c5;
-    --bg-card:        #ffffff;
-    --bg-input:       #f7f6fe;
-    --border:         #e8e4f8;
-    --border-soft:    #f0edff;
-    --radius-xl:      22px;
-    --radius-lg:      16px;
-    --radius-md:      12px;
-    --shadow-md:      0 6px 24px rgba(108,99,255,0.12);
-    --t:              0.2s cubic-bezier(.4,0,.2,1);
+  * {
+    box-sizing: border-box;
   }
 
-  .msg-root, .msg-root * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; }
-
-  .msg-root {
-    height: calc(100vh - 148px);
+  .chat-shell {
     display: grid;
     grid-template-columns: 320px 1fr;
-    background: var(--bg-card);
-    border-radius: var(--radius-xl);
-    border: 1.5px solid var(--border);
-    box-shadow: var(--shadow-md);
+    gap: 18px;
+    height: calc(100vh - 120px);
+    min-height: 600px;
+  }
+
+  .pane {
+    background: #ffffff;
+    border: 1px solid #e6eaf2;
+    border-radius: 18px;
     overflow: hidden;
-    min-height: 500px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    display: flex;
+    flex-direction: column;
   }
 
-  /* ════ SIDEBAR ════ */
-  .msg-sidebar {
-    display: flex; flex-direction: column;
-    border-right: 1.5px solid var(--border-soft);
-    background: #faf9ff;
-    min-height: 0;
+  .pane-header {
+    padding: 16px 18px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    border-bottom: 1px solid #eef2f7;
+    background: #f8fafc;
   }
 
-  .sb-top { padding: 20px 18px 14px; flex-shrink: 0; }
-
-  .sb-title-row {
-    display: flex; align-items: center;
-    justify-content: space-between; margin-bottom: 14px;
-  }
-  .sb-title {
-    font-size: 17px; font-weight: 800; color: var(--text-main);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .sb-title-dot {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-soft);
-  }
-  .sb-badge {
-    font-size: 11px; font-weight: 800;
-    background: var(--primary); color: #fff;
-    padding: 2px 9px; border-radius: 999px;
+  .chat-items {
+    overflow-y: auto;
+    padding: 10px;
+    flex: 1;
   }
 
-  .sb-search { position: relative; display: flex; align-items: center; }
-  .sb-search i {
-    position: absolute; left: 12px; color: var(--text-light);
-    font-size: 12px; pointer-events: none; transition: color var(--t);
-  }
-  .sb-search:focus-within i { color: var(--primary); }
-  .sb-search input {
-    width: 100%; padding: 9px 14px 9px 34px;
-    background: var(--bg-card); border: 1.5px solid var(--border);
-    border-radius: 50px; font-size: 13px; color: var(--text-main);
-    outline: none; font-family: inherit;
-    transition: border-color var(--t), box-shadow var(--t);
-  }
-  .sb-search input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
-  .sb-search input::placeholder { color: var(--text-light); }
-
-  .sb-list { flex: 1; overflow-y: auto; min-height: 0; padding: 4px 0 12px; }
-  .sb-list::-webkit-scrollbar { width: 3px; }
-  .sb-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
-
-  .sb-section-label {
-    font-size: 10.5px; font-weight: 800; color: var(--text-light);
-    letter-spacing: 0.8px; text-transform: uppercase;
-    padding: 10px 18px 4px;
-  }
-
-  .sb-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 14px; margin: 2px 8px;
-    border-radius: var(--radius-md);
-    text-decoration: none; color: inherit;
-    transition: background var(--t); cursor: pointer;
-  }
-  .sb-item:hover { background: var(--bg-card); }
-  .sb-item.active { background: var(--primary-light); }
-  .sb-item.active .sb-item-name { color: var(--primary); }
-
-  .sb-av { position: relative; flex-shrink: 0; }
-  .sb-av-img {
-    width: 46px; height: 46px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 100%);
-    color: #fff; font-size: 16px; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; border: 2.5px solid transparent;
-    transition: border-color var(--t);
-  }
-  .sb-av-img img { width: 100%; height: 100%; object-fit: cover; }
-  .sb-item.active .sb-av-img { border-color: var(--primary); }
-  .sb-av-online {
-    position: absolute; bottom: 1px; right: 1px;
-    width: 12px; height: 12px; background: var(--green);
-    border-radius: 50%; border: 2px solid #faf9ff;
-    box-shadow: 0 1px 4px var(--green-glow);
-  }
-
-  .sb-item-body { flex: 1; min-width: 0; }
-  .sb-item-row  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
-  .sb-item-name { font-size: 13.5px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sb-item-time { font-size: 11px; color: var(--text-light); font-weight: 500; flex-shrink: 0; margin-left: 6px; }
-  .sb-item-preview { font-size: 12px; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sb-item-preview.unseen { color: var(--text-main); font-weight: 600; }
-  .sb-unread {
-    background: var(--primary); color: #fff;
-    font-size: 10px; font-weight: 800;
-    min-width: 18px; height: 18px; border-radius: 999px;
-    display: flex; align-items: center; justify-content: center;
-    padding: 0 5px; flex-shrink: 0; margin-left: 6px;
-  }
-
-  .sb-empty { padding: 40px 18px; text-align: center; color: var(--text-light); }
-  .sb-empty i { font-size: 32px; margin-bottom: 10px; display: block; }
-  .sb-empty p { font-size: 13px; font-weight: 600; }
-
-  /* ════ MAIN CHAT ════ */
-  .msg-main { display: flex; flex-direction: column; min-height: 0; background: var(--bg-card); }
-
-  /* Header */
-  .chat-hdr {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 22px; border-bottom: 1.5px solid var(--border-soft);
-    background: var(--bg-card); flex-shrink: 0; gap: 12px;
-  }
-  .chat-hdr-left { display: flex; align-items: center; gap: 13px; min-width: 0; }
-  .chat-hdr-av {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 100%);
-    color: #fff; font-size: 16px; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; box-shadow: 0 4px 12px var(--primary-glow);
+  .chat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s ease;
+    margin-bottom: 8px;
     position: relative;
   }
-  .chat-hdr-av::after {
-    content: ''; position: absolute; bottom: 1px; right: 1px;
-    width: 11px; height: 11px; background: var(--green);
-    border-radius: 50%; border: 2px solid var(--bg-card);
-  }
-  .chat-hdr-name { font-size: 15px; font-weight: 800; color: var(--text-main); letter-spacing: -0.2px; }
-  .chat-hdr-status {
-    font-size: 12px; font-weight: 600; color: var(--green);
-    display: flex; align-items: center; gap: 5px; margin-top: 1px;
-  }
-  .chat-hdr-status::before {
-    content: ''; width: 6px; height: 6px; background: var(--green);
-    border-radius: 50%; display: inline-block;
-    animation: pulse-g 2s infinite;
-  }
-  @keyframes pulse-g {
-    0%,100%{opacity:1;transform:scale(1);}
-    50%{opacity:.6;transform:scale(1.3);}
+
+  .chat-item:hover {
+    background: #f8fafc;
   }
 
-  .chat-hdr-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-  .hdr-btn {
-    width: 38px; height: 38px; border-radius: var(--radius-md);
-    border: 1.5px solid var(--border); background: var(--bg-card);
-    color: var(--text-sub); display: flex; align-items: center;
-    justify-content: center; font-size: 13.5px; cursor: pointer;
-    transition: all var(--t);
+  .chat-item.active {
+    background: #eef4ff;
+    border: 1px solid #dbeafe;
   }
-  .hdr-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 12px var(--primary-glow); }
-  .hdr-btn.danger:hover { background: #fff0f0; border-color: var(--red); color: var(--red); box-shadow: 0 4px 12px rgba(239,68,68,0.2); }
 
-  /* Chat body */
+  .avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .meta {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+
+  .last {
+    font-size: 13px;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .unread-badge {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #2563eb;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .call-btn {
+    border: none;
+    background: #eff6ff;
+    color: #2563eb;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .call-btn:hover {
+    background: #dbeafe;
+  }
+
   .chat-body {
-    flex: 1; overflow-y: auto;
-    padding: 24px 24px 16px; min-height: 0;
-    display: flex; flex-direction: column; gap: 2px;
-    background:
-      radial-gradient(ellipse at 10% 20%, rgba(108,99,255,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse at 90% 80%, rgba(167,139,250,0.04) 0%, transparent 60%),
-      #f8f7fe;
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  .chat-body::-webkit-scrollbar { width: 4px; }
-  .chat-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 
-  .date-sep {
-    display: flex; align-items: center; gap: 12px;
-    margin: 14px 0 10px; color: var(--text-light);
-    font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
-  }
-  .date-sep::before, .date-sep::after { content:''; flex:1; height:1px; background:var(--border); }
-
-  /* Bubbles */
   .bubble {
-    max-width: 62%; padding: 11px 15px;
-    font-size: 14px; line-height: 1.55;
-    word-wrap: break-word; position: relative;
-    animation: bubblePop 0.22s cubic-bezier(.34,1.56,.64,1) both;
+    max-width: 72%;
+    padding: 12px 14px 10px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-break: break-word;
   }
-  @keyframes bubblePop {
-    from { opacity:0; transform:scale(0.88) translateY(6px); }
-    to   { opacity:1; transform:scale(1) translateY(0); }
-  }
-  .mine {
-    background: linear-gradient(135deg, var(--primary) 0%, #857bff 100%);
-    color: #fff; border-radius: 20px 20px 6px 20px;
-    box-shadow: 0 4px 16px var(--primary-glow); margin-left: auto;
-  }
-  .theirs {
-    background: var(--bg-card); color: var(--text-main);
-    border: 1.5px solid var(--border); border-radius: 20px 20px 20px 6px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  }
-  .bubble-time {
-    font-size: 10.5px; margin-top: 5px;
-    display: flex; align-items: center; gap: 4px; font-weight: 500;
-  }
-  .mine   .bubble-time { color: rgba(255,255,255,0.65); justify-content: flex-end; }
-  .theirs .bubble-time { color: var(--text-light); }
 
-  .sys-msg { display: flex; justify-content: center; margin: 10px 0; }
-  .sys-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(108,99,255,0.07); border: 1px solid rgba(108,99,255,0.15);
-    color: var(--text-sub); font-size: 11.5px; font-weight: 600;
-    padding: 5px 14px; border-radius: 999px;
+  .bubble.me {
+    align-self: flex-end;
+    background: #2563eb;
+    color: white;
+    border-bottom-right-radius: 6px;
   }
-  .sys-pill i { color: var(--primary); font-size: 11px; }
 
-  /* Input bar */
-  .chat-input-bar {
-    padding: 14px 18px; border-top: 1.5px solid var(--border-soft);
-    background: var(--bg-card); flex-shrink: 0;
-    display: flex; align-items: center; gap: 10px;
+  .bubble.them {
+    align-self: flex-start;
+    background: white;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 6px;
   }
-  .input-extras { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
-  .input-extra-btn {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: none; background: transparent;
-    color: var(--text-light); font-size: 15px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: color var(--t), background var(--t);
+
+  .bubble .time {
+    font-size: 11px;
+    margin-top: 6px;
+    opacity: 0.8;
+    text-align: right;
   }
-  .input-extra-btn:hover { color: var(--primary); background: var(--primary-light); }
-  .input-field-wrap { flex: 1; }
+
+  .bubble.them .time {
+    color: #64748b;
+  }
+
+  .bubble.me .time {
+    color: rgba(255,255,255,0.85);
+  }
+
+  .system-msg {
+    display: flex;
+    justify-content: center;
+  }
+
+  .system-pill {
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 999px;
+  }
+
   .chat-input {
-    width: 100%; padding: 11px 18px;
-    background: var(--bg-input); border: 1.5px solid var(--border);
-    border-radius: 50px; font-size: 14px; color: var(--text-main);
-    outline: none; font-family: inherit;
-    transition: border-color var(--t), box-shadow var(--t), background var(--t);
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+    border-top: 1px solid #eef2f7;
+    background: white;
   }
-  .chat-input:focus { border-color: var(--primary); background: var(--bg-card); box-shadow: 0 0 0 3.5px var(--primary-glow); }
-  .chat-input::placeholder { color: var(--text-light); }
-  .btn-send {
-    width: 44px; height: 44px; border-radius: 50%; border: none;
-    background: linear-gradient(135deg, var(--primary) 0%, #857bff 100%);
-    color: #fff; font-size: 15px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; flex-shrink: 0;
-    box-shadow: 0 5px 16px var(--primary-glow);
-    transition: transform var(--t), box-shadow var(--t);
-  }
-  .btn-send:hover { transform: scale(1.1) translateY(-1px); box-shadow: 0 8px 22px rgba(108,99,255,0.45); }
-  .btn-send:active { transform: scale(0.95); }
 
-  /* Empty state */
-  .chat-empty {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 18px; padding: 40px;
-    background: radial-gradient(ellipse at center, rgba(108,99,255,0.05) 0%, transparent 70%), var(--bg-card);
+  .chat-input input {
+    flex: 1;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    outline: none;
   }
-  .chat-empty-icon {
-    width: 88px; height: 88px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-light), #ddd8ff);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px; color: var(--primary);
-    box-shadow: 0 8px 24px var(--primary-glow);
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float { 0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);} }
-  .chat-empty h3 { font-size: 17px; font-weight: 800; color: var(--text-main); }
-  .chat-empty p  { font-size: 13.5px; color: var(--text-sub); text-align: center; max-width: 260px; line-height: 1.55; }
 
-  /* ════ CALL OVERLAY ════ */
+  .chat-input input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+  }
+
+  .chat-input button {
+    border: none;
+    background: #2563eb;
+    color: white;
+    padding: 0 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .chat-input button:hover {
+    background: #1d4ed8;
+  }
+
+  .empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
   .call-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(5,4,20,0.82); backdrop-filter: blur(10px);
-    z-index: 9999; align-items: center; justify-content: center;
-  }
-  .call-overlay.active { display: flex; }
-  .call-box {
-    width: min(880px, 94vw);
-    background: linear-gradient(160deg, #0f0e1a 0%, #16143a 100%);
-    border-radius: 26px; padding: 20px;
-    border: 1px solid rgba(108,99,255,0.35);
-    box-shadow: 0 40px 100px rgba(0,0,0,0.7);
-  }
-  .call-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
-  .call-status-wrap { display: flex; align-items: center; gap: 10px; }
-  .call-live-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4);
-    color: var(--green); font-size: 12px; font-weight: 800;
-    padding: 4px 12px; border-radius: 999px; letter-spacing: 0.5px;
-  }
-  .call-live-dot {
-    width: 7px; height: 7px; border-radius: 50%; background: var(--green);
-    animation: pcall 1.4s infinite;
-  }
-  @keyframes pcall { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5);}50%{box-shadow:0 0 0 5px rgba(16,185,129,0);} }
-  #callStatus { color: #fff; font-size: 15px; font-weight: 800; }
-  .call-controls { display: flex; gap: 8px; }
-  .cc-btn {
-    padding: 9px 18px; border-radius: 50px; border: none; cursor: pointer;
-    font-size: 13px; font-weight: 700; font-family: inherit;
-    display: inline-flex; align-items: center; gap: 7px;
-    transition: transform var(--t), filter var(--t);
-  }
-  .cc-btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
-  .cc-mute, .cc-cam { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
-  .cc-hangup { background: var(--red); color: #fff; box-shadow: 0 4px 16px rgba(239,68,68,0.45); }
-  .call-videos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .call-vid-wrap {
-    position: relative; border-radius: 18px; overflow: hidden;
-    background: #0a0916; aspect-ratio: 16/9;
-    border: 1px solid rgba(255,255,255,0.07);
-  }
-  .call-vid-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .call-vid-label {
-    position: absolute; bottom: 10px; left: 12px;
-    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
-    color: rgba(255,255,255,0.9); font-size: 11.5px; font-weight: 700;
-    padding: 4px 12px; border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.1);
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    z-index: 9999;
+    padding: 20px;
   }
 
-  @media (max-width: 800px) {
-    .msg-root { grid-template-columns: 1fr; height: auto; }
-    .msg-sidebar { height: 44vh; border-right: none; border-bottom: 1.5px solid var(--border-soft); }
-    .msg-main { height: 62vh; }
+  .call-box {
+    width: min(900px, 95vw);
+    margin: 40px auto;
+    background: #0f172a;
+    border-radius: 18px;
+    padding: 20px;
+    color: white;
+  }
+
+  .call-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .call-status {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .call-controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  .call-controls button {
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #1e293b;
+    color: white;
+  }
+
+  .call-controls .btn-hangup {
+    background: #dc2626;
+  }
+
+  .call-videos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .call-videos video {
+    width: 100%;
+    height: 320px;
+    background: black;
+    border-radius: 14px;
+    object-fit: cover;
+  }
+
+  @media (max-width: 900px) {
+    .chat-shell {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+
+    .bubble {
+      max-width: 88%;
+    }
+
+    .call-videos {
+      grid-template-columns: 1fr;
+    }
+
+    .call-videos video {
+      height: 220px;
+    }
   }
 </style>
 
-<div class="msg-root">
+<div class="chat-shell">
 
-  <!-- ══ SIDEBAR ══ -->
-  <div class="msg-sidebar">
-    <div class="sb-top">
-      <div class="sb-title-row">
-        <div class="sb-title">
-          <div class="sb-title-dot"></div>
-          Messages
-        </div>
-        {% if conversations %}<span class="sb-badge">{{ conversations|length }}</span>{% endif %}
-      </div>
-      <div class="sb-search">
-        <i class="fas fa-search"></i>
-        <input type="text" id="sbSearch" placeholder="Search conversations…">
-      </div>
-    </div>
+  <div class="pane">
+    <div class="pane-header">Chats</div>
 
-    <div class="sb-list" id="sbList">
-      {% if conversations %}<div class="sb-section-label">Recent</div>{% endif %}
-
+    <div class="chat-items">
       {% for c in conversations %}
-      <a class="sb-item {% if active_conv and c.id == active_conv.id %}active{% endif %}"
-         href="{% url 'messages_conv' c.id %}">
-        <div class="sb-av">
-          <div class="sb-av-img">
-            {% for u in c.participants.all %}{% if u.id != request.user.id %}
-              {% if u.alumniprofile.photo %}<img src="{{ u.alumniprofile.photo.url }}" alt="">
-              {% else %}{{ u.username|first|upper }}{% endif %}
-            {% endif %}{% endfor %}
+        <a class="chat-item {% if active_conv and c.id == active_conv.id %}active{% endif %}"
+           href="{% url 'messages_conv' c.id %}">
+
+          <div class="avatar">
+            {% if c.other_user and c.other_user.alumniprofile.photo %}
+              <img src="{{ c.other_user.alumniprofile.photo.url }}" alt="{{ c.other_user.username }}">
+            {% elif c.other_user and c.other_user.teacherprofile.photo %}
+              <img src="{{ c.other_user.teacherprofile.photo.url }}" alt="{{ c.other_user.username }}">
+            {% elif c.other_user %}
+              {{ c.other_user.username|first|upper }}
+            {% else %}
+              ?
+            {% endif %}
           </div>
-          <div class="sb-av-online"></div>
-        </div>
-        <div class="sb-item-body">
-          <div class="sb-item-row">
-            <div class="sb-item-name">
-              {% for u in c.participants.all %}{% if u.id != request.user.id %}{{ u.username }}{% endif %}{% endfor %}
+
+          <div class="meta">
+            <div class="name">
+              {% if c.other_user %}
+                {{ c.other_user.username }}
+              {% else %}
+                Unknown User
+              {% endif %}
             </div>
-            <div class="sb-item-time">
-              {% with last=c.messages.last %}{% if last %}{{ last.created_at|date:"h:i A" }}{% endif %}{% endwith %}
+
+            <div class="last">
+              {{ c.last_message_text|default:"No messages yet" }}
             </div>
           </div>
-          <div class="sb-item-row">
-            <div class="sb-item-preview {% if c.unread_count > 0 %}unseen{% endif %}">
-              {% with last=c.messages.last %}
-                {% if last %}{% if last.sender_id == request.user.id %}<span style="color:var(--text-light)">You: </span>{% endif %}{{ last.text|truncatechars:36 }}
-                {% else %}<em style="opacity:.6">Start a conversation…</em>{% endif %}
-              {% endwith %}
-            </div>
-            {% if c.unread_count > 0 %}<span class="sb-unread">{{ c.unread_count }}</span>{% endif %}
-          </div>
-        </div>
-      </a>
+
+          {% if c.unread_count > 0 %}
+            <span class="unread-badge">{{ c.unread_count }}</span>
+          {% endif %}
+        </a>
       {% empty %}
-      <div class="sb-empty">
-        <i class="fas fa-comment-slash"></i>
-        <p>No conversations yet</p>
-      </div>
+        <div style="padding:14px;color:#888;">No chats yet</div>
       {% endfor %}
     </div>
   </div>
 
-  <!-- ══ MAIN ══ -->
-  <div class="msg-main">
-
+  <div class="pane">
     {% if active_conv %}
-
-    <div class="chat-hdr">
-      <div class="chat-hdr-left">
-        <div class="chat-hdr-av">
-          {% for u in active_conv.participants.all %}{% if u.id != request.user.id %}{{ u.username|first|upper }}{% endif %}{% endfor %}
-        </div>
+      <div class="pane-header" style="display:flex; align-items:center; justify-content:space-between;">
         <div>
-          <div class="chat-hdr-name">
-            {% for u in active_conv.participants.all %}{% if u.id != request.user.id %}{{ u.username }}{% endif %}{% endfor %}
-          </div>
-          <div class="chat-hdr-status">Active now</div>
+          Chat with
+          <strong>
+            {% if active_conv.other_user %}
+              {{ active_conv.other_user.username }}
+            {% else %}
+              User
+            {% endif %}
+          </strong>
+        </div>
+
+        <div class="header-actions">
+          <button type="button" class="call-btn" onclick="startCall('voice')" title="Voice Call">
+            <i class="fas fa-phone"></i>
+          </button>
+          <button type="button" class="call-btn" onclick="startCall('video')" title="Video Call">
+            <i class="fas fa-video"></i>
+          </button>
+          <button type="button" class="call-btn" onclick="clearChat()" title="Clear Chat">
+            <i class="fas fa-trash"></i>
+          </button>
         </div>
       </div>
-      <div class="chat-hdr-actions">
-        <button type="button" class="hdr-btn" onclick="startCall('voice')" title="Voice Call"><i class="fas fa-phone"></i></button>
-        <button type="button" class="hdr-btn" onclick="startCall('video')" title="Video Call"><i class="fas fa-video"></i></button>
-        <button type="button" class="hdr-btn danger" onclick="clearChat()" title="Clear Chat"><i class="fas fa-trash-alt"></i></button>
-      </div>
-    </div>
 
-    <div id="chatBody" class="chat-body">
-      <div class="date-sep">Today</div>
-      {% for m in chat_messages %}
-        {% if m.text|slice:":6" == "[CALL]" %}
-          <div class="sys-msg" data-id="{{ m.id }}">
-            <span class="sys-pill"><i class="fas fa-phone"></i>{{ m.text|cut:"[CALL] " }}</span>
-          </div>
-        {% else %}
-          {% if m.sender_id == request.user.id %}
-            <div class="bubble mine" data-id="{{ m.id }}">
-              {{ m.text }}
-              <div class="bubble-time">{{ m.created_at|date:"h:i A" }} <i class="fas fa-check-double" style="font-size:10px;opacity:.7;"></i></div>
+      <div id="chatBody" class="chat-body">
+        {% for m in chat_messages %}
+          {% if m.text|slice:":6" == "[CALL]" %}
+            <div class="system-msg" data-id="{{ m.id }}">
+              <span class="system-pill">{{ m.text|cut:"[CALL] " }}</span>
             </div>
           {% else %}
-            <div class="bubble theirs" data-id="{{ m.id }}">
-              {{ m.text }}
-              <div class="bubble-time">{{ m.created_at|date:"h:i A" }}</div>
-            </div>
+            {% if m.sender_id == request.user.id %}
+              <div class="bubble me" data-id="{{ m.id }}">
+                {{ m.text }}
+                <div class="time">{{ m.created_at|date:"h:i A" }}</div>
+              </div>
+            {% else %}
+              <div class="bubble them" data-id="{{ m.id }}">
+                {{ m.text }}
+                <div class="time">{{ m.created_at|date:"h:i A" }}</div>
+              </div>
+            {% endif %}
           {% endif %}
-        {% endif %}
-      {% endfor %}
-    </div>
-
-    <form id="sendForm" class="chat-input-bar" method="post" action="{% url 'send_message' %}">
-      {% csrf_token %}
-      <div class="input-extras">
-        <button type="button" class="input-extra-btn" title="Attach"><i class="fas fa-paperclip"></i></button>
-        <button type="button" class="input-extra-btn" title="Emoji"><i class="far fa-smile"></i></button>
+        {% endfor %}
       </div>
-      <div class="input-field-wrap">
-        <input id="msgInput" name="text" type="text" class="chat-input" placeholder="Write a message…" autocomplete="off">
-      </div>
-      <button type="submit" class="btn-send" title="Send"><i class="fas fa-paper-plane"></i></button>
-    </form>
 
-    <!-- Call Overlay -->
-    <div id="callOverlay" class="call-overlay">
-      <div class="call-box">
-        <div class="call-top">
-          <div class="call-status-wrap">
-            <div class="call-live-badge"><div class="call-live-dot"></div>LIVE</div>
-            <div id="callStatus">Calling…</div>
+      <form id="sendForm" class="chat-input" method="post" action="{% url 'send_message' %}">
+        {% csrf_token %}
+        <input type="hidden" name="conv_id" value="{{ active_conv.id }}">
+        <input id="msgInput" name="text" type="text" placeholder="Type a message..." autocomplete="off" />
+        <button type="submit">Send</button>
+      </form>
+
+      <div id="callOverlay" class="call-overlay">
+        <div class="call-box">
+          <div class="call-top">
+            <div id="callStatus" class="call-status">Calling...</div>
+
+            <div class="call-controls">
+              <button id="btnMute" type="button">Mute</button>
+              <button id="btnCam" type="button">Cam off</button>
+              <button id="btnHangup" type="button" class="btn-hangup">Hang up</button>
+            </div>
           </div>
-          <div class="call-controls">
-            <button id="btnMute"   type="button" class="cc-btn cc-mute"><i class="fas fa-microphone"></i> Mute</button>
-            <button id="btnCam"    type="button" class="cc-btn cc-cam" style="display:none;"><i class="fas fa-video"></i> Cam off</button>
-            <button id="btnHangup" type="button" class="cc-btn cc-hangup"><i class="fas fa-phone-slash"></i> End call</button>
-          </div>
-        </div>
-        <div class="call-videos">
-          <div class="call-vid-wrap">
-            <video id="remoteVideo" autoplay playsinline></video>
-            <span class="call-vid-label"><i class="fas fa-user" style="margin-right:5px;opacity:.7;"></i>Remote</span>
-          </div>
-          <div class="call-vid-wrap">
+
+          <div class="call-videos">
             <video id="localVideo" autoplay playsinline muted></video>
-            <span class="call-vid-label"><i class="fas fa-user-circle" style="margin-right:5px;opacity:.7;"></i>You</span>
+            <video id="remoteVideo" autoplay playsinline></video>
           </div>
         </div>
       </div>
-    </div>
 
-    <script>
-      const chatBody=document.getElementById("chatBody"),form=document.getElementById("sendForm"),input=document.getElementById("msgInput");
-      function scrollBottom(){chatBody.scrollTop=chatBody.scrollHeight;} scrollBottom();
-      function getCookie(n){let v=null;if(document.cookie)for(let c of document.cookie.split(";")){c=c.trim();if(c.startsWith(n+"=")){v=decodeURIComponent(c.slice(n.length+1));break;}}return v;}
-      const csrf=getCookie("csrftoken");
-      function getLastId(){const ns=chatBody.querySelectorAll("[data-id]");return ns.length?parseInt(ns[ns.length-1].dataset.id)||0:0;}
-      function esc(s){return(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
-      function appendMessage(m){
-        if((m.text||"").startsWith("[CALL]")){
-          const d=document.createElement("div");d.className="sys-msg";d.setAttribute("data-id",m.id);
-          d.innerHTML=`<span class="sys-pill"><i class="fas fa-phone"></i>${esc((m.text||"").replace("[CALL] ",""))}</span>`;
-          chatBody.appendChild(d);return;
-        }
-        const mine=m.sender_id=={{ request.user.id }};
-        const d=document.createElement("div");d.className=`bubble ${mine?"mine":"theirs"}`;d.setAttribute("data-id",m.id);
-        d.innerHTML=mine
-          ?`${esc(m.text)}<div class="bubble-time">${m.created_at} <i class="fas fa-check-double" style="font-size:10px;opacity:.7;"></i></div>`
-          :`${esc(m.text)}<div class="bubble-time">${m.created_at}</div>`;
-        chatBody.appendChild(d);
-      }
-      async function sendSys(t){const fd=new FormData();fd.append("conv_id","{{ active_conv.id }}");fd.append("text","[CALL] "+t);try{await fetch("{% url 'send_message' %}",{method:"POST",headers:{"X-CSRFToken":csrf},body:fd});}catch(e){}}
-      form.addEventListener("submit",async e=>{
-        e.preventDefault();const text=input.value.trim();if(!text)return;
-        const fd=new FormData();fd.append("conv_id","{{ active_conv.id }}");fd.append("text",text);
-        const res=await fetch("{% url 'send_message' %}",{method:"POST",headers:{"X-CSRFToken":csrf},body:fd});
-        const data=await res.json();
-        if(!data.ok){alert(data.error||"Not sent");return;}
-        appendMessage({id:data.id,text:data.text,sender_id:{{ request.user.id }},sender:"{{ request.user.username }}",created_at:data.created_at});
-        input.value="";scrollBottom();
-      });
-      async function poll(){
-        try{const res=await fetch("{% url 'fetch_messages' active_conv.id %}?after="+getLastId());const data=await res.json();
-          if(data.ok&&data.messages?.length){data.messages.forEach(appendMessage);scrollBottom();}}catch(e){}
-      }
-      setInterval(poll,2000);
-      async function clearChat(){
-        if(!confirm("Clear this entire conversation?"))return;
-        try{const res=await fetch("{% url 'clear_chat' active_conv.id %}",{method:"POST",headers:{"X-CSRFToken":csrf}});
-          const data=await res.json();
-          if(data.ok)chatBody.innerHTML=`<div class="date-sep">Chat cleared</div>`;else alert("Could not clear.");}catch(e){alert("Error.");}
-      }
-      document.getElementById("sbSearch").addEventListener("input",function(){
-        const q=this.value.toLowerCase();
-        document.querySelectorAll(".sb-item").forEach(el=>{el.style.display=el.querySelector(".sb-item-name")?.textContent.toLowerCase().includes(q)?"":"none";});
-      });
-      // WebRTC
-      const convId="{{ active_conv.id }}",wsScheme=window.location.protocol==="https:"?"wss":"ws";
-      let callSocket=null,pc=null,localStream=null,isMuted=false,camEnabled=true,connectedAt=null,callKind=null,callTimer=null;
-      const overlay=document.getElementById("callOverlay"),localVideo=document.getElementById("localVideo"),remoteVideo=document.getElementById("remoteVideo"),statusEl=document.getElementById("callStatus"),btnHangup=document.getElementById("btnHangup"),btnMute=document.getElementById("btnMute"),btnCam=document.getElementById("btnCam");
-      const rtcCfg={iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]};
-      function ensureSocket(){
-        if(callSocket&&(callSocket.readyState===0||callSocket.readyState===1))return;
-        callSocket=new WebSocket(`${wsScheme}://${window.location.host}/ws/call/${convId}/`);
-        callSocket.onmessage=async e=>{
-          const d=JSON.parse(e.data);if(d.sender==="{{ request.user.username }}")return;
-          if(d.type==="no_answer"){await sendSys(callKind==="video"?"📹 Missed video call":"📞 Missed call");hangup(false);return;}
-          if(d.type==="offer"){
-            const ok=confirm(`Incoming ${d.kind==="video"?"video":"voice"} call. Accept?`);
-            if(!ok){await sendSys(d.kind==="video"?"📹 Missed video call":"📞 Missed call");if(callSocket?.readyState===1){callSocket.send(JSON.stringify({type:"no_answer",kind:d.kind}));callSocket.send(JSON.stringify({type:"hangup"}));}return;}
-            callKind=d.kind==="video"?"video":"voice";connectedAt=Date.now();
-            await sendSys(callKind==="video"?"📹 Video call started":"📞 Voice call started");
-            await acceptOffer(d.offer,d.kind);statusEl.textContent="In call";
+      <script>
+        const chatBody = document.getElementById("chatBody");
+        const form = document.getElementById("sendForm");
+        const input = document.getElementById("msgInput");
+
+        function scrollBottom() { chatBody.scrollTop = chatBody.scrollHeight; }
+        scrollBottom();
+
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let c of cookies) {
+              c = c.trim();
+              if (c.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(c.substring(name.length + 1));
+                break;
+              }
+            }
           }
-          if(d.type==="answer")await acceptAnswer(d.answer);
-          if(d.type==="ice")await addIce(d.candidate);
-          if(d.type==="hangup"){await logEnd();hangup(false);}
+          return cookieValue;
+        }
+
+        const csrftoken = getCookie("csrftoken");
+
+        function getLastMessageId() {
+          const nodes = chatBody.querySelectorAll("[data-id]");
+          if (!nodes.length) return 0;
+          return parseInt(nodes[nodes.length - 1].getAttribute("data-id")) || 0;
+        }
+
+        function appendMessage(m) {
+          if ((m.text || "").startsWith("[CALL]")) {
+            const wrap = document.createElement("div");
+            wrap.className = "system-msg";
+            wrap.setAttribute("data-id", m.id);
+            wrap.innerHTML = `<span class="system-pill">${(m.text || "").replace("[CALL] ", "")}</span>`;
+            chatBody.appendChild(wrap);
+            return;
+          }
+
+          const div = document.createElement("div");
+          div.className = (m.sender_id == {{ request.user.id }}) ? "bubble me" : "bubble them";
+          div.setAttribute("data-id", m.id);
+          div.innerHTML = `
+            ${m.text}
+            <div class="time">${m.created_at}</div>
+          `;
+          chatBody.appendChild(div);
+        }
+
+        form.addEventListener("submit", async function(e) {
+          e.preventDefault();
+
+          const text = input.value.trim();
+          if (!text) return;
+
+          const fd = new FormData(form);
+
+          try {
+            const res = await fetch("{% url 'send_message' %}", {
+              method: "POST",
+              headers: { "X-CSRFToken": csrftoken },
+              body: fd
+            });
+
+            const data = await res.json();
+            if (!data.ok) {
+              alert(data.error || "Could not send message");
+              return;
+            }
+
+            appendMessage({
+              id: data.id,
+              text: data.text,
+              sender_id: {{ request.user.id }},
+              created_at: data.created_at
+            });
+
+            input.value = "";
+            scrollBottom();
+            window.location.reload();
+          } catch (e) {
+            alert("Something went wrong.");
+          }
+        });
+
+        async function pollNewMessages() {
+          const after = getLastMessageId();
+          const url = "{% url 'fetch_messages' active_conv.id %}" + `?after=${after}`;
+          try {
+            const res = await fetch(url);
+            const data = await res.json();
+            if (!data.ok) return;
+            if (data.messages && data.messages.length) {
+              data.messages.forEach(appendMessage);
+              scrollBottom();
+              window.location.reload();
+            }
+          } catch (e) {}
+        }
+
+        setInterval(pollNewMessages, 2000);
+
+        const convId = "{{ active_conv.id }}";
+        const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+        let callSocket = null;
+        let pc = null;
+        let localStream = null;
+        let isMuted = false;
+        let camEnabled = true;
+        let connectedAt = null;
+        let callKind = null;
+        let callTimeoutTimer = null;
+
+        const overlay = document.getElementById("callOverlay");
+        const localVideo = document.getElementById("localVideo");
+        const remoteVideo = document.getElementById("remoteVideo");
+        const statusEl = document.getElementById("callStatus");
+        const btnHangup = document.getElementById("btnHangup");
+        const btnMute = document.getElementById("btnMute");
+        const btnCam = document.getElementById("btnCam");
+
+        const rtcConfig = {
+          iceServers: [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" }
+          ]
         };
-      }
-      async function startMedia(k){localStream=await navigator.mediaDevices.getUserMedia(k==="video"?{audio:true,video:true}:{audio:true,video:false});localVideo.srcObject=localStream;btnCam.style.display=k==="video"?"inline-flex":"none";camEnabled=true;}
-      async function setupPC(){pc=new RTCPeerConnection(rtcCfg);pc.onicecandidate=e=>{if(e.candidate)callSocket.send(JSON.stringify({type:"ice",candidate:e.candidate}));};pc.ontrack=e=>{remoteVideo.srcObject=e.streams[0];if(!connectedAt)connectedAt=Date.now();};localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));}
-      function fmt(s){return`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;}
-      async function logEnd(){if(!connectedAt){await sendSys(callKind==="video"?"📹 Missed video call":"📞 Missed call");}else{const s=Math.floor((Date.now()-connectedAt)/1000);await sendSys(`📞 Call ended · ${fmt(s)}`);}connectedAt=null;callKind=null;if(callTimer){clearTimeout(callTimer);callTimer=null;}}
-      async function startCall(k){
-        try{ensureSocket();overlay.classList.add("active");statusEl.textContent="Calling…";callKind=k;connectedAt=null;
-          callTimer=setTimeout(async()=>{if(!connectedAt){await sendSys(k==="video"?"📹 Missed video call":"📞 Missed call");hangup(true);}},20000);
-          await startMedia(k);await setupPC();const offer=await pc.createOffer();await pc.setLocalDescription(offer);callSocket.send(JSON.stringify({type:"offer",offer,kind:k}));
-        }catch(e){alert("Please allow mic/camera.");connectedAt=null;callKind=null;if(callTimer)clearTimeout(callTimer);hangup(false);}
-      }
-      async function acceptOffer(offer,k){ensureSocket();overlay.classList.add("active");statusEl.textContent="Connecting…";await startMedia(k);await setupPC();await pc.setRemoteDescription(new RTCSessionDescription(offer));const ans=await pc.createAnswer();await pc.setLocalDescription(ans);callSocket.send(JSON.stringify({type:"answer",answer:ans}));}
-      async function acceptAnswer(ans){if(!pc)return;await pc.setRemoteDescription(new RTCSessionDescription(ans));if(!connectedAt){connectedAt=Date.now();await sendSys(callKind==="video"?"📹 Video call started":"📞 Voice call started");}statusEl.textContent="In call";}
-      async function addIce(c){if(pc)try{await pc.addIceCandidate(new RTCIceCandidate(c));}catch(e){}}
-      async function hangup(sig=true){if(sig&&callSocket?.readyState===1)callSocket.send(JSON.stringify({type:"hangup"}));await logEnd();if(pc){pc.close();pc=null;}if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null;}localVideo.srcObject=null;remoteVideo.srcObject=null;overlay.classList.remove("active");isMuted=false;btnMute.innerHTML='<i class="fas fa-microphone"></i> Mute';}
-      btnHangup.addEventListener("click",()=>hangup(true));
-      btnMute.addEventListener("click",()=>{if(!localStream)return;isMuted=!isMuted;localStream.getAudioTracks().forEach(t=>t.enabled=!isMuted);btnMute.innerHTML=isMuted?'<i class="fas fa-microphone-slash"></i> Unmute':'<i class="fas fa-microphone"></i> Mute';});
-      btnCam.addEventListener("click",()=>{if(!localStream)return;const tr=localStream.getVideoTracks();if(!tr.length)return;camEnabled=!camEnabled;tr.forEach(t=>t.enabled=camEnabled);btnCam.innerHTML=camEnabled?'<i class="fas fa-video"></i> Cam off':'<i class="fas fa-video-slash"></i> Cam on';});
-      ensureSocket();
-    </script>
+
+        function ensureSocket() {
+          if (callSocket && (callSocket.readyState === 0 || callSocket.readyState === 1)) return;
+          callSocket = new WebSocket(`${wsScheme}://${window.location.host}/ws/call/${convId}/`);
+
+          callSocket.onmessage = async (event) => {
+            const data = JSON.parse(event.data);
+            if (data.sender === "{{ request.user.username }}") return;
+
+            if (data.type === "no_answer") {
+              hangup(false);
+              return;
+            }
+
+            if (data.type === "offer") {
+              const ok = confirm(`Incoming ${data.kind === "video" ? "video" : "voice"} call. Accept?`);
+              if (!ok) {
+                if (callSocket && callSocket.readyState === 1) {
+                  callSocket.send(JSON.stringify({ type: "no_answer", kind: data.kind }));
+                  callSocket.send(JSON.stringify({ type: "hangup" }));
+                }
+                return;
+              }
+
+              callKind = data.kind === "video" ? "video" : "voice";
+              connectedAt = Date.now();
+              await acceptOffer(data.offer, data.kind);
+              statusEl.textContent = "In call";
+            }
+
+            if (data.type === "answer") {
+              await acceptAnswer(data.answer);
+            }
+
+            if (data.type === "ice") {
+              await addIce(data.candidate);
+            }
+
+            if (data.type === "hangup") {
+              hangup(false);
+            }
+          };
+        }
+
+        async function startMedia(kind) {
+          const constraints = kind === "video"
+            ? { audio: true, video: true }
+            : { audio: true, video: false };
+
+          localStream = await navigator.mediaDevices.getUserMedia(constraints);
+          localVideo.srcObject = localStream;
+
+          btnCam.style.display = kind === "video" ? "inline-block" : "none";
+          btnCam.textContent = "Cam off";
+          camEnabled = true;
+        }
+
+        async function setupPeerConnection() {
+          pc = new RTCPeerConnection(rtcConfig);
+
+          pc.onicecandidate = (event) => {
+            if (event.candidate) {
+              callSocket.send(JSON.stringify({ type: "ice", candidate: event.candidate }));
+            }
+          };
+
+          pc.ontrack = (event) => {
+            remoteVideo.srcObject = event.streams[0];
+            if (!connectedAt) connectedAt = Date.now();
+          };
+
+          localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+        }
+
+        async function startCall(kind) {
+          try {
+            ensureSocket();
+            overlay.style.display = "block";
+            statusEl.textContent = "Calling...";
+
+            callKind = kind;
+            connectedAt = null;
+
+            callTimeoutTimer = setTimeout(async () => {
+              if (!connectedAt) {
+                hangup(true);
+              }
+            }, 20000);
+
+            await startMedia(kind);
+            await setupPeerConnection();
+
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            callSocket.send(JSON.stringify({ type: "offer", offer, kind }));
+          } catch (e) {
+            alert("Could not start call. Please allow mic/camera permissions.");
+            connectedAt = null;
+            callKind = null;
+            if (callTimeoutTimer) clearTimeout(callTimeoutTimer);
+            callTimeoutTimer = null;
+            hangup(false);
+          }
+        }
+
+        async function acceptOffer(offer, kind) {
+          ensureSocket();
+          overlay.style.display = "block";
+          statusEl.textContent = "Connecting...";
+
+          await startMedia(kind);
+          await setupPeerConnection();
+
+          await pc.setRemoteDescription(new RTCSessionDescription(offer));
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+
+          callSocket.send(JSON.stringify({ type: "answer", answer }));
+        }
+
+        async function acceptAnswer(answer) {
+          if (!pc) return;
+          await pc.setRemoteDescription(new RTCSessionDescription(answer));
+
+          if (!connectedAt) {
+            connectedAt = Date.now();
+          }
+
+          statusEl.textContent = "In call";
+        }
+
+        async function addIce(candidate) {
+          if (!pc) return;
+          try {
+            await pc.addIceCandidate(new RTCIceCandidate(candidate));
+          } catch (e) {}
+        }
+
+        async function hangup(sendSignal = true) {
+          if (sendSignal && callSocket && callSocket.readyState === 1) {
+            callSocket.send(JSON.stringify({ type: "hangup" }));
+          }
+
+          if (pc) {
+            pc.close();
+            pc = null;
+          }
+
+          if (localStream) {
+            localStream.getTracks().forEach(t => t.stop());
+            localStream = null;
+          }
+
+          localVideo.srcObject = null;
+          remoteVideo.srcObject = null;
+          overlay.style.display = "none";
+
+          isMuted = false;
+          btnMute.textContent = "Mute";
+        }
+
+        btnHangup.addEventListener("click", () => hangup(true));
+
+        btnMute.addEventListener("click", () => {
+          if (!localStream) return;
+          isMuted = !isMuted;
+          localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+          btnMute.textContent = isMuted ? "Unmute" : "Mute";
+        });
+
+        btnCam.addEventListener("click", () => {
+          if (!localStream) return;
+          const tracks = localStream.getVideoTracks();
+          if (!tracks.length) return;
+
+          camEnabled = !camEnabled;
+          tracks.forEach(t => t.enabled = camEnabled);
+          btnCam.textContent = camEnabled ? "Cam off" : "Cam on";
+        });
+
+        ensureSocket();
+
+        async function clearChat() {
+          const confirmDelete = confirm("Are you sure you want to clear this chat?");
+          if (!confirmDelete) return;
+
+          try {
+            const res = await fetch("{% url 'clear_chat' active_conv.id %}", {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": csrftoken,
+              }
+            });
+
+            const data = await res.json();
+            if (!data.ok) {
+              alert("Could not clear chat");
+              return;
+            }
+
+            window.location.href = "{% url 'messages' %}";
+          } catch (e) {
+            alert("Something went wrong.");
+          }
+        }
+      </script>
 
     {% else %}
-    <div class="chat-empty">
-      <div class="chat-empty-icon"><i class="fas fa-comment-dots"></i></div>
-      <h3>Your Messages</h3>
-      <p>Select a conversation from the left to start chatting with your alumni network</p>
-    </div>
+      <div class="empty">
+        Select a chat to view messages
+      </div>
     {% endif %}
-
   </div>
 </div>
-
 {% endblock %}

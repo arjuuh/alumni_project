@@ -534,35 +534,71 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from .models import Conversation, Message
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Count, OuterRef, Q, Subquery
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
+from django.db.models import Count, OuterRef, Q, Subquery, Prefetch
+
+from .models import Conversation, Message
 @login_required
 def messages_home(request, conv_id=None):
+    last_msg_qs = Message.objects.filter(
+        conversation=OuterRef("pk")
+    ).order_by("-created_at")
+
     conversations = (
         Conversation.objects
         .filter(participants=request.user)
-        .order_by("-updated_at")
-        .prefetch_related("participants")
         .annotate(
             unread_count=Count(
                 "messages",
                 filter=Q(messages__is_read=False) & ~Q(messages__sender=request.user)
+            ),
+            last_message_text=Subquery(last_msg_qs.values("text")[:1]),
+            last_message_time=Subquery(last_msg_qs.values("created_at")[:1]),
+        )
+        .prefetch_related(
+            Prefetch(
+                "participants",
+                queryset=User.objects.exclude(id=request.user.id)
             )
         )
+        .order_by("-last_message_time", "-updated_at")
+        .distinct()
     )
+
+    for conv in conversations:
+        conv.other_user = conv.participants.all().first()
+
     active_conv = None
     chat_messages = Message.objects.none()
 
     if conv_id:
-        active_conv = get_object_or_404(Conversation, id=conv_id, participants=request.user)
-        chat_messages = active_conv.messages.select_related("sender").all()
+        active_conv = get_object_or_404(
+            Conversation.objects.prefetch_related("participants"),
+            id=conv_id,
+            participants=request.user
+        )
+        active_conv.other_user = active_conv.participants.exclude(id=request.user.id).first()
 
-        # ✅ now only mark as read
-        active_conv.messages.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
+        chat_messages = active_conv.messages.select_related("sender").order_by("created_at")
+
+        active_conv.messages.filter(
+            is_read=False
+        ).exclude(
+            sender=request.user
+        ).update(is_read=True)
 
     return render(request, "alumni/messages.html", {
         "conversations": conversations,
         "active_conv": active_conv,
         "chat_messages": chat_messages,
     })
+
 
 @login_required
 def start_conversation(request, user_id):
@@ -571,7 +607,6 @@ def start_conversation(request, user_id):
     if other == request.user:
         return redirect("messages")
 
-    # Check if conversation already exists between these 2 users
     existing = (
         Conversation.objects
         .filter(participants=request.user)
@@ -588,8 +623,6 @@ def start_conversation(request, user_id):
     return redirect("messages_conv", conv_id=conv.id)
 
 
-from django.views.decorators.csrf import csrf_protect
-
 @login_required
 @require_POST
 @csrf_protect
@@ -605,15 +638,13 @@ def send_message(request):
 
     conv = get_object_or_404(Conversation, id=conv_id, participants=request.user)
 
-    # ✅ Create message (ONLY fields that exist in your Message model)
     msg = Message.objects.create(
         conversation=conv,
         sender=request.user,
         text=text
     )
 
-    # ✅ bump conversation updated_at (if Conversation has updated_at)
-    Conversation.objects.filter(id=conv.id).update(updated_at=msg.created_at)
+    conv.save(update_fields=["updated_at"])
 
     return JsonResponse({
         "ok": True,
@@ -621,6 +652,8 @@ def send_message(request):
         "text": msg.text,
         "created_at": msg.created_at.strftime("%I:%M %p"),
     })
+
+
 @login_required
 def fetch_messages(request, conv_id):
     conv = get_object_or_404(Conversation, id=conv_id, participants=request.user)
@@ -646,25 +679,13 @@ def fetch_messages(request, conv_id):
         "created_at": m.created_at.strftime("%I:%M %p"),
     } for m in msgs]
 
-    # mark other user's unread as read
     conv.messages.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
 
     return JsonResponse({"ok": True, "messages": data})
-
+    return JsonResponse({"ok": True, "messages": data})
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
-@login_required
-def clear_chat(request, conv_id):
-    if request.method != "POST":
-        return JsonResponse({"ok": False}, status=400)
-
-    conv = get_object_or_404(Conversation, id=conv_id, participants=request.user)
-
-    conv.messages.all().delete()
-
-    return JsonResponse({"ok": True})
 
 @login_required
 def delete_post(request, post_id):
@@ -881,3 +902,19 @@ def resend_otp(request):
     return render(request, "auth/verify_otp.html", {
         "error": "New OTP sent to your email"
     })
+
+@login_required
+def clear_chat(request, conv_id):
+    if request.method != "POST":
+        return JsonResponse({"ok": False}, status=400)
+
+    conv = get_object_or_404(Conversation, id=conv_id, participants=request.user)
+
+    # remove only current user from this conversation
+    conv.participants.remove(request.user)
+
+    # if nobody left, delete conversation
+    if conv.participants.count() == 0:
+        conv.delete()
+
+    return JsonResponse({"ok": True})

@@ -126,6 +126,7 @@ from django.contrib.auth.models import User
 
 class Conversation(models.Model):
     participants = models.ManyToManyField(User, related_name="conversations")
+    hidden_for = models.ManyToManyField(User, related_name="hidden_conversations", blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

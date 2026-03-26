@@ -5,7 +5,6 @@
 {% block content %}
 
 <style>
-  /* ── Design Tokens (matches dashboard) ── */
   :root {
     --primary:        #6C63FF;
     --primary-light:  #ede9ff;
@@ -27,10 +26,33 @@
   }
 
   .al-page {
-    padding: 0 0 60px;
+    height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
 
-  /* ══ HERO BANNER ══ */
+  .al-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 0 24px;
+    padding-right: 6px;
+  }
+
+  .al-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .al-scroll::-webkit-scrollbar-thumb {
+    background: #d9d3ff;
+    border-radius: 10px;
+  }
+
+  .al-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   .al-hero {
     display: flex;
     align-items: center;
@@ -45,6 +67,7 @@
     position: relative;
     overflow: hidden;
   }
+
   .al-hero::before {
     content:'';
     position:absolute; right:-40px; top:-40px;
@@ -52,6 +75,7 @@
     background:rgba(255,255,255,0.07);
     pointer-events:none;
   }
+
   .al-hero::after {
     content:'';
     position:absolute; right:80px; bottom:-50px;
@@ -59,16 +83,19 @@
     background:rgba(255,255,255,0.05);
     pointer-events:none;
   }
+
   .al-hero-left h1 {
     font-size: 22px;
     font-weight: 800;
     letter-spacing: -0.3px;
     margin-bottom: 4px;
   }
+
   .al-hero-left p {
     font-size: 13.5px;
     opacity: 0.82;
   }
+
   .al-hero-badge {
     display: inline-flex;
     align-items: center;
@@ -83,9 +110,9 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
+
   .al-hero-badge i { font-size: 15px; }
 
-  /* ══ TOOLBAR ══ */
   .al-toolbar {
     display: flex;
     align-items: center;
@@ -94,15 +121,18 @@
     flex-wrap: wrap;
     margin-bottom: 20px;
   }
+
   .al-count-label {
     font-size: 13px;
     color: var(--text-sub);
     font-weight: 500;
   }
+
   .al-count-label strong {
     color: var(--text-main);
     font-weight: 800;
   }
+
   .al-toolbar-right {
     display: flex;
     align-items: center;
@@ -110,12 +140,12 @@
     flex-wrap: wrap;
   }
 
-  /* Search */
   .al-search-wrap {
     position: relative;
     display: flex;
     align-items: center;
   }
+
   .al-search-wrap i {
     position: absolute;
     left: 13px;
@@ -124,7 +154,9 @@
     pointer-events: none;
     transition: color var(--transition);
   }
+
   .al-search-wrap:focus-within i { color: var(--primary); }
+
   .al-search-wrap input {
     padding: 9px 14px 9px 36px;
     border: 1.5px solid var(--border);
@@ -137,18 +169,20 @@
     font-family: inherit;
     transition: border-color var(--transition), box-shadow var(--transition);
   }
+
   .al-search-wrap input:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
+
   .al-search-wrap input::placeholder { color: var(--text-light); }
 
-  /* Sort */
   .al-sort-wrap {
     position: relative;
     display: flex;
     align-items: center;
   }
+
   .al-sort-wrap i {
     position: absolute;
     right: 12px;
@@ -156,6 +190,7 @@
     font-size: 11px;
     pointer-events: none;
   }
+
   .al-sort-wrap select {
     appearance: none;
     padding: 9px 32px 9px 14px;
@@ -169,16 +204,16 @@
     outline: none;
     transition: border-color var(--transition);
   }
+
   .al-sort-wrap select:focus { border-color: var(--primary); }
 
-  /* ══ GRID ══ */
   .al-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     gap: 16px;
+    align-items: start;
   }
 
-  /* ══ CARD ══ */
   .al-card {
     background: var(--bg-card);
     border-radius: var(--radius-card);
@@ -195,6 +230,7 @@
     position: relative;
     overflow: hidden;
   }
+
   .al-card::before {
     content: '';
     position: absolute;
@@ -204,14 +240,15 @@
     opacity: 0;
     transition: opacity var(--transition);
   }
+
   .al-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-hover);
     border-color: #d4d0ff;
   }
+
   .al-card:hover::before { opacity: 1; }
 
-  /* Stagger animation */
   .al-card:nth-child(1)  { animation-delay: 0.03s; }
   .al-card:nth-child(2)  { animation-delay: 0.06s; }
   .al-card:nth-child(3)  { animation-delay: 0.09s; }
@@ -221,11 +258,11 @@
   .al-card:nth-child(7)  { animation-delay: 0.21s; }
   .al-card:nth-child(8)  { animation-delay: 0.24s; }
 
-  /* Avatar */
   .al-avatar-wrap {
     position: relative;
     margin-bottom: 12px;
   }
+
   .al-avatar {
     width: 68px;
     height: 68px;
@@ -235,10 +272,12 @@
     display: block;
     transition: border-color var(--transition), box-shadow var(--transition);
   }
+
   .al-card:hover .al-avatar {
     border-color: var(--primary);
     box-shadow: 0 0 0 4px var(--primary-glow);
   }
+
   .al-avatar-init {
     width: 68px;
     height: 68px;
@@ -253,10 +292,12 @@
     border: 3px solid var(--primary-light);
     transition: border-color var(--transition), box-shadow var(--transition);
   }
+
   .al-card:hover .al-avatar-init {
     border-color: var(--primary);
     box-shadow: 0 0 0 4px var(--primary-glow);
   }
+
   .al-status-dot {
     position: absolute;
     bottom: 3px; right: 3px;
@@ -267,7 +308,6 @@
     box-shadow: 0 1px 4px rgba(34,197,94,0.4);
   }
 
-  /* Name & meta */
   .al-name {
     font-size: 14.5px;
     font-weight: 800;
@@ -279,6 +319,7 @@
     text-overflow: ellipsis;
     max-width: 100%;
   }
+
   .al-role {
     font-size: 12px;
     color: var(--text-sub);
@@ -288,6 +329,7 @@
     max-width: 100%;
     margin-bottom: 3px;
   }
+
   .al-email {
     font-size: 11.5px;
     color: var(--text-light);
@@ -298,7 +340,6 @@
     margin-bottom: 14px;
   }
 
-  /* Divider */
   .al-divider {
     width: 100%;
     height: 1px;
@@ -306,7 +347,6 @@
     margin-bottom: 14px;
   }
 
-  /* Action row */
   .al-actions {
     display: flex;
     align-items: center;
@@ -315,7 +355,6 @@
     justify-content: center;
   }
 
-  /* View Profile link-button */
   .al-btn-profile {
     flex: 1;
     display: inline-flex;
@@ -333,13 +372,13 @@
     transition: background var(--transition), border-color var(--transition), transform var(--transition);
     white-space: nowrap;
   }
+
   .al-btn-profile:hover {
     background: var(--primary);
     color: #fff;
     transform: translateY(-1px);
   }
 
-  /* Follow button */
   .al-btn-follow {
     flex: 1;
     display: inline-flex;
@@ -360,19 +399,21 @@
     white-space: nowrap;
     text-decoration: none;
   }
+
   .al-btn-follow:hover {
     transform: translateY(-1px);
     box-shadow: 0 5px 16px rgba(108,99,255,0.35);
   }
+
   .al-btn-follow:active { transform: translateY(0); }
 
-  /* Following state */
   .al-btn-follow.following {
     background: var(--primary-light);
     color: var(--primary);
     box-shadow: none;
     border: 1.5px solid #c7c4f8;
   }
+
   .al-btn-follow.following:hover {
     background: #ffe4e9;
     color: var(--pink);
@@ -380,7 +421,6 @@
     box-shadow: none;
   }
 
-  /* Message button */
   .al-btn-msg {
     width: 36px;
     height: 36px;
@@ -396,6 +436,7 @@
     transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
     flex-shrink: 0;
   }
+
   .al-btn-msg:hover {
     background: var(--green);
     color: #fff;
@@ -403,7 +444,6 @@
     box-shadow: 0 4px 12px rgba(16,185,129,0.3);
   }
 
-  /* ══ EMPTY STATE ══ */
   .al-empty {
     grid-column: 1 / -1;
     display: flex;
@@ -415,6 +455,7 @@
     gap: 14px;
     text-align: center;
   }
+
   .al-empty-icon {
     width: 72px; height: 72px;
     border-radius: 50%;
@@ -424,64 +465,25 @@
     color: var(--primary);
     opacity: 0.7;
   }
+
   .al-empty p { font-size: 14px; font-weight: 600; color: var(--text-sub); }
   .al-empty span { font-size: 12.5px; }
 
-  /* ══ PAGINATION ══ */
-  .al-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 28px;
-  }
-  .al-page-info {
-    font-size: 12.5px;
-    color: var(--text-sub);
-  }
-  .al-page-info strong { color: var(--text-main); }
-  .al-page-btns {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .al-page-btn {
-    width: 34px; height: 34px;
-    border-radius: 10px;
-    border: 1.5px solid var(--border);
-    background: var(--bg-card);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-sub);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    text-decoration: none;
-    font-family: inherit;
-    transition: all var(--transition);
-  }
-  .al-page-btn:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    background: var(--primary-light);
-  }
-  .al-page-btn.active {
-    background: linear-gradient(135deg, var(--primary), #857bff);
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 3px 10px var(--primary-glow);
-  }
-
-  /* ══ ANIMATION ══ */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ══ RESPONSIVE ══ */
   @media (max-width: 768px) {
+    .al-page {
+      height: auto;
+    }
+
+    .al-scroll {
+      overflow: visible;
+      padding-right: 0;
+    }
+
     .al-hero { flex-direction: column; align-items: flex-start; gap: 14px; }
     .al-toolbar { flex-direction: column; align-items: flex-start; }
     .al-toolbar-right { width: 100%; }
@@ -490,163 +492,128 @@
     .al-sort-wrap { flex: 1; }
     .al-sort-wrap select { width: 100%; }
   }
+
   @media (max-width: 480px) {
     .al-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
     .al-card { padding: 16px 12px 12px; }
     .al-avatar, .al-avatar-init { width: 54px; height: 54px; font-size: 18px; }
     .al-name { font-size: 13px; }
   }
+
   @media (max-width: 360px) {
     .al-grid { grid-template-columns: 1fr; }
   }
 </style>
 
 <div class="al-page">
+  <div class="al-scroll">
 
-  <!-- ── Hero Banner ── -->
-  <div class="al-hero">
-    <div class="al-hero-left">
-      <h1><i class="fas fa-users" style="margin-right:10px;opacity:0.9;"></i>Alumni Network</h1>
-      <p>Connect, follow, and message your alumni community</p>
-    </div>
-    {% if alumni %}
-    <div class="al-hero-badge">
-      <i class="fas fa-user-graduate"></i>
-      {{ alumni|length }} Alumni
-    </div>
-    {% endif %}
-  </div>
-
-  <!-- ── Toolbar ── -->
-  <div class="al-toolbar">
-    {% if alumni %}
-    <div class="al-count-label">
-      Showing <strong>{{ alumni|length }}</strong> alumni in your network
-    </div>
-    {% else %}
-    <div class="al-count-label">Your alumni network</div>
-    {% endif %}
-
-    <div class="al-toolbar-right">
-      <!-- Search -->
-      <form method="get" style="display:contents;">
-        <div class="al-search-wrap">
-          <i class="fas fa-search"></i>
-          <input type="text" name="q" placeholder="Search alumni…" value="{{ q }}">
-        </div>
-      </form>
-
-      <!-- Sort -->
-      <div class="al-sort-wrap">
-        <select onchange="location = this.value;">
-          <option value="?sort=newest" {% if request.GET.sort == 'newest' or not request.GET.sort %}selected{% endif %}>Newest</option>
-          <option value="?sort=oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest</option>
-          <option value="?sort=az"     {% if request.GET.sort == 'az' %}selected{% endif %}>A – Z</option>
-        </select>
-        <i class="fas fa-chevron-down"></i>
+    <div class="al-hero">
+      <div class="al-hero-left">
+        <h1><i class="fas fa-users" style="margin-right:10px;opacity:0.9;"></i>Alumni Network</h1>
+        <p>Connect, follow, and message your alumni community</p>
       </div>
-    </div>
-  </div>
-
-  <!-- ── Alumni Grid ── -->
-  <div class="al-grid">
-    {% for a in alumni %}
-    <div class="al-card">
-
-      <!-- Avatar -->
-      <div class="al-avatar-wrap">
-        {% if a.photo %}
-          <img src="{{ a.photo.url }}"
-               alt="{{ a.first_name }} {{ a.last_name }}"
-               class="al-avatar">
-        {% else %}
-          <div class="al-avatar-init">
-            {{ a.first_name|first|upper }}{{ a.last_name|first|upper }}
-          </div>
-        {% endif %}
-        <span class="al-status-dot"></span>
+      {% if alumni %}
+      <div class="al-hero-badge">
+        <i class="fas fa-user-graduate"></i>
+        {{ alumni|length }} Alumni
       </div>
+      {% endif %}
+    </div>
 
-      <!-- Info -->
-      <div class="al-name">{{ a.first_name }} {{ a.last_name }}</div>
-
-      {% if a.user.professionaldetal.current_designation %}
-        <div class="al-role">{{ a.user.professionaldetal.current_designation }}
-          {% if a.user.professionaldetal.current_company %}
-            · {{ a.user.professionaldetal.current_company }}
-          {% endif %}
-        </div>
+    <div class="al-toolbar">
+      {% if alumni %}
+      <div class="al-count-label">
+        Showing <strong>{{ alumni|length }}</strong> alumni in your network
+      </div>
+      {% else %}
+      <div class="al-count-label">Your alumni network</div>
       {% endif %}
 
-      <div class="al-email">{{ a.user.email }}</div>
+      <div class="al-toolbar-right">
+        <form method="get" style="display:contents;">
+          <div class="al-search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" name="q" placeholder="Search alumni…" value="{{ q }}">
+          </div>
+        </form>
 
-      <div class="al-divider"></div>
-
-      <!-- Action Buttons -->
-      <div class="al-actions">
-
-        <!-- View Profile -->
-        <a href="{% url 'view_profile' a.user.id %}" class="al-btn-profile">
-          <i class="fas fa-user"></i> Profile
-        </a>
-
-        {% if a.user != request.user %}
-
-          <!-- Follow / Following -->
-          <form method="post" action="{% url 'toggle_follow' a.user.id %}" style="flex:1;display:flex;">
-            {% csrf_token %}
-            {% if a.user.id in following_ids %}
-              <button type="submit" class="al-btn-follow following" style="flex:1;">
-                <i class="fas fa-user-check"></i> Following
-              </button>
-            {% else %}
-              <button type="submit" class="al-btn-follow" style="flex:1;">
-                <i class="fas fa-user-plus"></i> Follow
-              </button>
-            {% endif %}
-          </form>
-
-          <!-- Message -->
-          <a href="{% url 'start_conversation' a.user.id %}" class="al-btn-msg" title="Send message">
-            <i class="fas fa-comment"></i>
-          </a>
-
-        {% endif %}
-
+        <div class="al-sort-wrap">
+          <select onchange="location = this.value;">
+            <option value="?sort=newest" {% if request.GET.sort == 'newest' or not request.GET.sort %}selected{% endif %}>Newest</option>
+            <option value="?sort=oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest</option>
+            <option value="?sort=az" {% if request.GET.sort == 'az' %}selected{% endif %}>A – Z</option>
+          </select>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
     </div>
 
-    {% empty %}
-    <div class="al-empty">
-      <div class="al-empty-icon"><i class="fas fa-user-friends"></i></div>
-      <p>No alumni found</p>
-      <span>Try adjusting your search or check back later</span>
-    </div>
-    {% endfor %}
-  </div>
+    <div class="al-grid">
+      {% for a in alumni %}
+      <div class="al-card">
+        <div class="al-avatar-wrap">
+          {% if a.photo %}
+            <img src="{{ a.photo.url }}" alt="{{ a.first_name }} {{ a.last_name }}" class="al-avatar">
+          {% else %}
+            <div class="al-avatar-init">
+              {{ a.first_name|first|upper }}{{ a.last_name|first|upper }}
+            </div>
+          {% endif %}
+          <span class="al-status-dot"></span>
+        </div>
 
-  <!-- ── Pagination ── -->
-  {% if alumni %}
-  <div class="al-pagination">
-    <span class="al-page-info">
-      Showing <strong>1–{{ alumni|length }}</strong> of <strong>{{ alumni|length }}</strong> alumni
-    </span>
-    <div class="al-page-btns">
-      <a href="#" class="al-page-btn" title="Previous">
-        <i class="fas fa-chevron-left" style="font-size:11px;"></i>
-      </a>
-      <a href="#" class="al-page-btn active">1</a>
-      <a href="#" class="al-page-btn">2</a>
-      <a href="#" class="al-page-btn">3</a>
-      <span class="al-page-btn" style="cursor:default;border:none;color:var(--text-light);">…</span>
-      <a href="#" class="al-page-btn">8</a>
-      <a href="#" class="al-page-btn" title="Next">
-        <i class="fas fa-chevron-right" style="font-size:11px;"></i>
-      </a>
-    </div>
-  </div>
-  {% endif %}
+        <div class="al-name">{{ a.first_name }} {{ a.last_name }}</div>
 
+        {% if a.user.professionaldetal.current_designation %}
+          <div class="al-role">
+            {{ a.user.professionaldetal.current_designation }}
+            {% if a.user.professionaldetal.current_company %}
+              · {{ a.user.professionaldetal.current_company }}
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="al-email">{{ a.user.email }}</div>
+
+        <div class="al-divider"></div>
+
+        <div class="al-actions">
+          <a href="{% url 'view_profile' a.user.id %}" class="al-btn-profile">
+            <i class="fas fa-user"></i> Profile
+          </a>
+
+          {% if a.user != request.user %}
+            <form method="post" action="{% url 'toggle_follow' a.user.id %}" style="flex:1;display:flex;">
+              {% csrf_token %}
+              {% if a.user.id in following_ids %}
+                <button type="submit" class="al-btn-follow following" style="flex:1;">
+                  <i class="fas fa-user-check"></i> Following
+                </button>
+              {% else %}
+                <button type="submit" class="al-btn-follow" style="flex:1;">
+                  <i class="fas fa-user-plus"></i> Follow
+                </button>
+              {% endif %}
+            </form>
+
+            <a href="{% url 'start_conversation' a.user.id %}" class="al-btn-msg" title="Send message">
+              <i class="fas fa-comment"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% empty %}
+      <div class="al-empty">
+        <div class="al-empty-icon"><i class="fas fa-user-friends"></i></div>
+        <p>No alumni found</p>
+        <span>Try adjusting your search or check back later</span>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
 </div>
 
 {% endblock %}
