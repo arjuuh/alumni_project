@@ -312,15 +312,40 @@ def view_profile(request, user_id):
         'user_posts': user_posts,
     })
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
+
+from admin_module.models import SystemMetadata
+from .models import (
+    AlumniProfile,
+    AcademicDetails,
+    ProfessionalDetails,
+    ContactDetails
+)
+
+
 @login_required
 def complete_profile(request):
+
+    # 🔒 Ensure metadata exists
+    metadata, _ = SystemMetadata.objects.get_or_create(user=request.user)
+
+    # 🚫 If already approved → go to dashboard
+    if metadata.status == "APPROVED":
+        return redirect("dashboard")
+
+    # 🚫 Prevent resubmission if already completed
+    if metadata.profile_completion == 100 and metadata.status == "PENDING":
+        return redirect("waiting_approval")
 
     if request.method == "POST":
         try:
             with transaction.atomic():
 
                 # ===== PERSONAL PROFILE =====
-                profile, created = AlumniProfile.objects.get_or_create(
+                profile, _ = AlumniProfile.objects.get_or_create(
                     user=request.user
                 )
 
@@ -340,34 +365,47 @@ def complete_profile(request):
                 profile.save()
 
                 # ===== ACADEMIC DETAILS =====
-                academic, created = AcademicDetails.objects.get_or_create(
+                academic, _ = AcademicDetails.objects.get_or_create(
                     user=request.user
                 )
 
                 academic.student_id = request.POST.get("student_id", "")
                 academic.degree = request.POST.get("degree", "")
                 academic.department = request.POST.get("department", "")
-                academic.year_of_admission = request.POST.get("year_of_admission") or None
-                academic.year_of_graduation = request.POST.get("year_of_graduation") or None
+
+                academic.year_of_admission = (
+                    int(request.POST.get("year_of_admission"))
+                    if request.POST.get("year_of_admission") else None
+                )
+
+                academic.year_of_graduation = (
+                    int(request.POST.get("year_of_graduation"))
+                    if request.POST.get("year_of_graduation") else None
+                )
 
                 academic.save()
 
                 # ===== PROFESSIONAL DETAILS =====
-                professional, created = ProfessionalDetails.objects.get_or_create(
+                professional, _ = ProfessionalDetails.objects.get_or_create(
                     user=request.user
                 )
 
                 professional.current_designation = request.POST.get("current_designation", "")
                 professional.current_company = request.POST.get("current_company", "")
                 professional.industry = request.POST.get("industry", "")
-                professional.year_of_experience = request.POST.get("year_of_experience") or 0
+
+                professional.year_of_experience = (
+                    int(request.POST.get("year_of_experience"))
+                    if request.POST.get("year_of_experience") else 0
+                )
+
                 professional.company_location = request.POST.get("company_location", "")
                 professional.linkedin_profile = request.POST.get("linkedin_profile", "")
 
                 professional.save()
 
                 # ===== CONTACT DETAILS =====
-                contact, created = ContactDetails.objects.get_or_create(
+                contact, _ = ContactDetails.objects.get_or_create(
                     user=request.user
                 )
 
@@ -377,11 +415,16 @@ def complete_profile(request):
 
                 contact.save()
 
-                messages.success(request, "Profile submitted. Waiting for approval.")
+                # ===== 🔥 APPROVAL TRIGGER (MOST IMPORTANT) =====
+                metadata.profile_completion = 100
+                metadata.status = "PENDING"
+                metadata.save()
+
+                messages.success(request, "Profile submitted successfully. Waiting for approval.")
                 return redirect("waiting_approval")
 
         except Exception as e:
-            messages.error(request, f"Something went wrong: {str(e)}")
+            messages.error(request, f"Error: {str(e)}")
             return redirect("complete_profile")
 
     return render(request, "alumni/complete_profile.html")
@@ -765,11 +808,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from .models import EmailOTP
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import login
-from .models import EmailOTP
+from admin_module.models import SystemMetadata
 
 def verify_otp(request):
 
@@ -794,6 +833,9 @@ def verify_otp(request):
                 user.set_password(password)
                 user.save()
 
+            # ✅ CREATE METADATA (THIS IS MISSING)
+            SystemMetadata.objects.get_or_create(user=user)
+
             login(request, user)
 
             record.delete()
@@ -802,6 +844,7 @@ def verify_otp(request):
             request.session.pop("username", None)
             request.session.pop("password", None)
 
+            # ❗ CHANGE THIS
             return redirect("complete_profile")
 
         else:
