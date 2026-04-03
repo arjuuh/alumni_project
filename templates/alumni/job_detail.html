@@ -18,13 +18,16 @@
         <p class="desc">{{ job.description|linebreaks }}</p>
 
         {% if job.apply_link %}
-            <a href="{{ job.apply_link }}" target="_blank" class="btn-apply">
-                Apply Now
-            </a>
+            <a href="{{ job.apply_link }}" target="_blank" class="btn-apply">Apply Now</a>
         {% endif %}
 
         <p class="posted">
-            Posted by {{ job.posted_by.username }}
+            Posted by
+            {% if source == "alumni" %}
+                {{ job.user.username }}
+            {% else %}
+                {{ job.posted_by.username }}
+            {% endif %}
         </p>
     </div>
 

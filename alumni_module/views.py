@@ -11,6 +11,7 @@ from .models import AlumniProfile, AcademicDetails, ProfessionalDetails, Contact
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .models import Conversation, Message
+from .models import Job
 
 def home(request):
     if request.method == "POST":
@@ -506,9 +507,20 @@ def toggle_follow(request, user_id):
 
 from teacher_module.models import JobPost,EventPost
 
+from teacher_module.models import JobPost
+from .models import Job
+
 @login_required
 def jobs(request):
-    jobs = JobPost.objects.all().order_by("-id")
+    teacher_jobs = JobPost.objects.all().order_by("-created_at")
+    alumni_jobs = Job.objects.all().order_by("-created_at")
+
+    jobs = sorted(
+        list(teacher_jobs) + list(alumni_jobs),
+        key=lambda x: x.created_at,
+        reverse=True
+    )
+
     return render(request, "alumni/jobs.html", {"jobs": jobs})
 
 
@@ -519,10 +531,27 @@ def events(request):
 
 from django.shortcuts import get_object_or_404
 
-@login_required
+
+from alumni_module.models import Job
+from teacher_module.models import JobPost   # ⚠️ change this based on your app name
+from django.shortcuts import render
+from django.http import Http404
+
 def job_detail(request, job_id):
-    job = get_object_or_404(JobPost, id=job_id)
-    return render(request, "alumni/job_detail.html", {"job": job})
+    job = Job.objects.filter(id=job_id).first()
+    source = "alumni"
+
+    if not job:
+        job = JobPost.objects.filter(id=job_id).first()
+        source = "teacher"
+
+    if not job:
+        raise Http404("Job not found")
+
+    return render(request, "alumni/job_detail.html", {
+        "job": job,
+        "source": source
+    })
 
 @login_required
 def event_detail(request, event_id):
@@ -918,3 +947,54 @@ def clear_chat(request, conv_id):
         conv.delete()
 
     return JsonResponse({"ok": True})
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Job
+
+
+@login_required
+def alumni_jobpost(request):
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        company = request.POST.get("company", "").strip()
+        location = request.POST.get("location", "").strip()
+        job_type = request.POST.get("job_type", "").strip()
+        apply_link = request.POST.get("apply_link", "").strip()
+        description = request.POST.get("description", "").strip()
+
+        if title and company and description:
+            Job.objects.create(
+                user=request.user,
+                title=title,
+                company=company,
+                location=location,
+                job_type=job_type,
+                apply_link=apply_link,
+                description=description,
+            )
+            messages.success(request, "Job posted successfully.")
+            return redirect("alumni_jobpost")
+        else:
+            messages.error(request, "Please fill all required fields.")
+
+    alumni_jobs = Job.objects.filter(user=request.user).order_by("-id")
+
+    return render(request, "alumni/alumni_jobpost.html", {
+        "alumni_jobs": alumni_jobs
+    })
+
+@login_required
+def alumni_delete_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id, user=request.user)
+
+    job.delete()
+    messages.success(request, "Job deleted successfully.")
+    return redirect("alumni_jobpost")
+
+def jobs_view(request):
+    jobs = Job.objects.all().order_by("-id")
+    return render(request, "alumni/jobs.html", {
+        "jobs": jobs
+    })

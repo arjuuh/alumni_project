@@ -261,6 +261,27 @@
     .jb-search-wrap input { width: 100%; }
     .jb-search-wrap { width: 100%; }
   }
+    .jb-btn-post {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--green), #34d399);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(16,185,129,0.25);
+    transition: 0.2s;
+  }
+
+  .jb-btn-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(16,185,129,0.4);
+  }
 </style>
 
 <div class="jb-page">
@@ -295,6 +316,9 @@
         <input type="text" id="jbSearch" placeholder="Search jobs…">
       </div>
     </div>
+    <a href="{% url 'alumni_jobpost' %}" class="jb-btn-post">
+      <i class="fas fa-plus"></i> Post Job
+    </a>
   </div>
 
   <!-- Grid -->

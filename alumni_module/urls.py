@@ -31,4 +31,9 @@ urlpatterns = [
     path("send-otp/", views.send_otp, name="send_otp"),
     path("verify-otp/", views.verify_otp, name="verify_otp"),
     path('resend-otp/', views.resend_otp, name='resend_otp'),
+    path("jobs/", views.jobs_view, name="jobs"),
+    path("jobs/<int:job_id>/", views.job_detail, name="job_detail"),
+    path("alumni-jobpost/", views.alumni_jobpost, name="alumni_jobpost"),
+    path("alumni/delete-job/<int:job_id>/", views.alumni_delete_job, name="alumni_delete_job"),
+
 ]

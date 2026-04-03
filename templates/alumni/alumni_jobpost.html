@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Job</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f6fa;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        input, textarea, select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-clear {
+            background: #eee;
+        }
+
+        .btn-submit {
+            background: #6d5dfc;
+            color: white;
+        }
+
+        .msg {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .job-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .job-item:last-child {
+            border-bottom: none;
+        }
+
+        .delete-btn {
+            color: red;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .delete-btn:hover {
+            text-decoration: underline;
+        }
+
+        @media(max-width: 600px) {
+            .row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="title">Post a Job</div>
+    <div class="subtitle">Add job details and publish</div>
+
+    {% if messages %}
+        {% for m in messages %}
+            <div class="msg {% if m.tags == 'success' %}success{% else %}error{% endif %}">
+                {{ m }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- FORM -->
+    <div class="card">
+        <form method="POST" action="{% url 'alumni_jobpost' %}">
+            {% csrf_token %}    
+
+            <div class="row">
+                <div class="group">
+                    <label>Job Title *</label>
+                    <input type="text" name="title" required>
+                </div>
+
+                <div class="group">
+                    <label>Company *</label>
+                    <input type="text" name="company" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="group">
+                    <label>Location</label>
+                    <input type="text" name="location">
+                </div>
+
+                <div class="group">
+                    <label>Job Type</label>
+                    <select name="job_type">
+                        <option value="">Select</option>
+                        <option>Full-time</option>
+                        <option>Part-time</option>
+                        <option>Internship</option>
+                        <option>Contract</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="group">
+                <label>Apply Link</label>
+                <input type="url" name="apply_link">
+            </div>
+
+            <div class="group">
+                <label>Description *</label>
+                <textarea name="description" rows="4" required></textarea>
+            </div>
+
+            <div class="actions">
+                <button type="reset" class="btn btn-clear">Clear</button>
+                <button type="submit" class="btn btn-submit">Publish Job</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JOB LIST -->
+    <div class="card">
+        <h3>Your Posted Jobs</h3>
+
+        {% if alumni_jobs %}
+            {% for job in alumni_jobs %}
+                <div class="job-item">
+                    <div>
+                        <strong>{{ job.title }}</strong><br>
+                        <small>{{ job.company }} | {{ job.job_type }}</small>
+                    </div>
+
+                    <div>
+                        <a href="{% url 'alumni_delete_job' job.id %}" class="delete-btn">Delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No jobs posted yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
