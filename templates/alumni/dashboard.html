@@ -362,21 +362,6 @@
     <!-- RIGHT COLUMN -->
     <div class="right-col">
 
-        <!-- CALENDAR -->
-        <div class="card">
-            <div class="cal-header">
-                <span class="cal-month" id="calMonthLabel"></span>
-                <div class="cal-nav">
-                    <button class="cal-btn" id="calPrev"><i class="fas fa-chevron-left"></i></button>
-                    <button class="cal-btn" id="calNext"><i class="fas fa-chevron-right"></i></button>
-                </div>
-            </div>
-            <div class="cal-grid-header">
-                <span>SU</span><span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span>
-            </div>
-            <div class="cal-grid" id="calGrid"></div>
-        </div>
-
         <!-- SIDE PROFILE CARD -->
         <div class="card side-profile">
             {% if profile.photo %}
@@ -395,23 +380,6 @@
                     Alumni
                 {% endif %}
             </div>
-
-            <div class="side-actions">
-                {% if contact.phone_number %}
-                <button class="side-btn sb-phone" title="Call">
-                    <i class="fas fa-phone"></i>
-                </button>
-                {% endif %}
-                {% if contact.email %}
-                <button class="side-btn sb-mail" title="Email" onclick="window.location='mailto:{{ contact.email }}'">
-                    <i class="fas fa-envelope"></i>
-                </button>
-                {% endif %}
-                <button class="side-btn sb-chat" title="Message">
-                    <i class="fas fa-comment"></i>
-                </button>
-            </div>
-
             <div class="side-meta">
                 {% if academic.degree %}
                 <div class="side-meta-row"><span class="sm-label">Degree</span><span class="sm-value">{{ academic.degree }}</span></div>
