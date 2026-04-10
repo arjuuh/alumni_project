@@ -35,5 +35,10 @@ urlpatterns = [
     path("jobs/<int:job_id>/", views.job_detail, name="job_detail"),
     path("alumni-jobpost/", views.alumni_jobpost, name="alumni_jobpost"),
     path("alumni/delete-job/<int:job_id>/", views.alumni_delete_job, name="alumni_delete_job"),
+    path('alumni-eventpost/', views.alumni_eventpost, name='alumni_eventpost'),
+    path('events/', views.events_view, name='events'),
+    path('event/<int:event_id>/', views.event_detail, name='event_detail'),
+    path('delete-event/<int:event_id>/', views.alumni_delete_event, name='alumni_delete_event'),
+
 
 ]

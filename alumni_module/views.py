@@ -553,11 +553,26 @@ def job_detail(request, job_id):
         "source": source
     })
 
-@login_required
-def event_detail(request, event_id):
-    event = get_object_or_404(EventPost, id=event_id)
-    return render(request, "alumni/event_detail.html", {"event": event})
+from alumni_module.models import Event   # if you create this
+from teacher_module.models import EventPost
+from django.shortcuts import render
+from django.http import Http404
 
+def event_detail(request, event_id):
+    event = Event.objects.filter(id=event_id).first()
+    source = "alumni"
+
+    if not event:
+        event = EventPost.objects.filter(id=event_id).first()
+        source = "teacher"
+
+    if not event:
+        raise Http404("Event not found")
+
+    return render(request, "alumni/event_detail.html", {
+        "event": event,
+        "source": source
+    })
 from django.db.models import Count, Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
@@ -998,3 +1013,65 @@ def jobs_view(request):
     return render(request, "alumni/jobs.html", {
         "jobs": jobs
     })
+
+from .models import Event   # make sure this model exists
+
+@login_required
+def alumni_eventpost(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        organizer = request.POST.get("organizer")
+        location = request.POST.get("location", "")
+        event_type = request.POST.get("event_type", "")
+        event_date = request.POST.get("event_date", "")
+        event_time = request.POST.get("event_time", "")
+        registration_link = request.POST.get("registration_link", "")
+        description = request.POST.get("description")
+
+        if title and organizer and description:
+            EventPost.objects.create(
+                posted_by=request.user,
+                title=title,
+                organizer=organizer,
+                location=location,
+                event_type=event_type,
+                event_date=event_date if event_date else None,
+                event_time=event_time if event_time else None,
+                registration_link=registration_link,
+                description=description,
+            )
+            messages.success(request, "Event posted successfully.")
+            return redirect("alumni_eventpost")
+
+        messages.error(request, "Please fill all required fields.")
+
+    alumni_events = EventPost.objects.filter(
+        posted_by=request.user
+    ).order_by("-id")
+
+    return render(request, "alumni/alumni_eventpost.html", {
+        "alumni_events": alumni_events
+    })
+
+
+@login_required
+def events_view(request):
+    events = EventPost.objects.all().order_by("-id")
+    return render(request, "alumni/events.html", {
+        "events": events
+    })
+
+
+@login_required
+def event_detail(request, event_id):
+    event = get_object_or_404(EventPost, id=event_id)
+    return render(request, "alumni/event_detail.html", {
+        "event": event
+    })
+
+@login_required
+def alumni_delete_event(request, event_id):
+    event = get_object_or_404(EventPost, id=event_id, posted_by=request.user)
+    event.delete()
+    messages.success(request, "Event deleted successfully.")
+    return redirect("alumni_eventpost")

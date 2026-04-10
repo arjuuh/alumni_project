@@ -12,10 +12,12 @@
     --green:         #10b981;
     --green-light:   #d1fae5;
     --pink:          #FF6584;
-    --yellow:        #FFD580;
-    --yellow-light:  #fff8e1;
+    --yellow:        #f59e0b;
+    --yellow-light:  #fef3c7;
     --teal:          #43C6AC;
     --teal-light:    #e0f7f4;
+    --red:           #ef4444;
+    --red-light:     #fee2e2;
     --text-main:     #1a1a2e;
     --text-sub:      #6b7280;
     --text-light:    #b0aac8;
@@ -29,55 +31,49 @@
 
   .ev-page { padding: 0 0 60px; }
 
-  /* ── Hero Banner ── */
   .ev-hero {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 20px;
     padding: 26px 30px;
-    background: linear-gradient(135deg, var(--primary) 0%, #857bff 100%);
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2b6b 100%);
     border-radius: var(--radius-card);
-    box-shadow: 0 8px 28px var(--primary-glow);
-    color: #fff;
-    margin-bottom: 26px;
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(26,26,46,0.3);
+    color: #fff; margin-bottom: 26px;
+    position: relative; overflow: hidden;
   }
   .ev-hero::before {
     content:''; position:absolute; right:-40px; top:-40px;
-    width:180px; height:180px; border-radius:50%;
-    background:rgba(255,255,255,0.07); pointer-events:none;
+    width:200px; height:200px; border-radius:50%;
+    background:rgba(108,99,255,0.15); pointer-events:none;
   }
   .ev-hero::after {
-    content:''; position:absolute; right:80px; bottom:-50px;
-    width:120px; height:120px; border-radius:50%;
-    background:rgba(255,255,255,0.05); pointer-events:none;
+    content:''; position:absolute; right:100px; bottom:-60px;
+    width:130px; height:130px; border-radius:50%;
+    background:rgba(108,99,255,0.08); pointer-events:none;
   }
   .ev-hero-left h1 {
     font-size: 22px; font-weight: 800;
     letter-spacing: -0.3px; margin-bottom: 4px;
   }
-  .ev-hero-left p { font-size: 13.5px; opacity: 0.82; }
+  .ev-hero-left p { font-size: 13.5px; opacity: 0.75; }
   .ev-hero-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.18);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(108,99,255,0.25);
+    border: 1px solid rgba(108,99,255,0.4);
     border-radius: 50px; padding: 9px 20px;
     font-size: 13.5px; font-weight: 700;
     white-space: nowrap; flex-shrink: 0;
   }
 
-  /* ── Toolbar ── */
   .ev-toolbar {
     display: flex; align-items: center;
     justify-content: space-between;
-    gap: 12px; flex-wrap: wrap;
-    margin-bottom: 20px;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
   }
   .ev-count-label { font-size: 13px; color: var(--text-sub); font-weight: 500; }
   .ev-count-label strong { color: var(--text-main); font-weight: 800; }
+
+  .ev-toolbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
   .ev-search-wrap { position: relative; display: flex; align-items: center; }
   .ev-search-wrap i {
@@ -97,24 +93,20 @@
   }
   .ev-search-wrap input::placeholder { color: var(--text-light); }
 
-  /* ── Grid ── */
   .ev-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 18px;
   }
 
-  /* ── Card ── */
   .ev-card {
     background: var(--bg-card);
     border-radius: var(--radius-card);
     border: 1.5px solid var(--border);
     box-shadow: var(--shadow-card);
-    overflow: hidden;
-    display: flex; flex-direction: column;
+    overflow: hidden; display: flex; flex-direction: column;
     transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
     animation: fadeUp 0.4s ease both;
-    text-decoration: none; color: inherit;
   }
   .ev-card:nth-child(1) { animation-delay:.03s; }
   .ev-card:nth-child(2) { animation-delay:.06s; }
@@ -128,81 +120,106 @@
     border-color: #d4d0ff;
   }
 
-  /* Colour accent strip at top */
-  .ev-card-accent {
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary), #857bff);
-    flex-shrink: 0;
+  .ev-card-top {
+    padding: 20px 20px 16px;
+    display: flex; gap: 14px; align-items: flex-start;
+    border-bottom: 1.5px solid #f5f3ff;
   }
-  .ev-card:nth-child(3n+2) .ev-card-accent { background: linear-gradient(90deg, var(--teal), #2bb49a); }
-  .ev-card:nth-child(3n+3) .ev-card-accent { background: linear-gradient(90deg, var(--pink), #e04a68); }
 
-  .ev-card-body { padding: 20px 20px 16px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-
-  /* Date badge */
-  .ev-date-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--primary-light); color: var(--primary);
-    font-size: 11.5px; font-weight: 700;
-    padding: 4px 12px; border-radius: 50px;
-    width: fit-content;
+  .ev-icon-box {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-light), #ddd8ff);
+    color: var(--primary); font-size: 18px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; border: 1.5px solid var(--border);
+    transition: box-shadow var(--transition);
   }
-  .ev-card:nth-child(3n+2) .ev-date-badge { background: var(--teal-light); color: var(--teal); }
-  .ev-card:nth-child(3n+3) .ev-date-badge { background: #fff0f3; color: var(--pink); }
+  .ev-card:hover .ev-icon-box {
+    box-shadow: 0 4px 14px var(--primary-glow);
+  }
 
+  .ev-card-top-info { flex: 1; min-width: 0; }
   .ev-title {
-    font-size: 15.5px; font-weight: 800;
+    font-size: 15px; font-weight: 800;
     color: var(--text-main); letter-spacing: -0.2px;
-    line-height: 1.35;
-    text-decoration: none;
-    transition: color var(--transition);
+    line-height: 1.35; margin-bottom: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .ev-card:hover .ev-title { color: var(--primary); }
+  .ev-organizer {
+    font-size: 12.5px; color: var(--text-sub); font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
 
+  .ev-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ev-tag {
+    padding: 3px 10px; border-radius: 50px;
+    font-size: 11px; font-weight: 700;
+  }
+  .ev-tag-type { background: var(--primary-light); color: var(--primary); }
+  .ev-tag-date { background: var(--green-light); color: var(--green); }
+
+  .ev-card-body {
+    padding: 14px 20px 16px; flex: 1;
+  }
   .ev-desc {
-    font-size: 13px; color: var(--text-sub);
-    line-height: 1.6;
+    font-size: 13px; color: var(--text-sub); line-height: 1.6;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    flex: 1;
   }
 
-  /* Meta row */
   .ev-meta {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 12px; color: var(--text-light);
-    margin-top: 4px;
+    display: flex; align-items: center; gap: 14px;
+    margin-top: 12px; flex-wrap: wrap;
   }
-  .ev-meta i { color: var(--primary); font-size: 11px; }
-  .ev-card:nth-child(3n+2) .ev-meta i { color: var(--teal); }
-  .ev-card:nth-child(3n+3) .ev-meta i { color: var(--pink); }
-  .ev-meta-sep { color: var(--border); }
+  .ev-meta-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: var(--text-light);
+  }
+  .ev-meta-item i { color: var(--primary); font-size: 11px; }
 
-  /* View button */
   .ev-card-footer {
     padding: 0 20px 18px;
+    display: flex; gap: 8px;
   }
   .ev-btn-view {
-    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-    width: 100%; padding: 9px 16px;
-    background: var(--primary-light); color: var(--primary);
-    border: 1.5px solid transparent; border-radius: 50px;
+    flex: 1; display: inline-flex; align-items: center;
+    justify-content: center; gap: 7px;
+    padding: 9px 16px;
+    background: linear-gradient(135deg, var(--primary), #857bff);
+    color: #fff; border: none; border-radius: 50px;
     font-size: 13px; font-weight: 700; text-decoration: none;
-    transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+    cursor: pointer; font-family: inherit;
+    box-shadow: 0 3px 10px var(--primary-glow);
+    transition: transform var(--transition), box-shadow var(--transition);
   }
   .ev-btn-view:hover {
-    background: var(--primary); color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px var(--primary-glow);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(108,99,255,0.38);
   }
-  .ev-card:nth-child(3n+2) .ev-btn-view { background: var(--teal-light); color: var(--teal); }
-  .ev-card:nth-child(3n+2) .ev-btn-view:hover { background: var(--teal); color: #fff; box-shadow: 0 4px 14px rgba(67,198,172,0.3); }
-  .ev-card:nth-child(3n+3) .ev-btn-view { background: #fff0f3; color: var(--pink); }
-  .ev-card:nth-child(3n+3) .ev-btn-view:hover { background: var(--pink); color: #fff; box-shadow: 0 4px 14px rgba(255,101,132,0.3); }
+  .ev-btn-post {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--green), #34d399);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(16,185,129,0.25);
+    transition: 0.2s;
+  }
+  .ev-btn-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(16,185,129,0.4);
+  }
 
-  /* Empty state */
   .ev-empty {
     grid-column: 1/-1;
     display: flex; flex-direction: column;
@@ -215,8 +232,8 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 28px; opacity: 0.7;
   }
-  .ev-empty p   { font-size: 14px; font-weight: 700; color: var(--text-sub); }
-  .ev-empty span{ font-size: 12.5px; color: var(--text-light); }
+  .ev-empty p    { font-size: 14px; font-weight: 700; color: var(--text-sub); }
+  .ev-empty span { font-size: 12.5px; color: var(--text-light); }
 
   @keyframes fadeUp {
     from { opacity:0; transform:translateY(18px); }
@@ -234,74 +251,108 @@
 
 <div class="ev-page">
 
-  <!-- Hero -->
   <div class="ev-hero">
     <div class="ev-hero-left">
       <h1><i class="fas fa-calendar-alt" style="margin-right:10px;opacity:0.9;"></i>Upcoming Events</h1>
-      <p>Stay connected — discover and join alumni events near you</p>
+      <p>Discover alumni events, meetups, webinars and workshops</p>
     </div>
     {% if events %}
     <div class="ev-hero-badge">
-      <i class="fas fa-ticket-alt"></i>
+      <i class="fas fa-layer-group"></i>
       {{ events|length }} Event{{ events|length|pluralize }}
     </div>
     {% endif %}
   </div>
 
-  <!-- Toolbar -->
   <div class="ev-toolbar">
     {% if events %}
     <div class="ev-count-label">
       Showing <strong>{{ events|length }}</strong> upcoming event{{ events|length|pluralize }}
     </div>
     {% else %}
-    <div class="ev-count-label">Alumni Events</div>
+    <div class="ev-count-label">Event Board</div>
     {% endif %}
 
-    <div class="ev-search-wrap">
-      <i class="fas fa-search"></i>
-      <input type="text" id="evSearch" placeholder="Search events…">
+    <div class="ev-toolbar-right">
+      <div class="ev-search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="evSearch" placeholder="Search events…">
+      </div>
     </div>
+
+    <a href="{% url 'alumni_eventpost' %}" class="ev-btn-post">
+      <i class="fas fa-plus"></i> Post Event
+    </a>
   </div>
 
-  <!-- Grid -->
   <div class="ev-grid" id="evGrid">
     {% for event in events %}
-    <div class="ev-card" data-title="{{ event.title|lower }}">
-      <div class="ev-card-accent"></div>
-      <div class="ev-card-body">
 
-        <div class="ev-date-badge">
-          <i class="fas fa-calendar"></i>
-          {{ event.event_date|date:"M d, Y" }}
+    <div class="ev-card" data-title="{{ event.title|lower }} {{ event.description|lower }}">
+
+      <div class="ev-card-top">
+        <div class="ev-icon-box">
+          <i class="fas fa-calendar-check"></i>
         </div>
 
-        <div class="ev-title">{{ event.title }}</div>
+        <div class="ev-card-top-info">
+          <div class="ev-title">{{ event.title }}</div>
 
+          {% if event.organizer %}
+            <div class="ev-organizer">
+              <i class="fas fa-user" style="margin-right:4px;font-size:10px;"></i>{{ event.organizer }}
+            </div>
+          {% endif %}
+
+          <div class="ev-tags">
+            {% if event.event_type %}
+              <span class="ev-tag ev-tag-type">{{ event.event_type }}</span>
+            {% else %}
+              <span class="ev-tag ev-tag-type">General Event</span>
+            {% endif %}
+
+            {% if event.event_date %}
+              <span class="ev-tag ev-tag-date">
+                <i class="fas fa-clock" style="margin-right:3px;"></i>
+                {{ event.event_date|date:"M d, Y" }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="ev-card-body">
         {% if event.description %}
         <div class="ev-desc">{{ event.description }}</div>
         {% endif %}
 
         <div class="ev-meta">
-          <i class="fas fa-map-marker-alt"></i>
-          <span>{{ event.location }}</span>
-          <span class="ev-meta-sep">·</span>
-          <i class="fas fa-clock"></i>
-          <span>{{ event.event_date|date:"M d, Y" }}</span>
+          <div class="ev-meta-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ event.location|default:"Not specified" }}</span>
+          </div>
+
+          {% if event.event_time %}
+          <div class="ev-meta-item">
+            <i class="fas fa-clock"></i>
+            <span>{{ event.event_time }}</span>
+          </div>
+          {% endif %}
         </div>
       </div>
 
       <div class="ev-card-footer">
         <a href="{% url 'event_detail' event.id %}" class="ev-btn-view">
-          <i class="fas fa-arrow-right"></i> View Details
+          <i class="fas fa-external-link-alt"></i> View Details
         </a>
       </div>
     </div>
+
     {% empty %}
     <div class="ev-empty">
       <div class="ev-empty-icon"><i class="fas fa-calendar-times"></i></div>
-      <p>No events available</p>
-      <span>Check back soon for upcoming alumni events</span>
+      <p>No events right now</p>
+      <span>Check back soon — alumni post new events regularly</span>
     </div>
     {% endfor %}
   </div>

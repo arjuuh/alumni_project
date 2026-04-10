@@ -1,59 +1,77 @@
 {% extends "base_dashboard.html" %}
-
-{% block title %}Event Details{% endblock %}
-{% block page_title %}Event Details{% endblock %}
-
 {% block content %}
 
-<div class="detail-card">
+<div class="container" style="max-width:900px;margin:auto;padding:40px 0;">
 
-    <h2 style="margin-bottom:10px;">{{ event.title }}</h2>
+    <div class="job-detail-card">
+        <h2>{{ event.title }}</h2>
 
-    <div class="detail-row">
-        <span class="detail-label">Venue</span>
-        <span class="detail-value">
-            {{ event.venue|default:"Not specified" }}
-        </span>
-    </div>
+        <p class="company">
+            {% if event.organizer %}{{ event.organizer }}{% else %}Event Organizer{% endif %}
+        </p>
 
-    <div class="detail-row">
-        <span class="detail-label">Date</span>
-        <span class="detail-value">
-            {{ event.event_date }}
-        </span>
-    </div>
+        <div class="meta">
+            {% if event.location %}<span>{{ event.location }}</span>{% endif %}
+            {% if event.event_type %}<span>• {{ event.event_type }}</span>{% endif %}
+            {% if event.event_date %}<span>• {{ event.event_date }}</span>{% endif %}
+            {% if event.event_time %}<span>• {{ event.event_time }}</span>{% endif %}
+        </div>
 
-    <div class="detail-row">
-        <span class="detail-label">Time</span>
-        <span class="detail-value">
-            {{ event.event_time|default:"Not specified" }}
-        </span>
-    </div>
+        <hr style="margin:20px 0;">
 
-    <div class="detail-row">
-        <span class="detail-label">Posted By</span>
-        <span class="detail-value">
-            {{ event.posted_by.username }}
-        </span>
-    </div>
+        <p class="desc">{{ event.description|linebreaks }}</p>
 
-    {% if event.registration_link %}
-    <div style="margin-top:20px;">
-        <a href="{{ event.registration_link }}" target="_blank"
-           style="background:#6C63FF;color:#fff;padding:10px 18px;
-                  border-radius:8px;text-decoration:none;">
-            Register Now
-        </a>
-    </div>
-    {% endif %}
+        {% if event.registration_link %}
+            <a href="{{ event.registration_link }}" target="_blank" class="btn-apply">Register Now</a>
+        {% endif %}
 
-    <div style="margin-top:25px;">
-        <h3>Description</h3>
-        <p style="line-height:1.6;margin-top:8px;">
-            {{ event.description }}
+        <p class="posted">
+            Posted by {{ event.posted_by.username }}
         </p>
     </div>
 
 </div>
+
+<style>
+.job-detail-card{
+    background:#fff;
+    padding:30px;
+    border-radius:14px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 6px 20px rgba(0,0,0,0.05);
+}
+.company{
+    font-weight:600;
+    margin:5px 0;
+    color:#374151;
+}
+.meta{
+    font-size:14px;
+    color:#6b7280;
+}
+.desc{
+    font-size:15px;
+    line-height:1.7;
+    color:#374151;
+}
+.btn-apply{
+    display:inline-block;
+    margin-top:20px;
+    padding:10px 18px;
+    background:#1e3a8a;
+    color:#fff;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+}
+.btn-apply:hover{
+    background:#162d6b;
+}
+.posted{
+    margin-top:25px;
+    font-size:13px;
+    color:#6b7280;
+}
+</style>
 
 {% endblock %}

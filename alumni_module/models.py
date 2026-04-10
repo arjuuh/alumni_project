@@ -174,3 +174,18 @@ class Job(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Event(models.Model):
+    posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    organizer = models.CharField(max_length=200)
+    location = models.CharField(max_length=200, blank=True, null=True)
+    event_type = models.CharField(max_length=100, blank=True, null=True)
+    event_date = models.DateField(blank=True, null=True)
+    event_time = models.TimeField(blank=True, null=True)
+    registration_link = models.URLField(blank=True, null=True)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

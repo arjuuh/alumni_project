@@ -17,14 +17,40 @@
       {% endfor %}
     {% endif %}
 
-    <!-- 🔹 EVENT FORM -->
     <div class="card">
         <form method="POST" action="{% url 'post_event' %}">
             {% csrf_token %}
 
-            <div class="group">
-                <label>Event Title *</label>
-                <input type="text" name="title" required placeholder="e.g., Alumni Meetup 2026">
+            <div class="row">
+                <div class="group">
+                    <label>Event Title *</label>
+                    <input type="text" name="title" required placeholder="e.g., Alumni Meetup 2026">
+                </div>
+
+                <div class="group">
+                    <label>Organizer</label>
+                    <input type="text" name="organizer" placeholder="e.g., Alumni Association">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="group">
+                    <label>Location</label>
+                    <input type="text" name="location" placeholder="e.g., Main Auditorium">
+                </div>
+
+                <div class="group">
+                    <label>Event Type</label>
+                    <select name="event_type">
+                        <option value="">Select</option>
+                        <option>Seminar</option>
+                        <option>Workshop</option>
+                        <option>Webinar</option>
+                        <option>Meetup</option>
+                        <option>Conference</option>
+                        <option>Other</option>
+                    </select>
+                </div>
             </div>
 
             <div class="row">
@@ -37,11 +63,6 @@
                     <label>Event Time</label>
                     <input type="time" name="event_time">
                 </div>
-            </div>
-
-            <div class="group">
-                <label>Venue</label>
-                <input type="text" name="venue" placeholder="e.g., Main Auditorium">
             </div>
 
             <div class="group">
@@ -62,7 +83,6 @@
         </form>
     </div>
 
-    <!-- 🔹 TEACHER POSTED EVENTS -->
     <div class="card" style="margin-top:30px;">
         <h3 style="margin-bottom:15px;">Your Posted Events</h3>
 
@@ -72,11 +92,12 @@
                     <div>
                         <strong>{{ event.title }}</strong>
                         <div style="font-size:13px;color:#666;">
-                            {{ event.event_date }} • {{ event.venue }}
+                            {{ event.event_date }}
+                            {% if event.location %} • {{ event.location }}{% endif %}
+                            {% if event.event_type %} • {{ event.event_type }}{% endif %}
                         </div>
                     </div>
 
-                    <!-- 🔴 DELETE BUTTON -->
                     <a href="{% url 'delete_event' event.id %}"
                        class="delete-btn"
                        onclick="return confirm('Are you sure you want to delete this event?');">
@@ -90,7 +111,6 @@
     </div>
 
 </div>
-
 
 <style>
 .msg {

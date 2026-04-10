@@ -33,7 +33,9 @@ class JobPost(models.Model):
 class EventPost(models.Model):
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="teacher_event_posts")
     title = models.CharField(max_length=200)
-    venue = models.CharField(max_length=200, blank=True)
+    organizer = models.CharField(max_length=200, blank=True)
+    location = models.CharField(max_length=200, blank=True)
+    event_type = models.CharField(max_length=100, blank=True)
     event_date = models.DateField()
     event_time = models.TimeField(null=True, blank=True)
     registration_link = models.URLField(blank=True)

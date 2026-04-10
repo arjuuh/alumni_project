@@ -132,7 +132,9 @@ def post_job(request):
 def post_event(request):
     if request.method == "POST":
         title = request.POST.get("title")
-        venue = request.POST.get("venue", "")
+        organizer = request.POST.get("organizer", "")
+        location = request.POST.get("location", "")
+        event_type = request.POST.get("event_type", "")
         event_date = request.POST.get("event_date")
         event_time = request.POST.get("event_time", "")
         registration_link = request.POST.get("registration_link", "")
@@ -142,18 +144,19 @@ def post_event(request):
             EventPost.objects.create(
                 posted_by=request.user,
                 title=title,
-                venue=venue,
+                organizer=organizer,
+                location=location,
+                event_type=event_type,
                 event_date=event_date,
                 event_time=event_time if event_time else None,
                 registration_link=registration_link,
                 description=description,
             )
             messages.success(request, "Event posted successfully.")
-            return redirect("post_event")   # 🔹 stay on same page
+            return redirect("post_event")
 
         messages.error(request, "Please fill all required fields.")
 
-    # 🔹 VERY IMPORTANT – send teacher's events
     teacher_events = EventPost.objects.filter(
         posted_by=request.user
     ).order_by("-id")
@@ -161,7 +164,6 @@ def post_event(request):
     return render(request, "teacher/post_event.html", {
         "teacher_events": teacher_events
     })
-
 
 @login_required
 def delete_job(request, job_id):
