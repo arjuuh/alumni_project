@@ -314,17 +314,7 @@
         </div>
     </div>
 
-    <!-- FLASH MESSAGE -->
-    {% if messages %}
-    <div class="flash-wrap">
-        {% for message in messages %}
-            <div class="flash-msg {% if message.tags == 'success' %}flash-success{% else %}flash-error{% endif %}">
-                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+    
 
     <!-- PAGE -->
     <div class="page">
@@ -333,18 +323,6 @@
 
 </div><!-- /main -->
 
-<script>
-    setTimeout(function () {
-        const flashWrap = document.querySelector('.flash-wrap');
-        if (flashWrap) {
-            flashWrap.style.transition = 'opacity 0.4s ease';
-            flashWrap.style.opacity = '0';
-            setTimeout(function () {
-                flashWrap.remove();
-            }, 400);
-        }
-    }, 2000);
-</script>
 
 </body>
 </html>

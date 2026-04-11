@@ -550,7 +550,7 @@ body::after {
             {% endfor %}
         {% endif %}
 
-        <form method="POST" action="{% url 'home' %}" id="loginForm">
+        <form method="POST" action="{% url 'login' %}" id="loginForm">
             {% csrf_token %}
 
             <div class="field">

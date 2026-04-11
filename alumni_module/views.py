@@ -12,8 +12,16 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .models import Conversation, Message
 from .models import Job
+from django.contrib.auth import authenticate, login as auth_login, logout
 
+from django.shortcuts import render
+
+# 🔹 PUBLIC HOME PAGE (2nd image style)
 def home(request):
+    return render(request, "auth/home1.html")   # <-- new homepage
+
+# 🔹 LOGIN PAGE (your stylish login)
+def user_login(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -28,31 +36,26 @@ def home(request):
             )
 
             if user is not None:
-
                 metadata = SystemMetadata.objects.filter(user=user).first()
 
-                if not metadata:
-                    messages.warning(request, "Your account is waiting for approval.")
-                    return redirect("waiting_approval")
-
-                if metadata.status == "PENDING":
+                if not metadata or metadata.status == "PENDING":
                     messages.warning(request, "Your account is waiting for approval.")
                     return redirect("waiting_approval")
 
                 if metadata.status == "REJECTED":
                     messages.error(request, "Your account was rejected.")
-                    return redirect("home")
+                    return redirect("login")
 
-                login(request, user)
+                auth_login(request, user)
                 return redirect("dashboard")
 
             else:
                 messages.error(request, "Invalid credentials")
-                return redirect("home")
+                return redirect("login")
 
         except User.DoesNotExist:
             messages.error(request, "User not found")
-            return redirect("home")
+            return redirect("login")
 
     return render(request, "auth/home.html")
 
@@ -424,7 +427,7 @@ def complete_profile(request):
                 metadata.status = "PENDING"
                 metadata.save()
 
-                messages.success(request, "Profile submitted successfully. Waiting for approval.")
+                #messages.success(request, "Profile submitted successfully. Waiting for approval.")
                 return redirect("waiting_approval")
 
         except Exception as e:
