@@ -62,6 +62,7 @@
         </div>
     </div>
 </div>
+
 <!-- TWO COLUMN LAYOUT -->
 <div class="two-col">
 
@@ -399,6 +400,7 @@
 
     </div><!-- /right-col -->
 </div><!-- /two-col -->
+
 <!-- Post Form + Polish Styles -->
 <style>
   /* ── Create-post card ───────────────────────────── */
@@ -433,9 +435,11 @@
     line-height: 1.55;
     transition: min-height 0.2s;
   }
-  .compose-textarea::placeholder { color: #b0a8d8; }
 
-  /* Divider between textarea and footer */
+  .compose-textarea::placeholder {
+    color: #b0a8d8;
+  }
+
   .post-compose-footer {
     display: flex;
     align-items: center;
@@ -445,7 +449,6 @@
     border-top: 1.5px solid #f0edff;
   }
 
-  /* Attach label */
   .attach-label {
     display: inline-flex;
     align-items: center;
@@ -460,9 +463,19 @@
     transition: background 0.18s, transform 0.15s;
     white-space: nowrap;
   }
-  .attach-label:hover { background: #ebe8ff; transform: translateY(-1px); }
-  .attach-label i { font-size: 15px; }
-  .hidden-file-input { display: none; }
+
+  .attach-label:hover {
+    background: #ebe8ff;
+    transform: translateY(-1px);
+  }
+
+  .attach-label i {
+    font-size: 15px;
+  }
+
+  .hidden-file-input {
+    display: none;
+  }
 
   .attached-filename {
     flex: 1;
@@ -474,7 +487,6 @@
     white-space: nowrap;
   }
 
-  /* ── Post button ────────────────────────────────── */
   .btn-post {
     margin-left: auto;
     display: inline-flex;
@@ -493,18 +505,22 @@
     white-space: nowrap;
     letter-spacing: 0.3px;
   }
+
   .btn-post:hover {
     transform: translateY(-2px);
     box-shadow: 0 7px 20px rgba(108,99,255,0.45);
     background: linear-gradient(135deg, #5a52e8 0%, #7b72ff 100%);
   }
+
   .btn-post:active {
     transform: translateY(0);
     box-shadow: 0 3px 10px rgba(108,99,255,0.3);
   }
-  .btn-post i { font-size: 13px; }
 
-  /* ── Edit-form save/cancel buttons ─────────────── */
+  .btn-post i {
+    font-size: 13px;
+  }
+
   .edit-save-btn {
     padding: 8px 18px;
     border: none;
@@ -517,7 +533,11 @@
     box-shadow: 0 3px 10px rgba(108,99,255,0.3);
     transition: transform 0.15s, box-shadow 0.15s;
   }
-  .edit-save-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(108,99,255,0.4); }
+
+  .edit-save-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(108,99,255,0.4);
+  }
 
   .edit-cancel-btn {
     padding: 8px 18px;
@@ -530,92 +550,175 @@
     color: #555;
     transition: background 0.15s;
   }
-  .edit-cancel-btn:hover { background: #e8e8e8; }
 
+  .edit-cancel-btn:hover {
+    background: #e8e8e8;
+  }
 
-  .tabs-wrap{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    }
+  .tabs-wrap {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
 
-    .tab{
-    padding:10px 16px;
-    border-radius:10px;
-    background:#f5f6ff;
-    border:none;
-    font-weight:600;
-    cursor:pointer;
-    }
+  .tab {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #f5f6ff;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
 
-    .tab.active{
-    background:linear-gradient(135deg,#6C63FF,#857bff);
-    color:#fff;
-    }
+  .tab.active {
+    background: linear-gradient(135deg,#6C63FF,#857bff);
+    color: #fff;
+  }
 
-    .card{
-border-radius:16px;
-background:#fff;
-box-shadow:0 8px 30px rgba(0,0,0,.06);
-transition:all .25s ease;
-}
+  .card {
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 30px rgba(0,0,0,.06);
+    transition: all .25s ease;
+  }
 
-.card:hover{
-transform:translateY(-3px);
-box-shadow:0 15px 40px rgba(0,0,0,.08);
-}
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0,0,0,.08);
+  }
 
-.stat-card{
-border-radius:16px;
-padding:18px;
-background:#fff;
-box-shadow:0 8px 24px rgba(0,0,0,.06);
-transition:all .2s ease;
-}
+  .stat-card {
+    border-radius: 16px;
+    padding: 18px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    transition: all .2s ease;
+  }
 
-.stat-card:hover{
-transform:translateY(-4px);
-}
+  .stat-card:hover {
+    transform: translateY(-4px);
+  }
 </style>
 
 <!-- ✅ Followers/Following Modal CSS -->
 <style>
-  .conn-modal{
-    position:fixed; inset:0; background:rgba(0,0,0,.35);
-    display:none; align-items:center; justify-content:center; z-index:9999;
+  .conn-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
   }
-  .conn-modal-box{
-    width:min(520px, 92vw);
-    max-height:70vh;
-    background:#fff; border-radius:16px;
-    box-shadow:0 20px 60px rgba(0,0,0,.2);
-    overflow:hidden;
-  }
-  .conn-modal-header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 16px; border-bottom:1px solid #eee;
-    font-weight:800;
-  }
-  .conn-close{
-    border:none; background:transparent; font-size:24px; cursor:pointer;
-    line-height:1;
-  }
-  .conn-body{ padding:10px 14px; overflow:auto; max-height:calc(70vh - 54px); }
 
-  .conn-row{
-    display:flex; gap:12px; align-items:center;
-    padding:10px; border-radius:12px;
+  .conn-modal-box {
+    width: min(520px, 92vw);
+    max-height: 70vh;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    overflow: hidden;
   }
-  .conn-row:hover{ background:#f6f6f6; }
-  .conn-avatar{ width:44px; height:44px; border-radius:50%; object-fit:cover; }
-  .conn-avatar-init{
-    width:44px; height:44px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    background:#eef0ff; font-weight:800; color:#6C63FF;
+
+  .conn-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    font-weight: 800;
   }
-  .conn-name{ font-weight:800; }
-  .conn-sub{ font-size:12px; color:#777; }
-  .conn-empty{ padding:16px; text-align:center; color:#777; }
+
+  .conn-close {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .conn-body {
+    padding: 10px 14px;
+    overflow: auto;
+    max-height: calc(70vh - 54px);
+  }
+
+  .conn-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .conn-row:hover {
+    background: #f6f6f6;
+  }
+
+  .conn-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .conn-avatar-init {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef0ff;
+    font-weight: 800;
+    color: #6C63FF;
+  }
+
+  .conn-name {
+    font-weight: 800;
+  }
+
+  .conn-sub {
+    font-size: 12px;
+    color: #777;
+  }
+
+  .conn-empty {
+    padding: 16px;
+    text-align: center;
+    color: #777;
+  }
+
+  .conn-btn {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s ease;
+    min-width: 92px;
+  }
+
+  .conn-btn-follow {
+    background: linear-gradient(135deg,#6C63FF,#857bff);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(108,99,255,.25);
+  }
+
+  .conn-btn-follow:hover {
+    transform: translateY(-1px);
+  }
+
+  .conn-btn-unfollow {
+    background: #f1f3f5;
+    color: #333;
+  }
+
+  .conn-btn-unfollow:hover {
+    background: #e9ecef;
+  }
 </style>
 
 <!-- ✅ Followers/Following Modal HTML -->
@@ -636,7 +739,6 @@ transform:translateY(-4px);
 
 {% block scripts %}
 <script>
-    // ── Post compose helpers ──────────────────────────
     function autoResize(el) {
         el.style.height = 'auto';
         el.style.height = Math.min(el.scrollHeight, 180) + 'px';
@@ -670,6 +772,9 @@ transform:translateY(-4px);
     function renderCalendar() {
         const grid  = document.getElementById('calGrid');
         const label = document.getElementById('calMonthLabel');
+
+        if (!grid || !label) return;
+
         label.textContent = `${MONTHS[calMonth]} ${calYear}`;
         grid.innerHTML = '';
 
@@ -694,12 +799,14 @@ transform:translateY(-4px);
                 calMonth === TODAY.getMonth() &&
                 calYear  === TODAY.getFullYear()
             );
+
             if (isToday) el.classList.add('today');
             grid.appendChild(el);
         }
 
         const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
         let next = 1;
+
         while (grid.children.length < totalCells) {
             const d = document.createElement('span');
             d.className = 'cal-day other-month';
@@ -715,7 +822,10 @@ transform:translateY(-4px);
         if (prevBtn) {
             prevBtn.addEventListener('click', () => {
                 calMonth--;
-                if (calMonth < 0) { calMonth = 11; calYear--; }
+                if (calMonth < 0) {
+                    calMonth = 11;
+                    calYear--;
+                }
                 renderCalendar();
             });
         }
@@ -723,20 +833,21 @@ transform:translateY(-4px);
         if (nextBtn) {
             nextBtn.addEventListener('click', () => {
                 calMonth++;
-                if (calMonth > 11) { calMonth = 0; calYear++; }
+                if (calMonth > 11) {
+                    calMonth = 0;
+                    calYear++;
+                }
                 renderCalendar();
             });
         }
 
         renderCalendar();
     });
-    // ... your existing code above ...
 
-    function toggleMenu(id){
+    function toggleMenu(id) {
         const menu = document.getElementById(`menu-${id}`);
         if (!menu) return;
 
-        // close other menus
         document.querySelectorAll("[id^='menu-']").forEach(m => {
             if (m !== menu) m.style.display = "none";
         });
@@ -744,7 +855,7 @@ transform:translateY(-4px);
         menu.style.display = (menu.style.display === "block") ? "none" : "block";
     }
 
-    function openEdit(id){
+    function openEdit(id) {
         const menu = document.getElementById(`menu-${id}`);
         if (menu) menu.style.display = "none";
 
@@ -752,58 +863,55 @@ transform:translateY(-4px);
         if (editBox) editBox.style.display = "block";
     }
 
-    function closeEdit(id){
+    function closeEdit(id) {
         const editBox = document.getElementById(`edit-${id}`);
         if (editBox) editBox.style.display = "none";
     }
 
-    // click outside -> close menus
-    document.addEventListener("click", function(e){
+    document.addEventListener("click", function(e) {
         const isDots = e.target.closest(".dots-btn");
         const isMenu = e.target.closest(".post-menu");
-        if (!isDots && !isMenu){
+        if (!isDots && !isMenu) {
             document.querySelectorAll("[id^='menu-']").forEach(m => m.style.display = "none");
         }
     });
-    // ✅ Instagram-style Followers/Following modal
-async function openConnections(type){
-    const modal = document.getElementById("connModal");
-    const title = document.getElementById("connTitle");
-    const body  = document.getElementById("connBody");
 
-    modal.style.display = "flex";
-    body.innerHTML = "Loading...";
+    async function openConnections(type) {
+        const modal = document.getElementById("connModal");
+        const title = document.getElementById("connTitle");
+        const body  = document.getElementById("connBody");
 
-    if(type === "followers"){
-        title.innerText = "Followers";
-        const res = await fetch("{% url 'followers_list' %}");
-        body.innerHTML = await res.text();
-    } else {
-        title.innerText = "Following";
-        const res = await fetch("{% url 'following_list' %}");
-        body.innerHTML = await res.text();
+        modal.style.display = "flex";
+        body.innerHTML = "Loading...";
+
+        if (type === "followers") {
+            title.innerText = "Followers";
+            const res = await fetch("{% url 'followers_list' %}");
+            body.innerHTML = await res.text();
+        } else {
+            title.innerText = "Following";
+            const res = await fetch("{% url 'following_list' %}");
+            body.innerHTML = await res.text();
+        }
     }
-}
 
-function closeConnections(){
-    document.getElementById("connModal").style.display = "none";
-}
-
-// click outside modal box closes it
-document.addEventListener("click", (e) => {
-    const modal = document.getElementById("connModal");
-    if(modal && modal.style.display === "flex" && e.target === modal){
-        closeConnections();
+    function closeConnections() {
+        document.getElementById("connModal").style.display = "none";
     }
-});
 
-// posts stat -> go to posts tab + scroll
-function jumpToPosts(){
-    const postsTabBtn = document.querySelector("button.tab[onclick*=\"'posts'\"]");
-    if(postsTabBtn) postsTabBtn.click();
+    document.addEventListener("click", (e) => {
+        const modal = document.getElementById("connModal");
+        if (modal && modal.style.display === "flex" && e.target === modal) {
+            closeConnections();
+        }
+    });
 
-    const postsSection = document.getElementById("posts");
-    if(postsSection) postsSection.scrollIntoView({behavior:"smooth", block:"start"});
-}
+    function jumpToPosts() {
+        const postsTabBtn = document.querySelector("button.tab[onclick*=\"'posts'\"]");
+        if (postsTabBtn) postsTabBtn.click();
+
+        const postsSection = document.getElementById("posts");
+        if (postsSection) postsSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
 </script>
 {% endblock %}

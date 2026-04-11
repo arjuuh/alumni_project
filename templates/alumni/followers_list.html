@@ -14,4 +14,41 @@
   </div>
 {% empty %}
   <div class="conn-empty">No followers yet.</div>
-{% endfor %}
+{% endfor %}{% load static %}
+
+{% if followers %}
+    {% for conn in followers %}
+    <div class="conn-row">
+        {% if conn.follower.alumniprofile.photo %}
+            <img src="{{ conn.follower.alumniprofile.photo.url }}" class="conn-avatar" alt="">
+        {% else %}
+            <div class="conn-avatar-init">
+                {{ conn.follower.alumniprofile.first_name|first|upper }}{{ conn.follower.alumniprofile.last_name|first|upper }}
+            </div>
+        {% endif %}
+
+        <div style="flex:1;">
+            <div class="conn-name">
+                {{ conn.follower.alumniprofile.first_name }} {{ conn.follower.alumniprofile.last_name }}
+            </div>
+            <div class="conn-sub">
+                @{{ conn.follower.username }}
+            </div>
+        </div>
+
+        <form method="POST" action="{% url 'toggle_follow' conn.follower.id %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit"
+                    class="{% if conn.follower.id in following_ids %}conn-btn conn-btn-unfollow{% else %}conn-btn conn-btn-follow{% endif %}">
+                {% if conn.follower.id in following_ids %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+            </button>
+        </form>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="conn-empty">No followers yet.</div>
+{% endif %}

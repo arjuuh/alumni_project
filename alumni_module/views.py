@@ -484,9 +484,12 @@ def mark_notifications_read(request):
 
 
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404, redirect, render
+
 @login_required
 def toggle_follow(request, user_id):
-
     if request.user.id == user_id:
         return redirect("dashboard")
 
@@ -496,16 +499,47 @@ def toggle_follow(request, user_id):
     ).first()
 
     if connection:
-        # unfollow
         connection.delete()
     else:
-        # follow
         Connection.objects.create(
             follower=request.user,
             following_id=user_id
         )
 
     return redirect(request.META.get("HTTP_REFERER", "dashboard"))
+
+
+@login_required
+def followers_list(request):
+    followers = Connection.objects.filter(
+        following=request.user
+    ).select_related(
+        "follower", "follower__alumniprofile"
+    ).order_by("-id")
+
+    following_ids = set(
+        Connection.objects.filter(
+            follower=request.user
+        ).values_list("following_id", flat=True)
+    )
+
+    return render(request, "alumni/followers_list.html", {
+        "followers": followers,
+        "following_ids": following_ids,
+    })
+
+
+@login_required
+def following_list(request):
+    following = Connection.objects.filter(
+        follower=request.user
+    ).select_related(
+        "following", "following__alumniprofile"
+    ).order_by("-id")
+
+    return render(request, "alumni/following_list.html", {
+        "following": following,
+    })
 
 
 from teacher_module.models import JobPost,EventPost
@@ -779,27 +813,6 @@ def edit_post(request, post_id):
         post.save()
         messages.success(request, "Post updated.")
     return redirect("dashboard")
-
-@login_required
-def followers_list(request):
-    # People who follow ME
-    # follower -> me
-    qs = Connection.objects.filter(following=request.user).select_related("follower")
-    users = [c.follower for c in qs]
-
-    profiles = AlumniProfile.objects.filter(user__in=users).select_related("user")
-    return render(request, "alumni/followers_list.html", {"profiles": profiles})
-
-
-@login_required
-def following_list(request):
-    # People I follow
-    # me -> following
-    qs = Connection.objects.filter(follower=request.user).select_related("following")
-    users = [c.following for c in qs]
-
-    profiles = AlumniProfile.objects.filter(user__in=users).select_related("user")
-    return render(request, "alumni/following_list.html", {"profiles": profiles})
 
 
 from .models import Notification
