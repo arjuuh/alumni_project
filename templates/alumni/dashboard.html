@@ -57,7 +57,7 @@
     <div class="stat-card" style="cursor:pointer;" onclick="jumpToPosts()">
         <div class="stat-icon si-green"><i class="fas fa-file-alt"></i></div>
         <div>
-            <div class="stat-value">{{ posts|length }}</div>
+            <div class="stat-value">{{ posts_count }}</div>
             <div class="stat-label">Posts</div>
         </div>
     </div>
@@ -393,7 +393,7 @@
                 {% if profile.city %}
                 <div class="side-meta-row"><span class="sm-label">Location</span><span class="sm-value">{{ profile.city }}, {{ profile.state }}</span></div>
                 {% endif %}
-                <div class="side-meta-row"><span class="sm-label">Posts</span><span class="sm-value">{{ posts|length }} Active</span></div>
+                <div class="side-meta-row"><span class="sm-label">Posts</span><span class="sm-value">{{ posts_count }} Active</span></div>
             </div>
         </div>
 

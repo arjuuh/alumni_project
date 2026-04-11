@@ -119,6 +119,9 @@ def dashboard(request):
     # ── POSTS FEED ──
     posts = Post.objects.all().order_by("-created_at")
 
+    # ── CURRENT USER POST COUNT ──
+    posts_count = Post.objects.filter(user=request.user).count()
+
     # ── FOLLOW COUNTS ──
     followers_count = Connection.objects.filter(following=request.user).count()
     following_count = Connection.objects.filter(follower=request.user).count()
@@ -143,11 +146,11 @@ def dashboard(request):
         "academic": academic,
         "contact": contact,
         "posts": posts,
+        "posts_count": posts_count,
 
         "followers_count": followers_count,
         "following_count": following_count,
 
-        # 🔔 Notification system
         "notification_followers": notification_followers,
         "notification_following_ids": notification_following_ids,
         "notification_count": notification_count,
