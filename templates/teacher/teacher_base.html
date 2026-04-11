@@ -227,6 +227,44 @@
             border: 1px solid #d0d5dd;
             background: #fff;
         }
+
+        /* FLASH MESSAGE */
+        .flash-wrap{
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .flash-msg{
+            min-width: 260px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            color: #fff;
+            margin-bottom: 10px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            animation: flashFadeIn 0.3s ease;
+        }
+
+        .flash-success{
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+        }
+
+        .flash-error{
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        @keyframes flashFadeIn{
+            from{
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to{
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -276,12 +314,37 @@
         </div>
     </div>
 
+    <!-- FLASH MESSAGE -->
+    {% if messages %}
+    <div class="flash-wrap">
+        {% for message in messages %}
+            <div class="flash-msg {% if message.tags == 'success' %}flash-success{% else %}flash-error{% endif %}">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- PAGE -->
     <div class="page">
         {% block page_content %}{% endblock %}
     </div>
 
 </div><!-- /main -->
+
+<script>
+    setTimeout(function () {
+        const flashWrap = document.querySelector('.flash-wrap');
+        if (flashWrap) {
+            flashWrap.style.transition = 'opacity 0.4s ease';
+            flashWrap.style.opacity = '0';
+            setTimeout(function () {
+                flashWrap.remove();
+            }, 400);
+        }
+    }, 2000);
+</script>
 
 </body>
 </html>

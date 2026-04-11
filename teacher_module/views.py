@@ -8,7 +8,7 @@ from alumni_module.models import Opportunity, AlumniProfile, AcademicDetails, Pr
 from .models import JobPost, EventPost
 from alumni_module.models import Notification
 
-
+@login_required
 def teacher_login(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -47,6 +47,8 @@ def verify_alumni(request):
     return render(request, "teacher/verify_alumni.html", {"pending": pending})
 
 
+from django.contrib import messages
+
 @login_required
 def approve_alumni(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -55,7 +57,11 @@ def approve_alumni(request, user_id):
     metadata.status = "APPROVED"
     metadata.save()
 
-    return redirect("verify_alumni")
+    # ✅ success message
+    messages.success(request, "Alumni approved successfully")
+
+    # ✅ redirect to dashboard
+    return redirect("teacher_dashboard")
 
 
 
@@ -66,13 +72,13 @@ def approved_alumni(request):
 
 @login_required
 def teacher_view_alumni(request, user_id):
-
     user = get_object_or_404(User, id=user_id)
 
     profile = AlumniProfile.objects.filter(user=user).first()
     academic = AcademicDetails.objects.filter(user=user).first()
     professional = ProfessionalDetails.objects.filter(user=user).first()
     contact = ContactDetails.objects.filter(user=user).first()
+    metadata = SystemMetadata.objects.filter(user=user).first()
 
     return render(request, "teacher/alumni_detail.html", {
         "alumni_user": user,
@@ -80,19 +86,20 @@ def teacher_view_alumni(request, user_id):
         "academic": academic,
         "professional": professional,
         "contact": contact,
+        "metadata": metadata,
     })
 
 @login_required
 def reject_alumni(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
-    metadata = SystemMetadata.objects.filter(user=user).first()
+    metadata, _ = SystemMetadata.objects.get_or_create(user=user)
+    metadata.status = "REJECTED"
+    metadata.save()
 
-    if metadata:
-        metadata.status = "REJECTED"
-        metadata.save()
+    messages.error(request, "Alumni rejected")
 
-    return redirect('verify_alumni')
+    return redirect("teacher_dashboard")
 
 @login_required
 def post_job(request):
