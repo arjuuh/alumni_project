@@ -3,71 +3,128 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
+
 from admin_module.models import SystemMetadata
 from alumni_module.models import Opportunity, AlumniProfile, AcademicDetails, ProfessionalDetails, ContactDetails
-from .models import JobPost, EventPost
 from alumni_module.models import Notification
+from .models import JobPost, EventPost, TeacherProfile
 
-@login_required
+
 def teacher_login(request):
     if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
         user = authenticate(request, username=username, password=password)
 
-        if user is not None and user.is_staff:
-            login(request, user)
-            return redirect('teacher_dashboard')
-        else:
-            messages.error(request, "Invalid teacher credentials")
+        if user is not None:
+            teacher_profile = TeacherProfile.objects.filter(user=user).first()
 
-    return render(request, 'teacher/teacher_login.html')
+            if teacher_profile:
+                login(request, user)
+                return redirect("teacher_dashboard")
+            else:
+                messages.error(request, "You are not authorized as a teacher.")
+        else:
+            messages.error(request, "Invalid username or password.")
+
+    return render(request, "teacher/teacher_login.html")
 
 
 @login_required
 def teacher_dashboard(request):
+    teacher_profile = TeacherProfile.objects.filter(user=request.user).first()
 
-    pending_requests = SystemMetadata.objects.filter(status="PENDING")
+    if not teacher_profile:
+        return redirect("teacher_login")
 
-    verified_count = SystemMetadata.objects.filter(status="APPROVED").count()
-    pending_count = pending_requests.count()
-    total_alumni = SystemMetadata.objects.count()
+    dept = teacher_profile.department
+
+    pending_requests = SystemMetadata.objects.filter(
+        status="PENDING",
+        user__alumniprofile__department=dept
+    ).select_related("user")[:5]
+
+    pending_count = SystemMetadata.objects.filter(
+        status="PENDING",
+        user__alumniprofile__department=dept
+    ).count()
+
+    approved_count = SystemMetadata.objects.filter(
+        status="APPROVED",
+        user__alumniprofile__department=dept
+    ).count()
+
+    department_students_count = AlumniProfile.objects.filter(
+        department=dept
+    ).count()
 
     return render(request, "teacher/teacher_dashboard.html", {
-        "pending_requests": pending_requests,
-        "verified_count": verified_count,
+        "teacher_profile": teacher_profile,
+        "pending_requests": pending_requests,   # ✅ VERY IMPORTANT
         "pending_count": pending_count,
-        "total_alumni": total_alumni,
+        "approved_count": approved_count,
+        "department_students_count": department_students_count,
     })
 
 @login_required
 def verify_alumni(request):
-    pending = SystemMetadata.objects.filter(status="PENDING").select_related("user")
-    return render(request, "teacher/verify_alumni.html", {"pending": pending})
+    teacher_profile = TeacherProfile.objects.filter(user=request.user).first()
 
+    if not teacher_profile:
+        return redirect("teacher_login")
 
-from django.contrib import messages
+    pending = SystemMetadata.objects.filter(
+        status="PENDING",
+        user__alumniprofile__department=teacher_profile.department
+    ).select_related("user")
+
+    return render(request, "teacher/verify_alumni.html", {
+        "pending": pending,
+        "teacher_profile": teacher_profile,
+    })
+
 
 @login_required
 def approve_alumni(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+    teacher_profile = TeacherProfile.objects.filter(user=request.user).first()
 
-    metadata, _ = SystemMetadata.objects.get_or_create(user=user)
+    if not teacher_profile:
+        return redirect("teacher_login")
+
+    metadata = SystemMetadata.objects.filter(
+        user_id=user_id,
+        status="PENDING",
+        user__alumniprofile__department=teacher_profile.department
+    ).first()
+
+    if not metadata:
+        messages.error(request, "Student not found in your department.")
+        return redirect("verify_alumni")
+
     metadata.status = "APPROVED"
     metadata.save()
 
-    # ✅ success message
     messages.success(request, "Alumni approved successfully")
-
-    # ✅ redirect to dashboard
-    return redirect("teacher_dashboard")
+    return redirect("verify_alumni")
 
 
-
+@login_required
 def approved_alumni(request):
-    approved = SystemMetadata.objects.filter(status="APPROVED")
-    return render(request, "teacher/approved_alumni.html", {"approved": approved})
+    teacher_profile = TeacherProfile.objects.filter(user=request.user).first()
+
+    if not teacher_profile:
+        return redirect("teacher_login")
+
+    approved = SystemMetadata.objects.filter(
+        status="APPROVED",
+        user__alumniprofile__department=teacher_profile.department
+    ).select_related("user")
+
+    return render(request, "teacher/approved_alumni.html", {
+        "approved": approved,
+        "teacher_profile": teacher_profile,
+    })
 
 
 @login_required

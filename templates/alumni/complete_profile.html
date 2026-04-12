@@ -696,7 +696,21 @@
 
                 <div class="input-grid-2">
                     <div class="input-group">
-                        <input type="text" name="department" placeholder=" ">
+                        <select name="department" required onchange="this.classList.toggle('has-value', this.value !== '')">
+                            <option value=""></option>
+                            <option value="CS">Computer Science</option>
+                            <option value="MALAYALAM">Malayalam</option>
+                            <option value="ENGLISH">English</option>
+                            <option value="BCOM">BCom</option>
+                            <option value="HISTORY">History</option>
+                            <option value="ECONOMICS">Economics</option>
+                            <option value="ZOOLOGY">Zoology</option>
+                            <option value="POLYMER_CHEMISTRY">Polymer Chemistry</option>
+                            <option value="PLANT_SCIENCE">Plant Science</option>
+                            <option value="MATHS">Maths</option>
+                            <option value="PHYSICS">Physics</option>
+                            <option value="STATISTICS">Statistics</option>
+                        </select>
                         <label>Department</label>
                     </div>
                     <div class="input-group">

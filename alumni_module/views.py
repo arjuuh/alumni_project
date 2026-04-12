@@ -66,6 +66,7 @@ def register(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
+        department = request.POST.get("department")
 
         if password != confirm_password:
             return render(request, "auth/register.html", {"error": "Passwords do not match"})
@@ -76,11 +77,20 @@ def register(request):
         if User.objects.filter(email=email).exists():
             return render(request, "auth/register.html", {"error": "Email already registered"})
 
+        if not department:
+            return render(request, "auth/register.html", {"error": "Please select your department"})
+
         user = User.objects.create_user(username=username, email=email, password=password)
 
-        AlumniProfile.objects.get_or_create(user=user)
+        AlumniProfile.objects.get_or_create(
+            user=user,
+            defaults={"department": department}
+        )
 
-        SystemMetadata.objects.get_or_create(user=user, defaults={"status": "PENDING"})
+        SystemMetadata.objects.get_or_create(
+            user=user,
+            defaults={"status": "PENDING"}
+        )
 
         login(request, user)
         return redirect("complete_profile")
@@ -336,20 +346,19 @@ from .models import (
 @login_required
 def complete_profile(request):
 
-    # 🔒 Ensure metadata exists
     metadata, _ = SystemMetadata.objects.get_or_create(user=request.user)
 
-    # 🚫 If already approved → go to dashboard
     if metadata.status == "APPROVED":
         return redirect("dashboard")
 
-    # 🚫 Prevent resubmission if already completed
     if metadata.profile_completion == 100 and metadata.status == "PENDING":
         return redirect("waiting_approval")
 
     if request.method == "POST":
         try:
             with transaction.atomic():
+
+                department = request.POST.get("department", "")
 
                 # ===== PERSONAL PROFILE =====
                 profile, _ = AlumniProfile.objects.get_or_create(
@@ -365,6 +374,7 @@ def complete_profile(request):
                 profile.state = request.POST.get("state", "")
                 profile.country = request.POST.get("country", "")
                 profile.postal_code = request.POST.get("postal_code", "")
+                profile.department = department   # ✅ IMPORTANT FIX
 
                 if request.FILES.get("photo"):
                     profile.photo = request.FILES.get("photo")
@@ -378,7 +388,7 @@ def complete_profile(request):
 
                 academic.student_id = request.POST.get("student_id", "")
                 academic.degree = request.POST.get("degree", "")
-                academic.department = request.POST.get("department", "")
+                academic.department = department
 
                 academic.year_of_admission = (
                     int(request.POST.get("year_of_admission"))
@@ -422,14 +432,12 @@ def complete_profile(request):
 
                 contact.save()
 
-                # ===== 🔥 APPROVAL TRIGGER (MOST IMPORTANT) =====
+                # ===== APPROVAL TRIGGER =====
                 metadata.profile_completion = 100
                 metadata.status = "PENDING"
                 metadata.save()
 
-                #messages.success(request, "Profile submitted successfully. Waiting for approval.")
                 return redirect("waiting_approval")
-
 
         except Exception as e:
             messages.error(request, f"Error: {str(e)}")

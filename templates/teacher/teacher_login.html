@@ -20,7 +20,7 @@
         .container {
             background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.10);
             padding: 48px;
             width: 100%;
             max-width: 400px;
@@ -42,8 +42,29 @@
         h2 {
             font-size: 28px;
             font-weight: 600;
-            margin-bottom: 32px;
+            margin-bottom: 10px;
             color: #333;
+        }
+
+        .sub-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .msg {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .msg-error {
+            background: #ffe8e8;
+            color: #b42318;
+            border: 1px solid #f5c2c2;
         }
 
         form {
@@ -91,6 +112,26 @@
             transform: translateY(0);
         }
 
+        .home-link {
+            display: inline-block;
+            margin-top: 18px;
+            text-decoration: none;
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .home-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #777;
+            line-height: 1.5;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 32px;
@@ -100,18 +141,38 @@
             h2 {
                 font-size: 24px;
             }
+
+            .sub-text {
+                font-size: 13px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Teacher Login</h2>
+        <p class="sub-text">Login using your department HOD credentials</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="msg msg-error">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Sign In</button>
         </form>
+
+        <a href="/" class="home-link">← Back to Home</a>
+
+        <div class="footer-note">
+            Only authorized department teachers can access this portal.
+        </div>
     </div>
 </body>
 </html>

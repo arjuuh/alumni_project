@@ -1,6 +1,32 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.db import models
+from django.contrib.auth.models import User
+
+DEPARTMENT_CHOICES = [
+    ('CS', 'Computer Science'),
+    ('MALAYALAM', 'Malayalam'),
+    ('ENGLISH', 'English'),
+    ('BCOM', 'BCom'),
+    ('HISTORY', 'History'),
+    ('ECONOMICS', 'Economics'),
+    ('ZOOLOGY', 'Zoology'),
+    ('POLYMER_CHEMISTRY', 'Polymer Chemistry'),
+    ('PLANT_SCIENCE', 'Plant Science'),
+    ('MATHS', 'Maths'),
+    ('PHYSICS', 'Physics'),
+    ('STATISTICS', 'Statistics'),
+]
+
+class TeacherProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.CharField(max_length=30, choices=DEPARTMENT_CHOICES)
+    is_hod = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.department}"
+
 class Alumni(models.Model):
     STATUS_CHOICES = [
         ("PENDING", "Pending"),
@@ -44,5 +70,7 @@ class EventPost(models.Model):
 
     def __str__(self):
         return self.title
+    
+
     
 

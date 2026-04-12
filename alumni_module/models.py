@@ -1,8 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+DEPARTMENT_CHOICES = [
+    ('CS', 'Computer Science'),
+    ('MALAYALAM', 'Malayalam'),
+    ('ENGLISH', 'English'),
+    ('BCOM', 'BCom'),
+    ('HISTORY', 'History'),
+    ('ECONOMICS', 'Economics'),
+    ('ZOOLOGY', 'Zoology'),
+    ('POLYMER_CHEMISTRY', 'Polymer Chemistry'),
+    ('PLANT_SCIENCE', 'Plant Science'),
+    ('MATHS', 'Maths'),
+    ('PHYSICS', 'Physics'),
+    ('STATISTICS', 'Statistics'),
+]
 class AlumniProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.CharField(max_length=30, choices=DEPARTMENT_CHOICES, null=True, blank=True)
 
     # Personal Info
     first_name = models.CharField(max_length=100, blank=True)

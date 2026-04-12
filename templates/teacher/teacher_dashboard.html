@@ -41,7 +41,6 @@
             min-height: 100vh;
         }
 
-        /* ── SIDEBAR ── */
         .sidebar {
             width: var(--sidebar-w);
             background: var(--sidebar);
@@ -51,30 +50,6 @@
             display: flex;
             flex-direction: column;
             z-index: 100;
-        }
-
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 24px 20px 22px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-        }
-
-        .brand-icon {
-            width: 34px; height: 34px;
-            background: var(--primary);
-            border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 15px;
-            flex-shrink: 0;
-        }
-
-        .brand-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: -0.2px;
         }
 
         .nav-section {
@@ -140,32 +115,6 @@
             border-radius: 0 3px 3px 0;
         }
 
-        .sidebar-bottom {
-            padding: 16px 12px 24px;
-            border-top: 1px solid rgba(255,255,255,0.07);
-        }
-
-        .logout-nav {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 10px;
-            border-radius: 9px;
-            color: rgba(255,255,255,0.45);
-            font-size: 13px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.18s;
-        }
-
-        .logout-nav:hover {
-            background: rgba(255,101,132,0.12);
-            color: #ff8fa3;
-        }
-
-        .logout-nav i { width: 17px; text-align: center; font-size: 13px; }
-
-        /* ── MAIN ── */
         .main {
             margin-left: var(--sidebar-w);
             flex: 1;
@@ -173,7 +122,6 @@
             flex-direction: column;
         }
 
-        /* ── TOPBAR ── */
         .topbar {
             height: 60px;
             background: var(--white);
@@ -236,10 +184,8 @@
 
         .t-name { font-size: 13.5px; font-weight: 600; color: var(--text); }
 
-        /* ── PAGE ── */
         .page { padding: 30px 32px; }
 
-        /* ── WELCOME STRIP ── */
         .welcome-strip {
             background: linear-gradient(120deg, var(--sidebar) 0%, #4a3fa8 60%, #6c63ff 100%);
             border-radius: var(--radius);
@@ -314,7 +260,6 @@
         .ws-badge-num { font-size: 22px; font-weight: 800; color: white; line-height: 1; }
         .ws-badge-lbl { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 3px; font-weight: 500; }
 
-        /* ── STATS ── */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -345,13 +290,12 @@
         }
 
         .si-p { background: var(--primary-light); color: var(--primary); }
-        .si-g { background: var(--green-bg);      color: var(--green); }
-        .si-o { background: var(--orange-bg);     color: var(--orange); }
+        .si-g { background: var(--green-bg); color: var(--green); }
+        .si-o { background: var(--orange-bg); color: var(--orange); }
 
         .stat-val { font-size: 24px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -0.5px; }
         .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
 
-        /* ── TWO COL ── */
         .two-col {
             display: grid;
             grid-template-columns: 1fr 290px;
@@ -359,7 +303,6 @@
             align-items: start;
         }
 
-        /* ── CARD ── */
         .card {
             background: var(--white);
             border-radius: var(--radius);
@@ -401,7 +344,6 @@
 
         .card-link:hover { text-decoration: underline; }
 
-        /* ── VERIFY HIGHLIGHT CARD ── */
         .verify-card {
             background: linear-gradient(135deg, var(--primary-light) 0%, #f5f3ff 100%);
             border: 1.5px solid rgba(108,99,255,0.2);
@@ -428,7 +370,7 @@
 
         .vc-text { flex: 1; }
         .vc-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-        .vc-sub   { font-size: 12.5px; color: var(--muted); }
+        .vc-sub { font-size: 12.5px; color: var(--muted); }
 
         .vc-btn {
             display: inline-flex;
@@ -452,7 +394,6 @@
 
         .vc-btn:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 5px 16px rgba(108,99,255,0.4); }
 
-        /* ── TABLE ── */
         .tbl { width: 100%; border-collapse: collapse; }
 
         .tbl th {
@@ -496,8 +437,7 @@
             font-size: 11px; font-weight: 600;
         }
 
-        .pill-pending  { background: var(--orange-bg); color: var(--orange); }
-        .pill-verified { background: var(--green-bg);  color: var(--green); }
+        .pill-pending { background: var(--orange-bg); color: var(--orange); }
 
         .btn-v {
             display: inline-flex; align-items: center; gap: 5px;
@@ -511,10 +451,7 @@
 
         .btn-v:hover { background: var(--primary-dark); }
 
-        /* ── RIGHT PANEL ── */
-        .teacher-panel {
-            text-align: center;
-        }
+        .teacher-panel { text-align: center; }
 
         .tp-av {
             width: 64px; height: 64px;
@@ -541,62 +478,61 @@
 
         .tp-meta { text-align: left; display: flex; flex-direction: column; gap: 10px; }
 
-        .tp-row { display: flex; align-items: center; justify-content: space-between; }
+        .tp-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .tp-lbl { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
         .tp-lbl i { color: var(--primary); font-size: 11px; width: 13px; }
-        .tp-val { font-size: 12.5px; font-weight: 600; color: var(--text); }
+        .tp-val { font-size: 12.5px; font-weight: 600; color: var(--text); text-align: right; }
 
-        /* ── ACTIVITY FEED ── */
-        .feed { display: flex; flex-direction: column; gap: 0; }
-
-        .feed-item {
-            display: flex; align-items: flex-start; gap: 12px;
-            padding: 13px 0;
-            border-bottom: 1px solid #f3f4f6;
+        @media (max-width: 1100px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .feed-item:last-child { border-bottom: none; }
+        @media (max-width: 760px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
 
-        .feed-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            margin-top: 5px;
-            flex-shrink: 0;
+            .welcome-strip {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .ws-right {
+                width: 100%;
+            }
+
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .page {
+                padding: 20px 16px;
+            }
         }
-
-        .fd-p { background: var(--primary); }
-        .fd-g { background: var(--green); }
-        .fd-o { background: var(--orange); }
-
-        .feed-text { font-size: 12.5px; color: var(--text); line-height: 1.5; }
-        .feed-time { font-size: 11px; color: var(--light); margin-top: 2px; }
-
-        /* ── ANIMATIONS ── */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .welcome-strip { animation: fadeUp 0.4s ease both; }
-        .stats-row     { animation: fadeUp 0.4s 0.07s ease both; }
-        .two-col       { animation: fadeUp 0.4s 0.13s ease both; }
     </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
     <div class="nav-section">
         <div class="nav-label">Menu</div>
 
-        <a href="{% url 'teacher_dashboard' %}" 
-        class="nav-item {% if request.resolver_match.url_name == 'teacher_dashboard' %}active{% endif %}">
+        <a href="{% url 'teacher_dashboard' %}"
+           class="nav-item {% if request.resolver_match.url_name == 'teacher_dashboard' %}active{% endif %}">
             <i class="fas fa-th-large"></i> Dashboard
         </a>
 
-        <a href="{% url 'verify_alumni' %}" 
-        class="nav-item {% if request.resolver_match.url_name == 'verify_alumni' %}active{% endif %}">
+        <a href="{% url 'verify_alumni' %}"
+           class="nav-item {% if request.resolver_match.url_name == 'verify_alumni' %}active{% endif %}">
             <i class="fas fa-user-check"></i> Verify Alumni
+        </a>
+
+        <a href="{% url 'approved_alumni' %}"
+           class="nav-item {% if request.resolver_match.url_name == 'approved_alumni' %}active{% endif %}">
+            <i class="fas fa-user-graduate"></i> Approved Alumni
         </a>
 
         <div class="nav-label" style="margin-top:15px;">Opportunities</div>
@@ -611,10 +547,8 @@
     </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main">
 
-    <!-- TOPBAR -->
     <div class="topbar">
         <div class="topbar-title">Teacher Dashboard</div>
         <div class="topbar-right">
@@ -626,15 +560,15 @@
         </div>
     </div>
 
-    <!-- PAGE -->
     <div class="page">
 
-        <!-- WELCOME STRIP -->
         <div class="welcome-strip">
             <div class="ws-left">
-                <div class="ws-greeting">Teacher Control Panel</div>
+                <div class="ws-greeting">Department Teacher Panel</div>
                 <div class="ws-name">Hello, {{ request.user.username }}! 👋</div>
-                <div class="ws-sub">Manage alumni verifications and student records from here.</div>
+                <div class="ws-sub">
+                    Manage {{ teacher_profile.get_department_display }} department alumni records and verification requests.
+                </div>
             </div>
             <div class="ws-right">
                 <div class="ws-badge">
@@ -642,19 +576,18 @@
                     <div class="ws-badge-lbl">Pending</div>
                 </div>
                 <div class="ws-badge">
-                    <div class="ws-badge-num">{{ verified_count }}</div>
-                    <div class="ws-badge-lbl">Verified</div>
+                    <div class="ws-badge-num">{{ approved_count }}</div>
+                    <div class="ws-badge-lbl">Approved</div>
                 </div>
             </div>
         </div>
 
-        <!-- STATS -->
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-icon si-p"><i class="fas fa-user-check"></i></div>
                 <div>
-                    <div class="stat-val">{{ verified_count }}</div>
-                    <div class="stat-lbl">Verified Alumni</div>
+                    <div class="stat-val">{{ approved_count }}</div>
+                    <div class="stat-lbl">Approved Alumni</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -667,31 +600,26 @@
             <div class="stat-card">
                 <div class="stat-icon si-g"><i class="fas fa-users"></i></div>
                 <div>
-                    <div class="stat-val">{{ total_alumni }}</div>
-                    <div class="stat-lbl">Total Alumni</div>
+                    <div class="stat-val">{{ department_students_count }}</div>
+                    <div class="stat-lbl">Department Alumni</div>
                 </div>
             </div>
         </div>
 
-        <!-- TWO COL -->
         <div class="two-col">
 
-            <!-- LEFT -->
             <div>
-
-                <!-- VERIFY CTA -->
                 <div class="verify-card">
                     <div class="vc-icon"><i class="fas fa-user-check"></i></div>
                     <div class="vc-text">
                         <div class="vc-title">Verify Alumni</div>
-                        <div class="vc-sub">Review and approve pending alumni registration requests.</div>
+                        <div class="vc-sub">Review and approve pending alumni requests from your department.</div>
                     </div>
                     <a href="{% url 'verify_alumni' %}" class="vc-btn">
                         <i class="fas fa-arrow-right"></i> Go to Verify
                     </a>
                 </div>
 
-                <!-- PENDING TABLE -->
                 <div class="card">
                     <div class="card-hdr">
                         <div class="card-title"><i class="fas fa-user-clock"></i> Pending Verifications</div>
@@ -701,7 +629,7 @@
                         <thead>
                             <tr>
                                 <th>Alumni</th>
-                                <th>Batch</th>
+                                <th>Department</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -716,17 +644,21 @@
                                     </div>
                                     <div>
                                         <div class="p-n">
-                                            {{ request.user.first_name }} {{ request.user.last_name }}
+                                            {% if request.user.first_name or request.user.last_name %}
+                                                {{ request.user.first_name }} {{ request.user.last_name }}
+                                            {% else %}
+                                                {{ request.user.username }}
+                                            {% endif %}
                                         </div>
                                         <div class="p-d">
-                                            {{ request.user.email }}
+                                            {{ request.user.email|default:"—" }}
                                         </div>
                                     </div>
                                 </div>
                             </td>
 
                             <td style="color:var(--muted);font-size:12.5px">
-                                {{ request.user.alumniprofile.academicdetails.passout_year|default:"—" }}
+                                {{ request.user.alumniprofile.get_department_display|default:"—" }}
                             </td>
 
                             <td>
@@ -742,36 +674,41 @@
                         {% empty %}
                         <tr>
                             <td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
-                                No pending requests
+                                No pending requests in your department
                             </td>
                         </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-            </div><!-- /left -->
-
-            <!-- RIGHT -->
             <div>
-
-                <!-- TEACHER PROFILE -->
                 <div class="card teacher-panel">
                     <div class="tp-av">{{ request.user.username|first|upper }}</div>
                     <div class="tp-name">{{ request.user.username }}</div>
-                    <div class="tp-role">Teacher · AlumniHub</div>
-                    <div class="tp-badge"><i class="fas fa-chalkboard-teacher"></i> Teacher</div>
+                    <div class="tp-role">Department HOD · AlumniHub</div>
+                    <div class="tp-badge">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        {{ teacher_profile.get_department_display }}
+                    </div>
 
                     <div class="tp-divider"></div>
 
                     <div class="tp-meta">
                         <div class="tp-row">
                             <span class="tp-lbl"><i class="fas fa-envelope"></i> Email</span>
-                            <span class="tp-val" style="font-size:11.5px;max-width:140px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ request.user.email|default:"—" }}</span>
+                            <span class="tp-val" style="font-size:11.5px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                {{ request.user.email|default:"—" }}
+                            </span>
+                        </div>
+                        <div class="tp-row">
+                            <span class="tp-lbl"><i class="fas fa-building"></i> Department</span>
+                            <span class="tp-val">{{ teacher_profile.get_department_display }}</span>
                         </div>
                         <div class="tp-row">
                             <span class="tp-lbl"><i class="fas fa-shield-alt"></i> Access</span>
-                            <span class="tp-val">Admin</span>
+                            <span class="tp-val">Department Level</span>
                         </div>
                         <div class="tp-row">
                             <span class="tp-lbl"><i class="fas fa-calendar"></i> Joined</span>
@@ -779,9 +716,11 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-    </div><!-- /page -->
-</div><!-- /main -->
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
