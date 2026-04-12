@@ -430,6 +430,7 @@ def complete_profile(request):
                 #messages.success(request, "Profile submitted successfully. Waiting for approval.")
                 return redirect("waiting_approval")
 
+
         except Exception as e:
             messages.error(request, f"Error: {str(e)}")
             return redirect("complete_profile")
