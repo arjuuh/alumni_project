@@ -1,418 +1,848 @@
-{% extends "teacher/teacher_base.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alumni Details – AlumniHub</title>
 
-{% block title %}Alumni Details{% endblock %}
-{% block topbar_title %}Alumni Details{% endblock %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-{% block page_content %}
 <style>
-    .detail-wrap{
-        max-width: 1100px;
-        margin: 0 auto;
-    }
+:root {
+    --primary: #6c63ff;
+    --primary-dark: #574fd6;
+    --primary-light: #edeaff;
+    --accent: #ff6584;
+    --green: #22c55e;
+    --green-bg: #dcfce7;
+    --orange: #f97316;
+    --orange-bg: #fff3e8;
+    --red: #ef4444;
+    --red-bg: #fee2e2;
+    --bg: #f2f3f7;
+    --white: #ffffff;
+    --text: #1c1c2e;
+    --muted: #6b7280;
+    --light: #9ca3af;
+    --border: #e5e7eb;
+    --shadow: 0 2px 10px rgba(0,0,0,0.06);
+    --shadow-hover: 0 8px 28px rgba(108,99,255,0.15);
+    --radius: 14px;
+}
 
-    .detail-header{
-        background: linear-gradient(135deg, #6C63FF, #8B85FF);
-        color: #fff;
-        border-radius: 24px;
-        padding: 28px 30px;
-        box-shadow: 0 12px 30px rgba(108,99,255,0.18);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-        margin-bottom: 24px;
-    }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .detail-user{
-        display: flex;
-        align-items: center;
-        gap: 18px;
-    }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
 
-    .detail-avatar,
-    .detail-avatar-img{
-        width: 82px;
-        height: 82px;
-        border-radius: 50%;
-        object-fit: cover;
-        background: rgba(255,255,255,0.18);
-        border: 3px solid rgba(255,255,255,0.35);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 28px;
-        font-weight: 700;
-        color: #fff;
-    }
+/* ── MAIN ── */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
-    .detail-name{
-        font-size: 28px;
-        font-weight: 800;
-        margin: 0 0 6px;
-    }
+/* ── TOPBAR ── */
+.topbar {
+    height: 60px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
 
-    .detail-sub{
-        margin: 0;
-        font-size: 14px;
-        opacity: 0.95;
-    }
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-    .status-badge{
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 10px 16px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.18);
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: .3px;
-    }
+.back-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+}
 
-    .grid{
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-    }
+.back-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary-light); }
 
-    .info-card{
-        background: #fff;
-        border-radius: 22px;
-        padding: 22px 22px 12px;
-        box-shadow: 0 10px 28px rgba(0,0,0,0.06);
-        border: 1px solid #f0f0f7;
-    }
+.topbar-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
 
-    .info-card h3{
-        margin: 0 0 18px;
-        font-size: 19px;
-        font-weight: 800;
-        color: #2d2d2d;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+.topbar-breadcrumb .crumb-active {
+    color: var(--text);
+    font-weight: 600;
+}
 
-    .info-row{
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 12px 0;
-        border-bottom: 1px solid #f1f1f6;
-    }
+.topbar-breadcrumb i { font-size: 10px; }
 
-    .info-row:last-child{
-        border-bottom: none;
-    }
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .label{
-        color: #7a7f92;
-        font-weight: 600;
-        min-width: 160px;
-    }
+.t-bell {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+}
 
-    .value{
-        color: #222;
-        font-weight: 700;
-        text-align: right;
-        word-break: break-word;
-    }
+.t-bell:hover { background: var(--bg); }
 
-    .value.muted{
-        color: #9aa0b1;
-        font-weight: 600;
-    }
+.t-user {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 10px 4px 4px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
 
-    .action-bar{
-        margin-top: 26px;
-        display: flex;
-        gap: 14px;
-        flex-wrap: wrap;
-    }
+.t-user:hover { background: var(--bg); }
 
-    .btn-action{
-        text-decoration: none;
-        padding: 12px 22px;
-        border-radius: 14px;
-        font-weight: 700;
-        font-size: 14px;
-        transition: .2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
+.t-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #a78bfa);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+}
 
-    .btn-approve{
-        background: linear-gradient(135deg, #16a34a, #22c55e);
-        color: #fff;
-        box-shadow: 0 10px 22px rgba(34,197,94,0.22);
-    }
+.t-name { font-size: 13px; font-weight: 600; color: var(--text); }
 
-    .btn-approve:hover{
-        transform: translateY(-2px);
-    }
+/* ── PAGE ── */
+.page {
+    padding: 32px;
+    flex: 1;
+}
 
-    .btn-reject{
-        background: linear-gradient(135deg, #ef4444, #f87171);
-        color: #fff;
-        box-shadow: 0 10px 22px rgba(239,68,68,0.22);
-    }
+/* ── HERO CARD ── */
+.hero-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.4s ease both;
+    box-shadow: var(--shadow);
+}
 
-    .btn-reject:hover{
-        transform: translateY(-2px);
-    }
+.hero-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
 
-    .btn-back{
-        background: #f4f5fb;
-        color: #444;
-    }
+.hero-avatar {
+    width: 68px; height: 68px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #2d2a5e, #6c63ff);
+    color: white;
+    font-size: 24px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: -1px;
+    flex-shrink: 0;
+    box-shadow: 0 6px 18px rgba(108,99,255,0.28);
+}
 
-    .btn-back:hover{
-        transform: translateY(-2px);
-        background: #eceef8;
-    }
+.hero-info {}
 
-    @media (max-width: 768px){
-        .grid{
-            grid-template-columns: 1fr;
-        }
+.hero-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.4px;
+    margin-bottom: 4px;
+}
 
-        .detail-header{
-            padding: 22px;
-        }
+.hero-email {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 14px;
+}
 
-        .detail-name{
-            font-size: 23px;
-        }
+.hero-email i { color: var(--primary); font-size: 11px; }
 
-        .info-row{
-            flex-direction: column;
-            align-items: flex-start;
-        }
+.hero-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
 
-        .value{
-            text-align: left;
-        }
-    }
+.hero-tag {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 5px 11px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #d5d0ff;
+}
+
+.hero-tag i { font-size: 10px; opacity: 0.8; }
+
+.hero-right {}
+
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    border-radius: 10px;
+    padding: 10px 18px;
+}
+
+.status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.2);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(245,158,11,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(245,158,11,0.08); }
+}
+
+.status-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #92400e;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+/* ── GRID LAYOUT ── */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: start;
+}
+
+/* ── CARDS ── */
+.card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: fadeUp 0.4s 0.1s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+}
+
+.card:nth-child(2) { animation-delay: 0.15s; }
+.card:nth-child(3) { animation-delay: 0.2s; }
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.card-header-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.icon-purple { background: var(--primary-light); color: var(--primary); }
+.icon-blue   { background: #dbeafe; color: #3b82f6; }
+.icon-green  { background: var(--green-bg); color: var(--green); }
+.icon-orange { background: var(--orange-bg); color: var(--orange); }
+
+.card-header-text {}
+.card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+}
+.card-subtitle {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 1px;
+}
+
+.card-body { padding: 22px; }
+
+/* ── INFO ROWS ── */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.info-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.info-item:nth-last-child(-n+2) { border-bottom: none; }
+
+.info-item:nth-child(odd) { padding-right: 20px; }
+.info-item:nth-child(even) { padding-left: 20px; border-left: 1px solid var(--border); }
+
+.info-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--light);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.info-value {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.info-value.empty { color: var(--light); font-weight: 400; }
+
+/* ── SINGLE FIELD ── */
+.info-single {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info-single:last-child { border-bottom: none; }
+
+.info-single .info-label { margin-bottom: 0; }
+.info-single .info-value { text-align: right; }
+
+/* ── SIDE PANEL ── */
+.side-stack { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── QUICK INFO ── */
+.quick-stat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.quick-stat:last-child { border-bottom: none; }
+
+.qs-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.qs-text {}
+.qs-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-bottom: 2px; }
+.qs-value { font-size: 13.5px; font-weight: 700; color: var(--text); }
+
+/* ── ACTIONS CARD ── */
+.actions-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 22px;
+    animation: fadeUp 0.4s 0.25s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+}
+
+.actions-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.actions-title i { color: var(--primary); font-size: 13px; }
+
+.btn-approve {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, var(--green), #16a34a);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 12px rgba(34,197,94,0.25);
+}
+
+.btn-approve:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(34,197,94,0.35);
+}
+
+.btn-reject {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 18px;
+    background: white;
+    color: var(--red);
+    border: 1.5px solid #fecaca;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-reject:hover {
+    background: var(--red-bg);
+    border-color: #fca5a5;
+    transform: translateY(-1px);
+}
+
+.action-note {
+    margin-top: 12px;
+    font-size: 11.5px;
+    color: var(--light);
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+
+.tl-item {
+    display: flex;
+    gap: 12px;
+    padding-bottom: 16px;
+    position: relative;
+}
+
+.tl-item:last-child { padding-bottom: 0; }
+
+.tl-item:last-child .tl-line { display: none; }
+
+.tl-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.tl-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.tl-line {
+    width: 1px;
+    flex: 1;
+    background: var(--border);
+    margin: 4px 0;
+    min-height: 16px;
+}
+
+.tl-content { padding-top: 4px; flex: 1; }
+
+.tl-title { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.tl-sub { font-size: 11.5px; color: var(--muted); }
+
+/* ── ANIMATION ── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-card   { animation: fadeUp 0.4s ease both; }
+.content-grid { animation: fadeUp 0.4s 0.08s ease both; opacity: 0; animation-fill-mode: both; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+    .content-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-item:nth-child(even) { border-left: none; padding-left: 0; }
+    .info-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+    .info-item:last-child { border-bottom: none; }
+}
 </style>
+</head>
 
-<div class="detail-wrap">
+<body>
 
-    <div class="detail-header">
-        <div class="detail-user">
-            {% if profile and profile.photo %}
-                <img src="{{ profile.photo.url }}" alt="Profile Photo" class="detail-avatar-img">
-            {% else %}
-                <div class="detail-avatar">
-                    {{ alumni_user.username|first|upper }}
-                </div>
-            {% endif %}
+<!-- MAIN -->
+<div class="main">
 
-            <div>
-                <h2 class="detail-name">
-                    {% if profile and profile.first_name or profile.last_name %}
-                        {{ profile.first_name }} {{ profile.last_name }}
-                    {% else %}
-                        {{ alumni_user.username }}
-                    {% endif %}
-                </h2>
-                <p class="detail-sub">{{ alumni_user.email }}</p>
-                <p class="detail-sub">Username: {{ alumni_user.username }}</p>
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="{% url 'verify_alumni' %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="topbar-breadcrumb">
+                <span>Verify Alumni</span>
+                <i class="fas fa-chevron-right"></i>
+                <span class="crumb-active">{{ profile.first_name }} {{ profile.last_name }}</span>
             </div>
         </div>
-
-        <div class="status-badge">
-            Status:
-            {% if metadata and metadata.status %}
-                {{ metadata.status }}
-            {% else %}
-                PENDING
-            {% endif %}
+        <div class="topbar-right">
+            <button class="t-bell"><i class="fas fa-bell"></i></button>
+            <div class="t-user">
+                <div class="t-avatar">{{ request.user.username|first|upper }}</div>
+                <span class="t-name">{{ request.user.username }}</span>
+            </div>
         </div>
     </div>
 
-    <div class="grid">
+    <!-- PAGE -->
+    <div class="page">
 
-        <!-- BASIC INFO -->
-        <div class="info-card">
-            <h3>👤 Basic Information</h3>
-
-            <div class="info-row">
-                <div class="label">First Name</div>
-                <div class="value {% if not profile or not profile.first_name %}muted{% endif %}">
-                    {% if profile and profile.first_name %}{{ profile.first_name }}{% else %}Not added{% endif %}
+        <!-- HERO -->
+        <div class="hero-card">
+            <div class="hero-left">
+                <div class="hero-avatar">{{ profile.first_name|first|upper }}{{ profile.last_name|first|upper }}</div>
+                <div class="hero-info">
+                    <div class="hero-name">{{ profile.first_name }} {{ profile.last_name }}</div>
+                    <div class="hero-email">
+                        <i class="fas fa-envelope"></i>
+                        {{ alumni_user.email }}
+                    </div>
+                    <div class="hero-tags">
+                        <div class="hero-tag">
+                            <i class="fas fa-building"></i>
+                            {{ academic.get_department_display|default:"Department N/A" }}
+                        </div>
+                        <div class="hero-tag">
+                            <i class="fas fa-graduation-cap"></i>
+                            {{ academic.get_degree_display|default:"Degree N/A" }}
+                        </div>
+                        <div class="hero-tag">
+                            <i class="fas fa-calendar-alt"></i>
+                            Batch {{ academic.year_of_graduation|default:"N/A" }}
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="info-row">
-                <div class="label">Last Name</div>
-                <div class="value {% if not profile or not profile.last_name %}muted{% endif %}">
-                    {% if profile and profile.last_name %}{{ profile.last_name }}{% else %}Not added{% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Date of Birth</div>
-                <div class="value {% if not profile or not profile.date_of_birth %}muted{% endif %}">
-                    {% if profile and profile.date_of_birth %}{{ profile.date_of_birth }}{% else %}Not added{% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Gender</div>
-                <div class="value {% if not profile or not profile.gender %}muted{% endif %}">
-                    {% if profile and profile.gender %}{{ profile.gender }}{% else %}Not added{% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Email</div>
-                <div class="value">{{ alumni_user.email }}</div>
-            </div>
-        </div>
-
-        <!-- ACADEMIC DETAILS -->
-        <div class="info-card">
-            <h3>🎓 Academic Details</h3>
-
-            <div class="info-row">
-                <div class="label">Department</div>
-                <div class="value {% if not academic or not academic.department %}muted{% endif %}">
-                    {% if academic and academic.department %}{{ academic.department }}{% else %}Not added{% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Student ID</div>
-                <div class="value {% if not academic or not academic.student_id %}muted{% endif %}">
-                    {% if academic and academic.student_id %}{{ academic.student_id }}{% else %}Not added{% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Degree / Programme</div>
-                <div class="value {% if not academic or not academic.degree %}muted{% endif %}">
-                    {% if academic and academic.degree %}{{ academic.degree }}{% else %}Not added{% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Year of Admission</div>
-                <div class="value {% if not academic or not academic.year_of_admission %}muted{% endif %}">
-                    {% if academic and academic.year_of_admission %}{{ academic.year_of_admission }}{% else %}Not added{% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Year of Graduation</div>
-                <div class="value {% if not academic or not academic.year_of_graduation %}muted{% endif %}">
-                    {% if academic and academic.year_of_graduation %}{{ academic.year_of_graduation }}{% else %}Not added{% endif %}
+            <div class="hero-right">
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <div class="status-label">Pending Review</div>
                 </div>
             </div>
         </div>
 
-        <!-- PROFESSIONAL DETAILS -->
-        <div class="info-card">
-            <h3>💼 Professional Details</h3>
+        <!-- CONTENT GRID -->
+        <div class="content-grid">
 
-            <div class="info-row">
-                <div class="label">Current Designation</div>
-                <div class="value {% if not professional or not professional.current_designation %}muted{% endif %}">
-                    {% if professional and professional.current_designation %}{{ professional.current_designation }}{% else %}Not added{% endif %}
+            <!-- LEFT COLUMN -->
+            <div style="display:flex;flex-direction:column;gap:20px;">
+
+                <!-- PERSONAL INFO -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon icon-purple">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="card-header-text">
+                            <div class="card-title">Personal Information</div>
+                            <div class="card-subtitle">Basic profile details</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-venus-mars"></i> Gender</div>
+                                <div class="info-value {% if not profile.gender %}empty{% endif %}">
+                                    {{ profile.gender|default:"Not provided" }}
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
+                                <div class="info-value">{{ alumni_user.email }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- ACADEMIC INFO -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon icon-blue">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="card-header-text">
+                            <div class="card-title">Academic Information</div>
+                            <div class="card-subtitle">Educational background & records</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-building"></i> Department</div>
+                                <div class="info-value {% if not academic.get_department_display %}empty{% endif %}">
+                                    {{ academic.get_department_display|default:"Not provided" }}
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-scroll"></i> Degree</div>
+                                <div class="info-value {% if not academic.get_degree_display %}empty{% endif %}">
+                                    {{ academic.get_degree_display|default:"Not provided" }}
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-id-card"></i> Student ID</div>
+                                <div class="info-value {% if not academic.student_id %}empty{% endif %}">
+                                    {{ academic.student_id|default:"Not provided" }}
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-calendar-plus"></i> Admission Year</div>
+                                <div class="info-value {% if not academic.year_of_admission %}empty{% endif %}">
+                                    {{ academic.year_of_admission|default:"Not provided" }}
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-calendar-check"></i> Graduation Year</div>
+                                <div class="info-value {% if not academic.year_of_graduation %}empty{% endif %}">
+                                    {{ academic.year_of_graduation|default:"Not provided" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROFESSIONAL INFO -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon icon-orange">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="card-header-text">
+                            <div class="card-title">Professional Information</div>
+                            <div class="card-subtitle">Current employment details</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-building"></i> Company</div>
+                                <div class="info-value {% if not professional.current_company %}empty{% endif %}">
+                                    {{ professional.current_company|default:"Not provided" }}
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-user-tie"></i> Designation</div>
+                                <div class="info-value {% if not professional.current_designation %}empty{% endif %}">
+                                    {{ professional.current_designation|default:"Not provided" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="info-row">
-                <div class="label">Current Company</div>
-                <div class="value {% if not professional or not professional.current_company %}muted{% endif %}">
-                    {% if professional and professional.current_company %}{{ professional.current_company }}{% else %}Not added{% endif %}
-                </div>
-            </div>
+            <!-- RIGHT COLUMN (SIDEBAR) -->
+            <div class="side-stack">
 
-            <div class="info-row">
-                <div class="label">Year of Experience</div>
-                <div class="value {% if not professional or not professional.year_of_experience %}muted{% endif %}">
-                    {% if professional and professional.year_of_experience %}{{ professional.year_of_experience }}{% else %}Not added{% endif %}
-                </div>
-            </div>
+                <!-- ACTION CARD -->
+                <div class="actions-card">
+                    <div class="actions-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Verification Decision
+                    </div>
 
-            <div class="info-row">
-                <div class="label">Phone Number</div>
-                <div class="value {% if not contact or not contact.phone_number %}muted{% endif %}">
-                    {% if contact and contact.phone_number %}{{ contact.phone_number }}{% else %}Not added{% endif %}
-                </div>
-            </div>
+                    <a href="{% url 'approve_alumni' alumni_user.id %}" class="btn-approve">
+                        <i class="fas fa-check-circle"></i>
+                        Approve Alumni
+                    </a>
 
-            <div class="info-row">
-                <div class="label">LinkedIn Profile</div>
-                <div class="value {% if not professional or not professional.linkedin_profile %}muted{% endif %}">
-                    {% if professional and professional.linkedin_profile %}
-                        <a href="{{ professional.linkedin_profile }}" target="_blank" style="color:#6C63FF;text-decoration:none;font-weight:700;">
-                            View Profile
-                        </a>
-                    {% else %}
-                        Not added
-                    {% endif %}
+                    <a href="{% url 'reject_alumni' alumni_user.id %}" class="btn-reject">
+                        <i class="fas fa-times-circle"></i>
+                        Reject Request
+                    </a>
+
+                    <div class="action-note">
+                        <i class="fas fa-info-circle"></i>
+                        This action will notify the alumni via email.
+                    </div>
                 </div>
+
+                <!-- QUICK SUMMARY -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon icon-green">
+                            <i class="fas fa-list-ul"></i>
+                        </div>
+                        <div class="card-header-text">
+                            <div class="card-title">Quick Summary</div>
+                            <div class="card-subtitle">At a glance</div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding-top:10px;padding-bottom:10px;">
+
+                        <div class="quick-stat">
+                            <div class="qs-icon icon-purple"><i class="fas fa-hashtag"></i></div>
+                            <div class="qs-text">
+                                <div class="qs-label">Student ID</div>
+                                <div class="qs-value">{{ academic.student_id|default:"—" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="quick-stat">
+                            <div class="qs-icon icon-blue"><i class="fas fa-university"></i></div>
+                            <div class="qs-text">
+                                <div class="qs-label">Department</div>
+                                <div class="qs-value">{{ academic.get_department_display|default:"—" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="quick-stat">
+                            <div class="qs-icon icon-orange"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="qs-text">
+                                <div class="qs-label">Graduation Year</div>
+                                <div class="qs-value">{{ academic.year_of_graduation|default:"—" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="quick-stat">
+                            <div class="qs-icon icon-green"><i class="fas fa-briefcase"></i></div>
+                            <div class="qs-text">
+                                <div class="qs-label">Current Role</div>
+                                <div class="qs-value">{{ professional.current_designation|default:"—" }}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- VERIFICATION STEPS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon icon-purple">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="card-header-text">
+                            <div class="card-title">Review Checklist</div>
+                            <div class="card-subtitle">Verification steps</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+
+                            <div class="tl-item">
+                                <div class="tl-dot-wrap">
+                                    <div class="tl-dot icon-green"><i class="fas fa-check" style="color:var(--green)"></i></div>
+                                    <div class="tl-line"></div>
+                                </div>
+                                <div class="tl-content">
+                                    <div class="tl-title">Registration Submitted</div>
+                                    <div class="tl-sub">Alumni completed signup form</div>
+                                </div>
+                            </div>
+
+                            <div class="tl-item">
+                                <div class="tl-dot-wrap">
+                                    <div class="tl-dot icon-orange"><i class="fas fa-eye" style="color:var(--orange)"></i></div>
+                                    <div class="tl-line"></div>
+                                </div>
+                                <div class="tl-content">
+                                    <div class="tl-title">Under Review</div>
+                                    <div class="tl-sub">Details being verified by teacher</div>
+                                </div>
+                            </div>
+
+                            <div class="tl-item">
+                                <div class="tl-dot-wrap">
+                                    <div class="tl-dot" style="background:var(--border);"><i class="fas fa-user-check" style="color:var(--light)"></i></div>
+                                </div>
+                                <div class="tl-content">
+                                    <div class="tl-title" style="color:var(--muted)">Approval / Rejection</div>
+                                    <div class="tl-sub">Final verification decision</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
+            <!-- /right column -->
+
         </div>
-
-        <!-- SUMMARY -->
-        <div class="info-card">
-            <h3>📝 Registration Summary</h3>
-
-            <div class="info-row">
-                <div class="label">Username</div>
-                <div class="value">{{ alumni_user.username }}</div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Registered Email</div>
-                <div class="value">{{ alumni_user.email }}</div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Profile Status</div>
-                <div class="value">
-                    {% if metadata and metadata.status %}
-                        {{ metadata.status }}
-                    {% else %}
-                        PENDING
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="info-row">
-                <div class="label">Approval</div>
-                <div class="value">
-                    {% if metadata and metadata.status == "APPROVED" %}
-                        Approved
-                    {% elif metadata and metadata.status == "REJECTED" %}
-                        Rejected
-                    {% else %}
-                        Pending
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+        <!-- /content-grid -->
 
     </div>
-
-    <div class="action-bar">
-        <a href="{% url 'approve_alumni' alumni_user.id %}" class="btn-action btn-approve">
-            ✓ Approve
-        </a>
-
-        <a href="{% url 'reject_alumni' alumni_user.id %}" class="btn-action btn-reject">
-            ✕ Reject
-        </a>
-
-        <a href="javascript:history.back()" class="btn-action btn-back">
-            ← Back
-        </a>
-    </div>
-
+    <!-- /page -->
 </div>
-{% endblock %}
+<!-- /main -->
+
+</body>
+</html>

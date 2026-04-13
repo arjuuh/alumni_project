@@ -5,232 +5,408 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NASC AlumniHub - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
+        *, *::before, *::after {
+            margin: 0; padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+        }
+
+        :root {
+            --accent:       #e8f0ee;
+            --accent-bright:#ffffff;
+            --accent-glow:  rgba(255,255,255,0.12);
+            --dark:         #070b0a;
+            --smoke:        rgba(255,255,255,0.08);
+        }
+
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
         }
 
         body {
-            background: #f4f4f4;
+            font-family: 'Outfit', sans-serif;
+            background: var(--dark);
         }
 
+        .page {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── BACKGROUND ── */
+        .bg {
+            position: absolute;
+            inset: 0;
+            background-image: url("{% static 'images/image.png' %}");
+            background-size: cover;
+            background-position: center 20%;
+            background-repeat: no-repeat;
+            transform: scale(1.06);
+            transition: transform 12s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 0;
+        }
+
+        .page:hover .bg { transform: scale(1.0); }
+
+        .overlay-1 {
+            position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(
+                180deg,
+                rgba(5,9,8,0.62) 0%,
+                rgba(5,9,8,0.18) 28%,
+                rgba(5,9,8,0.04) 52%,
+                rgba(5,9,8,0.76) 78%,
+                rgba(5,9,8,0.97) 100%
+            );
+        }
+
+        .overlay-2 {
+            position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(
+                90deg,
+                rgba(5,9,8,0.65) 0%,
+                rgba(5,9,8,0.12) 50%,
+                transparent 100%
+            );
+        }
+
+        /* soft white shimmer along bottom */
+        .overlay-shimmer {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 360px;
+            z-index: 1;
+            background: linear-gradient(
+                to top,
+                rgba(255,255,255,0.04) 0%,
+                transparent 100%
+            );
+        }
+
+        /* ── NAVBAR ── */
         .navbar {
+            position: relative;
+            z-index: 10;
             width: 100%;
-            background: #fff;
-            padding: 18px 60px;
+            padding: 0 64px;
+            height: 74px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.08);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(5,9,8,0.38);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            flex-shrink: 0;
         }
 
         .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #111;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
         }
 
-        .logo span {
-            color: #0aa39a;
+        .logo-mark {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.28);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-words { line-height: 1; }
+
+        .logo-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: 0.3px;
+        }
+
+        .logo-name em {
+            font-style: normal;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            font-weight: 200;
+            color: rgba(255,255,255,0.28);
+            letter-spacing: 0.9px;
+            margin-top: 4px;
+            text-transform: uppercase;
         }
 
         .nav-links {
             display: flex;
-            gap: 28px;
+            gap: 10px;
             align-items: center;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: #444;
-            font-size: 14px;
-            transition: 0.3s;
         }
 
-        .nav-links a:hover {
-            color: #0aa39a;
+        .btn-teacher {
+            color: rgba(255,255,255,0.5) !important;
+            border: 1px solid rgba(255,255,255,0.14) !important;
+            padding: 9px 22px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12.5px !important;
+            font-weight: 300 !important;
+            letter-spacing: 0.3px;
+            transition: color 0.22s, border-color 0.22s !important;
+            display: inline-block;
         }
 
-        /* Member Login Button */
-        .login-btn {
-            background: #0aa39a;
+        .btn-teacher:hover {
             color: #fff !important;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
+            border-color: rgba(255,255,255,0.44) !important;
+        }
+
+        .login-btn {
+            color: #0a0f0e !important;
+            background: #ffffff !important;
+            padding: 9px 26px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12.5px !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.3px;
+            transition: background 0.2s, opacity 0.2s !important;
+            display: inline-block;
         }
 
         .login-btn:hover {
-            background: #087f79;
-            color: #fff !important;
+            background: #e8efee !important;
         }
 
-        .hero {
-            width: 96%;
-            max-width: 1250px;
-            margin: 28px auto;
-            min-height: 78vh;
+        /* ── HERO CONTENT ── */
+        .hero-body {
+            flex: 1;
             position: relative;
-            overflow: hidden;
+            z-index: 5;
             display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-            padding: 70px 80px;
-
-            background-image: url("{% static 'images/image.png' %}");
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: cover;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 72px 68px;
         }
 
-        .hero::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.22);
-            z-index: 1;
+        .accent-line {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 470px;
-            padding: 10px 0;
+        .accent-rule {
+            width: 44px;
+            height: 1px;
+            background: rgba(255,255,255,0.45);
+            flex-shrink: 0;
         }
 
-        .hero-content h3 {
-            font-size: 18px;
-            color: #0aa39a;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .hero-content h1 {
-            font-size: 45px;
-            line-height: 1.25;
-            color: #111;
-            font-weight: 800;
-            margin-bottom: 22px;
+        .accent-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 10.5px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            color: rgba(255,255,255,0.45);
             text-transform: uppercase;
         }
 
-        .hero-content p {
-            font-size: 17px;
-            line-height: 1.8;
-            color: #111;
+        /* Tenor Sans — ONLY for the main title */
+        .hero-title {
+            font-family: 'Tenor Sans', serif;
+            font-size: 70px;
+            font-weight: 400;
+            line-height: 1.06;
+            color: #ffffff;
+            letter-spacing: 0.5px;
             margin-bottom: 28px;
-            max-width: 420px;
+            max-width: 780px;
         }
 
-        .register-btn {
-            display: inline-block;
+        .hero-title span {
+            color: rgba(255,255,255,0.62);
+        }
+
+        .hero-desc {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14.5px;
+            font-weight: 200;
+            line-height: 2;
+            color: rgba(255,255,255,0.45);
+            max-width: 480px;
+            margin-bottom: 48px;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
             text-decoration: none;
-            background: #0aa39a;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            transition: 0.3s;
+            color: #0a0f0e;
+            background: #ffffff;
+            padding: 15px 36px;
+            border-radius: 4px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            transition: background 0.2s, transform 0.15s;
+            width: fit-content;
         }
 
-        .register-btn:hover {
-            background: #087f79;
+        .hero-cta:hover {
+            background: #e8efee;
+            transform: translateY(-2px);
         }
 
-        @media (max-width: 992px) {
-            .navbar {
-                padding: 16px 24px;
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 16px;
-            }
-
-            .hero {
-                padding: 50px 30px;
-                min-height: 70vh;
-            }
-
-            .hero-content h1 {
-                font-size: 34px;
-            }
-
-            .hero-content p {
-                font-size: 15px;
-            }
+        /* ── BOTTOM BAR ── */
+        .bottom-bar {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            padding: 18px 72px;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            background: rgba(5,9,8,0.55);
+            backdrop-filter: blur(18px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
         }
 
-        @media (max-width: 600px) {
-            .hero {
-                width: 94%;
-                padding: 35px 20px;
-                min-height: 65vh;
-            }
+        .bottom-tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            font-weight: 300;
+            font-style: italic;
+            color: rgba(255,255,255,0.28);
+            letter-spacing: 0.3px;
+        }
 
-            .hero-content h1 {
-                font-size: 26px;
-            }
+        .bottom-badge {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
 
-            .hero-content h3 {
-                font-size: 15px;
-            }
+        .badge-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.55);
+            animation: pulse 2.8s ease-in-out infinite;
+        }
 
-            .hero-content p {
-                font-size: 14px;
-                line-height: 1.7;
-            }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.25; transform: scale(1.5); }
+        }
 
-            .login-btn,
-            .register-btn {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
+        .badge-label {
+            font-size: 10.5px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.28);
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1000px) {
+            .hero-title { font-size: 50px; }
+            .hero-body  { padding: 0 48px 56px; }
+            .navbar     { padding: 0 32px; }
+            .bottom-bar { padding: 16px 32px; }
+        }
+
+        @media (max-width: 700px) {
+            html, body  { overflow: auto; }
+            .page       { height: auto; min-height: 100vh; }
+            .bg         { position: fixed; }
+            .navbar     { padding: 0 20px; }
+            .hero-title { font-size: 36px; }
+            .hero-body  { padding: 60px 24px 48px; min-height: 80vh; justify-content: flex-end; }
+            .bottom-bar { padding: 14px 20px; flex-direction: column; gap: 8px; text-align: center; }
+            .hero-desc  { font-size: 13px; }
         }
     </style>
 </head>
 
 <body>
 
+<div class="page">
+    <div class="bg"></div>
+    <div class="overlay-1"></div>
+    <div class="overlay-2"></div>
+    <div class="overlay-shimmer"></div>
+
     <nav class="navbar">
-        <div class="logo">Nasc<span>Alumni</span></div>
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 1.5L2 7v11h6V12h4v6h6V7L10 1.5z" stroke="rgba(255,255,255,0.7)" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="logo-words">
+                <div class="logo-name">Nasc<em>Alumni</em></div>
+                <div class="logo-sub">NAS College &nbsp;·&nbsp; Kanhangad</div>
+            </div>
+        </a>
 
         <div class="nav-links">
             <a href="#">Home</a>
-            <a href="#">About us</a>
-            <a href="#">Events</a>
-            <a href="{% url 'teacher_login' %}">Teacher Login</a>
+            <a href="{% url 'teacher_login' %}" class="btn-teacher">Teacher Login</a>
             <a href="{% url 'login' %}" class="login-btn">Member Login</a>
         </div>
     </nav>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h3>ALUMNI</h3>
-            <h1>ASSOCIATION OF NAS COLLEGE KANHANGAD</h1>
-            <p>
-                The association was established as a non-profit organization to assist the alumni,
-                students and faculty of Nehru Arts and Science College Kanhangad. The association,
-                together with the management of the College, is dedicated towards strengthening the
-                links between the College and its alumni all across the world.
-            </p>
-
-            <a href="{% url 'register' %}" class="register-btn">MEMBER REGISTRATION</a>
+    <div class="hero-body">
+        <div class="accent-line">
+            <div class="accent-rule"></div>
+            <span class="accent-label">Alumni Association &nbsp;·&nbsp; Est. 1966</span>
         </div>
-    </section>
+
+        <h1 class="hero-title">
+            Association of<br>
+            <span>NAS College</span><br>
+            Kanhangad
+        </h1>
+
+        <p class="hero-desc">
+            A non-profit organisation dedicated to strengthening the bonds between
+            Nehru Arts and Science College and its alumni across the world —
+            empowering students, faculty, and graduates together.
+        </p>
+
+        <a href="{% url 'register' %}" class="hero-cta">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Member Registration
+        </a>
+    </div>
+
+    <div class="bottom-bar">
+        <p class="bottom-tagline">
+            Connecting graduates, inspiring futures — across the world.
+        </p>
+        <div class="bottom-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-label">Kanhangad, Kerala, India</span>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

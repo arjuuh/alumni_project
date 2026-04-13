@@ -3,99 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approved Alumni</title>
-
+    <title>Approved Alumni – AlumniHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #f5f7fb;
-            color: #111827;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-        }
-        h2 { margin: 0 0 16px; }
-        .sub {
-            color: #6b7280;
-            margin-bottom: 22px;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #6c63ff;
+            --primary-dark: #574fd6;
+            --primary-light: #edeaff;
+            --accent: #ff6584;
+            --green: #16a34a;
+            --green-bg: #f0fdf4;
+            --green-border: #bbf7d0;
+            --bg: #f2f3f7;
+            --white: #ffffff;
+            --text: #1c1c2e;
+            --muted: #6b7280;
+            --light: #9ca3af;
+            --border: #e5e7eb;
         }
 
-        .list {
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Topbar ── */
+        .topbar {
+            height: 62px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
             gap: 12px;
         }
-        .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            background: #fff;
+        .topbar-logo {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.4px;
         }
-        .info {
+        .topbar-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+        }
+        .topbar-page {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .t-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 13px; font-weight: 700;
+        }
+        .t-name {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* ── Main content ── */
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 32px 60px;
+        }
+
+        /* ── Header ── */
+        .ap-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        .ap-eyebrow {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .ap-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+        }
+        .ap-subtitle {
+            font-size: 13.5px;
+            color: var(--light);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+        .ap-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-light);
+            border: 1.5px solid #d4cfff;
+            border-radius: 999px;
+            padding: 8px 18px 8px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        .ap-badge-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: blink 2.2s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.35; transform: scale(0.7); }
+        }
+
+        /* ── Stats ── */
+        .ap-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .ap-stat {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .ap-stat:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(108,99,255,0.10);
+        }
+        .ap-stat-icon {
+            width: 46px; height: 46px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ap-stat-icon.g { background: #dcfce7; color: var(--green); }
+        .ap-stat-icon.p { background: var(--primary-light); color: var(--primary); }
+        .ap-stat-icon.b { background: #dbeafe; color: #2563eb; }
+        .ap-stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .ap-stat-lbl {
+            font-size: 12px;
+            color: var(--light);
+            font-weight: 500;
+            margin-top: 3px;
+        }
+
+        /* ── Search ── */
+        .ap-search-wrap {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .ap-search-svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        .ap-search {
+            width: 100%;
+            padding: 12px 18px 12px 44px;
+            border: 1.5px solid var(--border);
+            border-radius: 13px;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--white);
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .ap-search:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.11);
+        }
+        .ap-search::placeholder { color: var(--light); }
+
+        /* ── List ── */
+        .ap-list {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 10px;
         }
-        .name { font-weight: 700; }
-        .email {
-            color: #6b7280;
-            font-size: 14px;
+        .ap-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.04);
+            transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+            opacity: 0;
+            animation: slideUp 0.4s ease forwards;
         }
+        .ap-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 26px rgba(108,99,255,0.09);
+            border-color: #c4bcff;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ap-row:nth-child(1)   { animation-delay: 0.05s; }
+        .ap-row:nth-child(2)   { animation-delay: 0.10s; }
+        .ap-row:nth-child(3)   { animation-delay: 0.15s; }
+        .ap-row:nth-child(4)   { animation-delay: 0.20s; }
+        .ap-row:nth-child(5)   { animation-delay: 0.25s; }
+        .ap-row:nth-child(6)   { animation-delay: 0.30s; }
+        .ap-row:nth-child(7)   { animation-delay: 0.35s; }
+        .ap-row:nth-child(n+8) { animation-delay: 0.40s; }
 
-        .status {
-            color: #16a34a;
+        .ap-row-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .ap-avatar-wrap {
+            position: relative;
+            width: 48px; height: 48px;
+            flex-shrink: 0;
+        }
+        .ap-avatar-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .ap-row:hover .ap-avatar-wrap::before { opacity: 1; }
+        .ap-avatar {
+            position: relative;
+            z-index: 1;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6c63ff 0%, #a78bfa 50%, #ff6584 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            border: 2.5px solid var(--white);
+        }
+        .ap-name {
+            font-size: 14.5px;
             font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.2px;
+        }
+        .ap-email {
+            font-size: 13px;
+            color: var(--light);
+            margin-top: 2px;
+        }
+        .ap-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--green-bg);
+            color: var(--green);
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 6px 14px 6px 11px;
+            border-radius: 999px;
+            border: 1.5px solid var(--green-border);
+        }
+        .ap-chip-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            flex-shrink: 0;
         }
 
-        .back {
-            display: inline-block;
-            margin-top: 18px;
-            text-decoration: none;
-            color: #2563eb;
+        /* ── Empty state ── */
+        .ap-empty {
+            text-align: center;
+            padding: 60px 24px;
+            background: #fafafa;
+            border: 1.5px dashed #d1d5db;
+            border-radius: 16px;
+        }
+        .ap-empty-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-top: 16px;
+            margin-bottom: 5px;
+        }
+        .ap-empty-sub { font-size: 13px; color: var(--light); }
+
+        /* ── Action buttons ── */
+        .ap-actions {
+            margin-top: 26px;
+            display: flex;
+            gap: 12px;
+        }
+        .ap-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
             font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 10px 18px;
+            border: 1.5px solid #d4cfff;
+            border-radius: 11px;
+            background: var(--primary-light);
+            transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+            font-family: 'Inter', sans-serif;
         }
-
-        .empty {
-            padding: 14px 16px;
-            background: #f9fafb;
-            border: 1px dashed #d1d5db;
-            border-radius: 10px;
-            color: #6b7280;
+        .ap-btn:hover {
+            background: #e0dbff;
+            box-shadow: 0 4px 14px rgba(108,99,255,0.14);
+            transform: translateY(-1px);
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h2>Approved Alumni List</h2>
-        <div class="sub">These alumni accounts are approved.</div>
 
-        <div class="list">
-            {% for m in approved %}
-                <div class="row">
-                    <div class="info">
-                        <div class="name">{{ m.user.username }}</div>
-                        <div class="email">{{ m.user.email }}</div>
-                    </div>
-                    <div class="status">✔ Approved</div>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">AlumniHub</div>
+            <div class="topbar-divider"></div>
+            <div class="topbar-page">Approved Alumni</div>
+        </div>
+        <div class="topbar-right">
+            <div class="t-avatar">{{ request.user.username|first|upper }}</div>
+            <span class="t-name">{{ request.user.username }}</span>
+        </div>
+    </div>
+
+    <!-- Page -->
+    <div class="page">
+
+        <!-- Header -->
+        <div class="ap-header">
+            <div>
+                <div class="ap-eyebrow">Alumni Management</div>
+                <div class="ap-title">Approved Alumni</div>
+                <div class="ap-subtitle">All verified &amp; approved alumni accounts</div>
+            </div>
+            <div class="ap-badge">
+                <span class="ap-badge-dot"></span>
+                {{ approved|length }} Approved
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="ap-stats">
+            <div class="ap-stat">
+                <div class="ap-stat-icon g">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                        <polyline points="16 11 18 13 22 9"/>
+                    </svg>
                 </div>
+                <div>
+                    <div class="ap-stat-val">{{ approved|length }}</div>
+                    <div class="ap-stat-lbl">Total Approved</div>
+                </div>
+            </div>
+            <div class="ap-stat">
+                <div class="ap-stat-icon p">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="ap-stat-val">Active</div>
+                    <div class="ap-stat-lbl">Account Status</div>
+                </div>
+            </div>
+            <div class="ap-stat">
+                <div class="ap-stat-icon b">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <polyline points="9 12 11 14 15 10"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="ap-stat-val">Verified</div>
+                    <div class="ap-stat-lbl">Identity Status</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="ap-search-wrap">
+            <svg class="ap-search-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input class="ap-search" id="apSearch" type="text"
+                   placeholder="Search by name or email…"
+                   oninput="apFilter()">
+        </div>
+
+        <!-- List -->
+        <div class="ap-list" id="apList">
+            {% for m in approved %}
+            <div class="ap-row"
+                 data-name="{{ m.user.username|lower }}"
+                 data-email="{{ m.user.email|lower }}">
+                <div class="ap-row-left">
+                    <div class="ap-avatar-wrap">
+                        <div class="ap-avatar">{{ m.user.username|first|upper }}</div>
+                    </div>
+                    <div>
+                        <div class="ap-name">{{ m.user.username }}</div>
+                        <div class="ap-email">{{ m.user.email }}</div>
+                    </div>
+                </div>
+                <div class="ap-chip">
+                    <span class="ap-chip-dot"></span>
+                    Approved
+                </div>
+            </div>
             {% empty %}
-                <div class="empty">No approved alumni yet.</div>
+            <div class="ap-empty">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+                <div class="ap-empty-title">No approved alumni yet</div>
+                <div class="ap-empty-sub">Verified alumni will appear here once approved.</div>
+            </div>
             {% endfor %}
         </div>
 
-        <a class="back" href="{% url 'verify_alumni' %}">← Back to Verify Page</a>
-        <br>
-        <a class="back" href="{% url 'teacher_dashboard' %}">← Back to Dashboard</a>
-    </div>
+        <!-- Actions -->
+        <div class="ap-actions">
+            <a class="ap-btn" href="{% url 'verify_alumni' %}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"/>
+                    <polyline points="12 19 5 12 12 5"/>
+                </svg>
+                Verify Page
+            </a>
+            <a class="ap-btn" href="{% url 'teacher_dashboard' %}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                </svg>
+                Dashboard
+            </a>
+        </div>
+
+    </div><!-- /page -->
+
+    <script>
+    function apFilter() {
+        const q = document.getElementById('apSearch').value.toLowerCase();
+        document.querySelectorAll('#apList .ap-row').forEach(row => {
+            const match = (row.dataset.name  || '').includes(q) ||
+                          (row.dataset.email || '').includes(q);
+            row.style.display = match ? '' : 'none';
+        });
+    }
+    </script>
+
 </body>
 </html>
