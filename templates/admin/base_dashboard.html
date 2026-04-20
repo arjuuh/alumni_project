@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            display: flex;
+            background: #0f172a;
+            color: white;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #020617;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            color: #00adb5;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .sidebar a:hover {
+            background: #1e293b;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 220px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .header {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Cards */
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: #020617;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 200px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #020617;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #1e293b;
+        }
+
+        tr {
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:hover {
+            background: #1e293b;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+        }
+
+        .view { background: #00adb5; }
+        .delete { background: red; }
+        .add { background: green; }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Admin</h2>
+
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <a href="{% url 'manage_alumni' %}">Alumni</a>
+    <a href="{% url 'manage_jobs' %}">Jobs</a>
+    <a href="{% url 'manage_events' %}">Events</a>
+    <a href="{% url 'manage_teachers' %}">Teachers</a>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+
+    <div class="header">
+        {% block title %}{% endblock %}
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

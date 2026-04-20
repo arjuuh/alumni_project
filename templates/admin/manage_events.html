@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Events</title>
+    <style>
+        body { font-family: Arial; background:#111; color:white; }
+        table { width:100%; border-collapse: collapse; margin-top:20px; }
+        th, td { padding:10px; border-bottom:1px solid #444; }
+        th { background:#222; }
+        .btn { padding:5px 10px; background:#00adb5; color:white; border-radius:5px; }
+        .delete { background:red; }
+    </style>
+</head>
+<body>
+
+<h2>Manage Events</h2>
+
+<a href="{% url 'add_event' %}" class="btn">+ Add Event</a>
+
+<table>
+<tr>
+    <th>Name</th>
+    <th>Date</th>
+    <th>Location</th>
+    <th>Actions</th>
+</tr>
+
+{% for event in events %}
+<tr>
+    <td>{{ event.name }}</td>
+    <td>{{ event.date }}</td>
+    <td>{{ event.location }}</td>
+    <td>
+        <a href="{% url 'edit_event' event.id %}" class="btn">Edit</a>
+        <a href="{% url 'delete_event' event.id %}" class="btn delete">Delete</a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

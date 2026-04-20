@@ -456,13 +456,13 @@ def user_logout(request):
     return redirect("home")   # or your login page name
 
 from django.db.models import Q
-
 def alumni_list_view(request):
     q = request.GET.get("q", "").strip()
 
     alumni = AlumniProfile.objects.select_related("user").filter(
         user__is_staff=False,
-        user__is_superuser=False
+        user__is_superuser=False,
+        is_approved=True   # ✅ ADD THIS LINE
     )
 
     if q:

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Teachers</title>
+    <style>
+        body { font-family: Arial; background:#111; color:white; }
+        table { width:100%; border-collapse: collapse; margin-top:20px; }
+        th, td { padding:10px; border-bottom:1px solid #444; }
+        th { background:#222; }
+        .btn { padding:5px 10px; background:#00adb5; color:white; border-radius:5px; }
+        .delete { background:red; }
+    </style>
+</head>
+<body>
+
+<h2>Manage Teachers</h2>
+
+<table>
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Department</th>
+    <th>Actions</th>
+</tr>
+
+{% for teacher in teachers %}
+<tr>
+    <td>{{ teacher.name }}</td>
+    <td>{{ teacher.user.email }}</td>
+    <td>{{ teacher.department }}</td>
+    <td>
+        <a href="{% url 'delete_teacher' teacher.id %}" class="btn delete">Remove</a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

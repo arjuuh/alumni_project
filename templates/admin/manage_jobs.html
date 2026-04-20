@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Jobs</title>
+    <style>
+        body { font-family: Arial; background:#111; color:white; }
+        table { width:100%; border-collapse: collapse; margin-top:20px; }
+        th, td { padding:10px; border-bottom:1px solid #444; }
+        th { background:#222; }
+        a { color:#00adb5; text-decoration:none; }
+        .btn { padding:5px 10px; background:#00adb5; color:white; border-radius:5px; }
+        .delete { background:red; }
+    </style>
+</head>
+<body>
+
+<h2>Manage Jobs</h2>
+
+<a href="{% url 'add_job' %}" class="btn">+ Add Job</a>
+
+<table>
+<tr>
+    <th>Title</th>
+    <th>Company</th>
+    <th>Location</th>
+    <th>Actions</th>
+</tr>
+
+{% for job in jobs %}
+<tr>
+    <td>{{ job.title }}</td>
+    <td>{{ job.company }}</td>
+    <td>{{ job.location }}</td>
+    <td>
+        <a href="{% url 'edit_job' job.id %}" class="btn">Edit</a>
+        <a href="{% url 'delete_job' job.id %}" class="btn delete">Delete</a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

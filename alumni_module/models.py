@@ -19,6 +19,9 @@ class AlumniProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     department = models.CharField(max_length=30, choices=DEPARTMENT_CHOICES, null=True, blank=True)
 
+    # ✅ ADD THIS
+    is_approved = models.BooleanField(default=False)
+
     # Personal Info
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
