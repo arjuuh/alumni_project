@@ -47,6 +47,9 @@ class AcademicDetails(models.Model):
     year_of_graduation = models.IntegerField(null=True, blank=True)
     achievements = models.TextField(blank=True)
 
+    def __str__(self):
+        return self.user.username
+
 
 class ProfessionalDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -59,6 +62,8 @@ class ProfessionalDetails(models.Model):
     linkedin_profile = models.URLField(blank=True)
     career_highlights = models.TextField(blank=True)
 
+    def __str__(self):
+        return self.user.username
 
 class ContactDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -66,6 +71,9 @@ class ContactDetails(models.Model):
     email = models.EmailField(blank=True)
     phone_number = models.CharField(max_length=20, blank=True)
     alternate_phone = models.CharField(max_length=20, blank=True)
+
+    def __str__(self):
+        return self.user.username
 
 class AlumniEngagement(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -37,7 +37,7 @@
 
 <!-- STATS ROW -->
 
-<div class="stats-row" style="display:flex;gap:20px;width:100%;">
+<div class="stats-row">
     <div class="stat-card" style="cursor:pointer;" onclick="openConnections('followers')">
         <div class="stat-icon si-purple"><i class="fas fa-user-friends"></i></div>
         <div>
@@ -53,13 +53,21 @@
             <div class="stat-label">Following</div>
         </div>
     </div>
+
+    <div class="stat-card" style="cursor:pointer;" onclick="jumpToPosts()">
+        <div class="stat-icon si-green"><i class="fas fa-file-alt"></i></div>
+        <div>
+            <div class="stat-value">{{ posts_count }}</div>
+            <div class="stat-label">Posts</div>
+        </div>
+    </div>
 </div>
 
-<!-- SINGLE COLUMN LAYOUT -->
-<div class="two-col single-col">
+<!-- TWO COLUMN LAYOUT -->
+<div class="two-col">
 
-    <!-- LEFT COLUMN (full width) -->
-    <div class="left-col" style="width:100%;max-width:100%;flex:1 1 100%;">
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
 
         <!-- PROFILE CARD -->
         <div class="card">
@@ -352,26 +360,49 @@
 
     </div><!-- /left-col -->
 
-</div><!-- /single-col -->
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+
+        <!-- SIDE PROFILE CARD -->
+        <div class="card side-profile">
+            {% if profile.photo %}
+                <img src="{{ profile.photo.url }}" class="side-avatar" alt="Profile">
+            {% else %}
+                <div class="side-avatar-init">
+                    {{ profile.first_name|first|upper }}{{ profile.last_name|first|upper }}
+                </div>
+            {% endif %}
+
+            <div class="side-name">{{ profile.first_name }} {{ profile.last_name }}</div>
+            <div class="side-role">
+                {% if professional.current_designation %}
+                    {{ professional.current_designation }}
+                {% else %}
+                    Alumni
+                {% endif %}
+            </div>
+            <div class="side-meta">
+                {% if academic.degree %}
+                <div class="side-meta-row"><span class="sm-label">Degree</span><span class="sm-value">{{ academic.degree }}</span></div>
+                {% endif %}
+                {% if academic.year_of_graduation %}
+                <div class="side-meta-row"><span class="sm-label">Batch</span><span class="sm-value">{{ academic.year_of_admission }} – {{ academic.year_of_graduation }}</span></div>
+                {% endif %}
+                {% if professional.current_company %}
+                <div class="side-meta-row"><span class="sm-label">Company</span><span class="sm-value">{{ professional.current_company }}</span></div>
+                {% endif %}
+                {% if profile.city %}
+                <div class="side-meta-row"><span class="sm-label">Location</span><span class="sm-value">{{ profile.city }}, {{ profile.state }}</span></div>
+                {% endif %}
+                <div class="side-meta-row"><span class="sm-label">Posts</span><span class="sm-value">{{ posts_count }} Active</span></div>
+            </div>
+        </div>
+
+    </div><!-- /right-col -->
+</div><!-- /two-col -->
 
 <!-- Post Form + Polish Styles -->
 <style>
-  /* ── Full-width single column overrides ─────── */
-  .two-col.single-col {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  .two-col.single-col .left-col {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: 1 1 100% !important;
-    min-width: 0 !important;
-  }
-
-  .stats-row .stat-card {
-    flex: 1 1 0 !important;
-  }
   /* ── Create-post card ───────────────────────────── */
   .create-post-card {
     border: 1.5px solid #ede9ff;
@@ -562,23 +593,10 @@
     background: #fff;
     box-shadow: 0 8px 24px rgba(0,0,0,.06);
     transition: all .2s ease;
-    flex: 1 1 0;
-    min-width: 0;
   }
 
   .stat-card:hover {
     transform: translateY(-4px);
-  }
-
-  /* Single-column full-width layout */
-  .single-col {
-    display: block !important;
-  }
-
-  .single-col .left-col {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: none !important;
   }
 </style>
 
@@ -888,6 +906,12 @@
         }
     });
 
+    function jumpToPosts() {
+        const postsTabBtn = document.querySelector("button.tab[onclick*=\"'posts'\"]");
+        if (postsTabBtn) postsTabBtn.click();
 
+        const postsSection = document.getElementById("posts");
+        if (postsSection) postsSection.scrollIntoView({behavior:"smooth", block:"start"});
+    }
 </script>
 {% endblock %}
