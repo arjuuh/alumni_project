@@ -1,0 +1,22 @@
+{% extends "admin/baseadmin_dashboard.html" %}
+
+{% block title %}Teachers{% endblock %}
+
+{% block content %}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+
+    {% for t in teachers %}
+    <tr>
+        <td>{{ t.name }}</td>
+        <td>{{ t.email }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}

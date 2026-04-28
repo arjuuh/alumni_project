@@ -1,140 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Panel</title>
+    <meta charset="UTF-8">
+    <title>{% block title %}Admin{% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial;
-        }
-
         body {
-            display: flex;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
             background: #0f172a;
-            color: white;
+            color: #e2e8f0;
         }
 
-        /* Sidebar */
         .sidebar {
-            width: 220px;
+            width: 240px;
             height: 100vh;
             background: #020617;
-            padding: 20px;
             position: fixed;
+            padding: 20px;
         }
 
         .sidebar h2 {
+            color: #38bdf8;
             margin-bottom: 30px;
-            color: #00adb5;
         }
 
         .sidebar a {
             display: block;
-            padding: 10px;
-            margin: 10px 0;
-            color: white;
+            color: #94a3b8;
             text-decoration: none;
-            border-radius: 6px;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
         }
 
         .sidebar a:hover {
             background: #1e293b;
+            color: white;
         }
 
-        /* Main */
         .main {
-            margin-left: 220px;
-            padding: 20px;
-            width: 100%;
-        }
-
-        .header {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        /* Cards */
-        .cards {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+            margin-left: 260px;
+            padding: 30px;
         }
 
         .card {
-            background: #020617;
+            background: #1e293b;
             padding: 20px;
-            border-radius: 10px;
-            min-width: 200px;
+            border-radius: 12px;
+            margin-bottom: 20px;
         }
 
-        /* Table */
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-green { background: #22c55e; }
+        .btn-red { background: #ef4444; }
+        .btn-blue { background: #3b82f6; }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #020617;
-            border-radius: 10px;
-            overflow: hidden;
         }
 
         th, td {
             padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background: #1e293b;
-        }
-
-        tr {
             border-bottom: 1px solid #334155;
         }
-
-        tr:hover {
-            background: #1e293b;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 6px 12px;
-            border-radius: 5px;
-            text-decoration: none;
-            color: white;
-            font-size: 14px;
-        }
-
-        .view { background: #00adb5; }
-        .delete { background: red; }
-        .add { background: green; }
-
     </style>
 </head>
 
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar">
     <h2>Admin</h2>
 
     <a href="{% url 'admin_dashboard' %}">Dashboard</a>
     <a href="{% url 'manage_alumni' %}">Alumni</a>
+    <a href="{% url 'manage_posts' %}">Posts</a>
     <a href="{% url 'manage_jobs' %}">Jobs</a>
     <a href="{% url 'manage_events' %}">Events</a>
-    <a href="{% url 'manage_teachers' %}">Teachers</a>
+    <a href="{% url 'logout' %}">Logout</a>
+    
 </div>
 
-<!-- Main Content -->
+
 <div class="main">
-
-    <div class="header">
-        {% block title %}{% endblock %}
-    </div>
-
-    {% block content %}
-    {% endblock %}
-
+    {% block content %}{% endblock %}
 </div>
 
 </body>

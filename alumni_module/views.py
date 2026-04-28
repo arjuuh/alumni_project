@@ -486,9 +486,6 @@ def alumni_list_view(request):
 
 from django.http import JsonResponse
 
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
-
 @login_required
 def mark_notifications_read(request):
     Connection.objects.filter(following=request.user, is_read=False).update(is_read=True)
@@ -496,9 +493,6 @@ def mark_notifications_read(request):
 
 
 
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, redirect, render
 
 @login_required
 def toggle_follow(request, user_id):
@@ -583,8 +577,7 @@ from django.shortcuts import get_object_or_404
 
 from alumni_module.models import Job
 from teacher_module.models import JobPost   # ⚠️ change this based on your app name
-from django.shortcuts import render
-from django.http import Http404
+
 
 def job_detail(request, job_id):
     job = Job.objects.filter(id=job_id).first()
@@ -604,8 +597,7 @@ def job_detail(request, job_id):
 
 from alumni_module.models import Event   # if you create this
 from teacher_module.models import EventPost
-from django.shortcuts import render
-from django.http import Http404
+
 
 def event_detail(request, event_id):
     event = Event.objects.filter(id=event_id).first()

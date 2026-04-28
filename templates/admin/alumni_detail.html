@@ -1,0 +1,401 @@
+{% extends 'admin/base_dashboard.html' %}
+
+
+{% load static %}
+
+{% block title %}Alumni Details{% endblock %}
+{% block topbar_title %}Alumni Details{% endblock %}
+{% block content %}
+
+
+<style>
+    .detail-wrap{
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .detail-header{
+        background: linear-gradient(135deg, #6C63FF, #8B85FF);
+        color: #fff;
+        border-radius: 24px;
+        padding: 28px 30px;
+        box-shadow: 0 12px 30px rgba(108,99,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+
+    .detail-user{
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .detail-avatar,
+    .detail-avatar-img{
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: rgba(255,255,255,0.18);
+        border: 3px solid rgba(255,255,255,0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .detail-name{
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 6px;
+    }
+
+    .detail-sub{
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.95;
+    }
+
+    .status-badge{
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.18);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .3px;
+    }
+
+    .grid{
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .info-card{
+        background: #fff;
+        border-radius: 22px;
+        padding: 22px 22px 12px;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f7;
+    }
+
+    .info-card h3{
+        margin: 0 0 18px;
+        font-size: 19px;
+        font-weight: 800;
+        color: #2d2d2d;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .info-row{
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f1f6;
+    }
+
+    .info-row:last-child{
+        border-bottom: none;
+    }
+
+    .label{
+        color: #7a7f92;
+        font-weight: 600;
+        min-width: 160px;
+    }
+
+    .value{
+        color: #222;
+        font-weight: 700;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .value.muted{
+        color: #9aa0b1;
+        font-weight: 600;
+    }
+
+    .action-bar{
+        margin-top: 26px;
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action{
+        text-decoration: none;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 14px;
+        transition: .2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-approve{
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        color: #fff;
+        box-shadow: 0 10px 22px rgba(34,197,94,0.22);
+    }
+
+    .btn-approve:hover{
+        transform: translateY(-2px);
+    }
+
+    .btn-reject{
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: #fff;
+        box-shadow: 0 10px 22px rgba(239,68,68,0.22);
+    }
+
+    .btn-reject:hover{
+        transform: translateY(-2px);
+    }
+
+    .btn-back{
+        background: #f4f5fb;
+        color: #444;
+    }
+
+    .btn-back:hover{
+        transform: translateY(-2px);
+        background: #eceef8;
+    }
+
+    @media (max-width: 768px){
+        .grid{
+            grid-template-columns: 1fr;
+        }
+
+        .detail-header{
+            padding: 22px;
+        }
+
+        .detail-name{
+            font-size: 23px;
+        }
+
+        .info-row{
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .value{
+            text-align: left;
+        }
+    }
+</style>
+
+<div class="detail-wrap">
+
+    <div class="detail-header">
+        <div class="detail-user">
+            {% if profile and profile.photo %}
+                <img src="{{ profile.photo.url }}" alt="Profile Photo" class="detail-avatar-img">
+            {% else %}
+                <div class="detail-avatar">
+                    {{ alumni_user.username|first|upper }}
+                </div>
+            {% endif %}
+
+            <div>
+                <h2 class="detail-name">
+                    {% if profile and profile.first_name or profile.last_name %}
+                        {{ profile.first_name }} {{ profile.last_name }}
+                    {% else %}
+                        {{ alumni_user.username }}
+                    {% endif %}
+                </h2>
+                <p class="detail-sub">{{ alumni_user.email }}</p>
+                <p class="detail-sub">Username: {{ alumni_user.username }}</p>
+            </div>
+        </div>
+
+        <div class="status-badge">
+            Status:
+            {% if metadata and metadata.status %}
+                {{ metadata.status }}
+            {% else %}
+                PENDING
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <!-- BASIC INFO -->
+        <div class="info-card">
+            <h3>👤 Basic Information</h3>
+
+            <div class="info-row">
+                <div class="label">First Name</div>
+                <div class="value {% if not profile or not profile.first_name %}muted{% endif %}">
+                    {% if profile and profile.first_name %}{{ profile.first_name }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Last Name</div>
+                <div class="value {% if not profile or not profile.last_name %}muted{% endif %}">
+                    {% if profile and profile.last_name %}{{ profile.last_name }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Date of Birth</div>
+                <div class="value {% if not profile or not profile.date_of_birth %}muted{% endif %}">
+                    {% if profile and profile.date_of_birth %}{{ profile.date_of_birth }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Gender</div>
+                <div class="value {% if not profile or not profile.gender %}muted{% endif %}">
+                    {% if profile and profile.gender %}{{ profile.gender }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Email</div>
+                <div class="value">{{ alumni_user.email }}</div>
+            </div>
+        </div>
+
+        <!-- ACADEMIC DETAILS -->
+        <div class="info-card">
+            <h3>🎓 Academic Details</h3>
+
+            <div class="info-row">
+                <div class="label">Department</div>
+                <div class="value {% if not academic or not academic.department %}muted{% endif %}">
+                    {% if academic and academic.department %}{{ academic.department }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Student ID</div>
+                <div class="value {% if not academic or not academic.student_id %}muted{% endif %}">
+                    {% if academic and academic.student_id %}{{ academic.student_id }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Degree / Programme</div>
+                <div class="value {% if not academic or not academic.degree %}muted{% endif %}">
+                    {% if academic and academic.degree %}{{ academic.degree }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Year of Admission</div>
+                <div class="value {% if not academic or not academic.year_of_admission %}muted{% endif %}">
+                    {% if academic and academic.year_of_admission %}{{ academic.year_of_admission }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Year of Graduation</div>
+                <div class="value {% if not academic or not academic.year_of_graduation %}muted{% endif %}">
+                    {% if academic and academic.year_of_graduation %}{{ academic.year_of_graduation }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFESSIONAL DETAILS -->
+        <div class="info-card">
+            <h3>💼 Professional Details</h3>
+
+            <div class="info-row">
+                <div class="label">Current Designation</div>
+                <div class="value {% if not professional or not professional.current_designation %}muted{% endif %}">
+                    {% if professional and professional.current_designation %}{{ professional.current_designation }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Current Company</div>
+                <div class="value {% if not professional or not professional.current_company %}muted{% endif %}">
+                    {% if professional and professional.current_company %}{{ professional.current_company }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Year of Experience</div>
+                <div class="value {% if not professional or not professional.year_of_experience %}muted{% endif %}">
+                    {% if professional and professional.year_of_experience %}{{ professional.year_of_experience }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Phone Number</div>
+                <div class="value {% if not contact or not contact.phone_number %}muted{% endif %}">
+                    {% if contact and contact.phone_number %}{{ contact.phone_number }}{% else %}Not added{% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">LinkedIn Profile</div>
+                <div class="value {% if not professional or not professional.linkedin_profile %}muted{% endif %}">
+                    {% if professional and professional.linkedin_profile %}
+                        <a href="{{ professional.linkedin_profile }}" target="_blank" style="color:#6C63FF;text-decoration:none;font-weight:700;">
+                            View Profile
+                        </a>
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="info-card">
+            <h3>📝 Registration Summary</h3>
+
+            <div class="info-row">
+                <div class="label">Username</div>
+                <div class="value">{{ alumni_user.username }}</div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Registered Email</div>
+                <div class="value">{{ alumni_user.email }}</div>
+            </div>
+
+            <div class="info-row">
+                <div class="label">Profile Status</div>
+                <div class="value">
+                    {% if metadata and metadata.status %}
+                        {{ metadata.status }}
+                    {% else %}
+                        PENDING
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    
+ 
+
+</div>
+
+
+
+{% endblock %}

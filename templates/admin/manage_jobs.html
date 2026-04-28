@@ -1,44 +1,100 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Manage Jobs</title>
-    <style>
-        body { font-family: Arial; background:#111; color:white; }
-        table { width:100%; border-collapse: collapse; margin-top:20px; }
-        th, td { padding:10px; border-bottom:1px solid #444; }
-        th { background:#222; }
-        a { color:#00adb5; text-decoration:none; }
-        .btn { padding:5px 10px; background:#00adb5; color:white; border-radius:5px; }
-        .delete { background:red; }
-    </style>
-</head>
-<body>
+{% extends 'admin/base_dashboard.html' %}
 
-<h2>Manage Jobs</h2>
+{% block title %}Manage Jobs{% endblock %}
+{% block topbar_title %}Manage Jobs{% endblock %}
 
-<a href="{% url 'add_job' %}" class="btn">+ Add Job</a>
+{% block content %}
 
-<table>
-<tr>
-    <th>Title</th>
-    <th>Company</th>
-    <th>Location</th>
-    <th>Actions</th>
-</tr>
+<style>
+    .jobs-wrap{
+        max-width: 1100px;
+        margin: 0 auto;
+    }
 
-{% for job in jobs %}
-<tr>
-    <td>{{ job.title }}</td>
-    <td>{{ job.company }}</td>
-    <td>{{ job.location }}</td>
-    <td>
-        <a href="{% url 'edit_job' job.id %}" class="btn">Edit</a>
-        <a href="{% url 'delete_job' job.id %}" class="btn delete">Delete</a>
-    </td>
-</tr>
-{% endfor %}
+    .job-card{
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: #fff;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        transition: 0.2s ease;
+    }
 
-</table>
+    .job-card:hover{
+        transform: translateY(-3px);
+    }
 
-</body>
-</html>
+    .job-title{
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .job-meta{
+        font-size: 13px;
+        opacity: 0.8;
+        margin-bottom: 10px;
+    }
+
+    .job-actions a{
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+
+    .btn-view{
+        background: #6366f1;
+        color: #fff;
+    }
+
+    .btn-delete{
+        background: #ef4444;
+        color: #fff;
+    }
+
+    .btn-view:hover,
+    .btn-delete:hover{
+        opacity: 0.9;
+    }
+
+    .empty{
+        color: #aaa;
+        text-align: center;
+        margin-top: 40px;
+    }
+</style>
+
+<div class="jobs-wrap">
+
+    {% for job in jobs %}
+        <div class="job-card">
+
+            <div class="job-title">{{ job.title }}</div>
+
+            <div class="job-meta">
+                {{ job.company_name }} • {{ job.user.username }}
+            </div>
+
+            <div class="job-actions">
+                <a href="{% url 'job_detail_admin' job.id %}" class="btn-view">View</a>
+
+                <a href="{% url 'delete_job' job.id %}" 
+                   class="btn-delete"
+                   onclick="return confirm('Delete this job?')">
+                   Delete
+                </a>
+            </div>
+
+        </div>
+
+    {% empty %}
+        <p class="empty">No jobs available</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

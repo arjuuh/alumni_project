@@ -1,0 +1,96 @@
+{% extends 'admin/base_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .page-wrap {
+        background: #0f172a;
+        min-height: 100vh;
+        padding: 30px;
+    }
+
+    h2 {
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .post-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 18px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .post-header {
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .post-content {
+        margin-bottom: 10px;
+        color: #444;
+    }
+
+    .post-img {
+        width: 220px;
+        border-radius: 8px;
+        margin-top: 8px;
+    }
+
+    .delete-btn {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 8px 14px;
+        background: #ef4444;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+    }
+
+    .delete-btn:hover {
+        background: #dc2626;
+    }
+
+    .empty {
+        color: #aaa;
+    }
+</style>
+
+<div class="page-wrap">
+
+    <h2>Manage Alumni Posts</h2>
+
+    {% for post in posts %}
+        <div class="post-card">
+
+            <div class="post-header">
+                {{ post.user.username }}
+            </div>
+
+            <div class="post-content">
+                {{ post.content }}
+            </div>
+
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="post-img">
+            {% endif %}
+
+            <br>
+
+            <a href="{% url 'admin_delete_post' post.id %}"
+               class="delete-btn"
+               onclick="return confirm('Delete this post?')">
+               Delete
+            </a>
+
+        </div>
+    {% empty %}
+        <p class="empty">No posts available</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

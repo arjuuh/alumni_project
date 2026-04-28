@@ -245,7 +245,9 @@
 
                 <!-- Post image -->
                 {% if post.image %}
-                    <img src="{{ post.image.url }}" class="post-image" alt="Post Image">
+                    <div class="post-image">
+                        <img src="{{ post.image.url }}" alt="Post Image">
+                    </div>
                 {% endif %}
 
                 <!-- ✅ Inline Edit Box (hidden by default) -->
@@ -404,6 +406,7 @@
 <!-- Post Form + Polish Styles -->
 <style>
   /* ── Create-post card ───────────────────────────── */
+
   .create-post-card {
     border: 1.5px solid #ede9ff;
     border-radius: 18px;
@@ -586,6 +589,24 @@
     transform: translateY(-3px);
     box-shadow: 0 15px 40px rgba(0,0,0,.08);
   }
+
+  .post-image {
+    margin-top: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5;
+}
+
+.post-image img {
+    width: 100%;
+    max-height: 500px;
+    height: auto;
+    object-fit: contain;   /* 👈 IMPORTANT FIX */
+    display: block;
+}
 
   .stat-card {
     border-radius: 16px;

@@ -1,16 +1,13 @@
-{% extends 'admin/base_dashboard.html' %}
-
-{% block title %}
-Dashboard
-{% endblock %}
+{% extends "admin/base_dashboard.html" %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
+<h1>Admin Dashboard</h1>
 
-<div class="cards">
-    <div class="card">Total Alumni: {{ total_alumni }}</div>
-    <div class="card">Total Teachers: {{ total_teachers }}</div>
-    <div class="card">Total Jobs: {{ total_jobs }}</div>
-    <div class="card">Total Events: {{ total_events }}</div>
-</div>
+<div class="card">Total Alumni: {{ total_alumni }}</div>
+<div class="card">Pending Approvals: {{ pending_alumni }}</div>
+<div class="card">Total Posts: {{ total_posts }}</div>
+<div class="card">Total Jobs: {{ total_jobs }}</div>
+<div class="card">Total Events: {{ total_events }}</div>
 
 {% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'admin/base_dashboard.html' %}
+
+{% block title %}Event Details{% endblock %}
+{% block topbar_title %}Event Details{% endblock %}
+
+{% block content %}
+
+<style>
+    .wrap{
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .header{
+        background: linear-gradient(135deg, #6C63FF, #8B85FF);
+        color: #fff;
+        padding: 25px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(108,99,255,0.25);
+    }
+
+    .header h2{
+        margin: 0;
+        font-size: 26px;
+    }
+
+    .card{
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: #fff;
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .row{
+        margin-bottom: 15px;
+    }
+
+    .label{
+        font-size: 13px;
+        opacity: 0.7;
+    }
+
+    .value{
+        font-weight: 700;
+        margin-top: 3px;
+    }
+
+    .btn{
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-right: 10px;
+    }
+
+    .btn-delete{
+        background: #ef4444;
+        color: #fff;
+    }
+
+    .btn-back{
+        background: #e5e7eb;
+        color: #000;
+    }
+</style>
+
+<div class="wrap">
+
+    <div class="header">
+        <h2>{{ event.title }}</h2>
+        <p>{{ event.event_date }}</p>
+    </div>
+
+    <div class="card">
+
+        <div class="row">
+            <div class="label">Location</div>
+            <div class="value">{{ event.location|default:"Not added" }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Description</div>
+            <div class="value">{{ event.description }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Posted By</div>
+            <div class="value">{{ event.posted_by.username }}</div>
+        </div>
+
+        <br>
+
+        <a href="{% url 'delete_event' event.id %}" 
+           class="btn btn-delete"
+           onclick="return confirm('Delete this event?')">
+           Delete
+        </a>
+
+        <a href="{% url 'manage_events' %}" class="btn btn-back">
+            Back
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -247,7 +247,11 @@ def delete_event(request, event_id):
 
     return redirect("teacher_dashboard")
 
+from django.contrib.auth import logout
 
+def teacher_logout(request):
+    logout(request)
+    return redirect("login")   # or "teacher_login" if you want separate page
 
 
 

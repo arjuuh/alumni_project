@@ -1,8 +1,6 @@
 {% extends 'admin/base_dashboard.html' %}
 
-{% block title %}
-Manage Alumni
-{% endblock %}
+{% block title %}Manage Alumni{% endblock %}
 
 {% block content %}
 
@@ -19,6 +17,8 @@ Manage Alumni
         border-radius:5px;
         border:none;
         width:200px;
+        background:#1e293b;
+        color:white;
     }
 
     .card {
@@ -26,6 +26,7 @@ Manage Alumni
         padding:20px;
         border-radius:10px;
         margin-bottom:20px;
+        box-shadow:0 0 10px rgba(0,0,0,0.5);
     }
 
     table {
@@ -56,9 +57,11 @@ Manage Alumni
         text-decoration:none;
         color:white;
         font-size:13px;
+        margin-right:5px;
     }
 
-    .view { background:#00adb5; }
+    .approve { background:green; }
+    .reject { background:orange; }
     .delete { background:red; }
 
     .status {
@@ -69,6 +72,7 @@ Manage Alumni
     }
 
     .pending { background:orange; }
+    .rejected { background:red; }
 </style>
 
 <div class="card">
@@ -76,7 +80,6 @@ Manage Alumni
     <!-- 🔹 Top Bar -->
     <div class="top-bar">
         <div><b>Total Alumni:</b> {{ alumni|length }}</div>
-
         <input type="text" placeholder="Search..." class="search-box">
     </div>
 
@@ -91,23 +94,49 @@ Manage Alumni
 
         {% for a in alumni %}
         <tr>
-            <td>{{ a.name }}</td>
-            <td>{{ a.user.email }}</td>
             <td>
-                {% if a.status == "pending" %}
+                <a href="{% url 'alumni_detail_admin' a.user.id %}" 
+                style="color: inherit; text-decoration: none;">
+                    {{ a.user.username }}
+                </a>
+            </td>
+            <td>{{ a.user.email }}</td>
+
+            <td>
+                {% if a.status == "PENDING" %}
                     <span class="status pending">Pending</span>
+                {% elif a.status == "APPROVED" %}
+                    <span class="status">Approved</span>
                 {% else %}
-                    <span class="status">Active</span>
+                    <span class="status" style="background:red;">Rejected</span>
                 {% endif %}
             </td>
-            <td>
-                <a href="#" class="btn view">View</a>
 
-                <a href="{% url 'delete_alumni' a.id %}" 
-                   onclick="return confirm('Delete this alumni?')" 
-                   class="btn delete">
-                   Delete
-                </a>
+            <td>
+
+                <!-- ✅ PENDING -->
+                {% if a.status == "PENDING" %}
+                    <a href="{% url 'approve_alumni_admin' a.user.id %}" class="btn green">Approve</a>
+                    <a href="{% url 'reject_alumni_admin' a.user.id %}" class="btn orange">Reject</a>
+
+                <!-- ✅ APPROVED -->
+                {% elif a.status == "APPROVED" %}
+                    <a href="{% url 'reject_alumni_admin' a.user.id %}" class="btn orange">Reject</a>
+
+                <!-- ✅ REJECTED -->
+                {% elif a.status == "REJECTED" %}
+                    <a href="{% url 'approve_alumni_admin' a.user.id %}" class="btn green">Approve</a>
+                {% endif %}
+
+                <!-- ✅ DELETE (always visible) -->
+                <form action="{% url 'delete_alumni' a.user.id %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn delete"
+                        onclick="return confirm('Are you sure you want to permanently delete this alumni?');">
+                        Delete
+                    </button>
+                </form>
+
             </td>
         </tr>
         {% endfor %}
