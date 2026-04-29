@@ -809,7 +809,8 @@
 
     <span class="nav-label" style="margin-top:10px;">Account</span>
 
-    <a href="{% url 'view_profile' request.user.id %}" class="nav-item {% if request.resolver_match.url_name == 'view_profile' %}active{% endif %}">
+    <a href="{% url 'view_profile' request.user.id %}" class="nav-item {% if request.resolver_match.url_name == 'view_profile' and request.user.id == profile.user.id %}
+        active {% endif %}">
         <i class="fas fa-user-circle"></i> My Profile
     </a>
 

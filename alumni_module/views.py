@@ -80,16 +80,22 @@ def register(request):
         if not department:
             return render(request, "auth/register.html", {"error": "Please select your department"})
 
-        user = User.objects.create_user(username=username, email=email, password=password)
-
-        AlumniProfile.objects.get_or_create(
-            user=user,
-            defaults={"department": department}
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
         )
 
-        SystemMetadata.objects.get_or_create(
+        # IMPORTANT: always store department properly
+        AlumniProfile.objects.create(
             user=user,
-            defaults={"status": "PENDING"}
+            department=department
+        )
+
+        SystemMetadata.objects.create(
+            user=user,
+            status="PENDING",
+            profile_completion=0
         )
 
         login(request, user)
@@ -242,36 +248,6 @@ def edit_profile(request):
         'engagement': engagement,
     })
 
-
-"""@login_required
-def alumni_directory(request):
-    query = request.GET.get('q')
-    department = request.GET.get('department')
-
-    # Only approved users (SystemMetadata)
-    approved_users = SystemMetadata.objects.filter(
-        status="APPROVED"
-    ).values_list('user', flat=True)
-
-    profiles = AlumniProfile.objects.filter(user__in=approved_users)
-
-    if query:
-        profiles = profiles.filter(
-            Q(first_name__icontains=query) |
-            Q(last_name__icontains=query)
-        )
-
-    if department:
-        profiles = profiles.filter(
-            user__academicdetails__department__icontains=department
-        )
-
-    return render(request, 'alumni/alumni_directory.html', {
-        'profiles': profiles
-    })"""
-
-
-
 from .models import Connection   # make sure this import exists
 
 @login_required
@@ -329,10 +305,10 @@ def view_profile(request, user_id):
         'user_posts': user_posts,
     })
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from admin_module.models import SystemMetadata
 from .models import (
@@ -351,19 +327,18 @@ def complete_profile(request):
     if metadata.status == "APPROVED":
         return redirect("dashboard")
 
-    if metadata.profile_completion == 100 and metadata.status == "PENDING":
-        return redirect("waiting_approval")
-
     if request.method == "POST":
         try:
             with transaction.atomic():
 
-                department = request.POST.get("department", "")
+                department = request.POST.get("department")
 
-                # ===== PERSONAL PROFILE =====
-                profile, _ = AlumniProfile.objects.get_or_create(
-                    user=request.user
-                )
+                if not department:
+                    messages.error(request, "Department is required")
+                    return redirect("complete_profile")
+
+                # ---------------- ALUMNI PROFILE ----------------
+                profile, _ = AlumniProfile.objects.get_or_create(user=request.user)
 
                 profile.first_name = request.POST.get("first_name", "")
                 profile.last_name = request.POST.get("last_name", "")
@@ -374,17 +349,15 @@ def complete_profile(request):
                 profile.state = request.POST.get("state", "")
                 profile.country = request.POST.get("country", "")
                 profile.postal_code = request.POST.get("postal_code", "")
-                profile.department = department   # ✅ IMPORTANT FIX
+                profile.department = department
 
                 if request.FILES.get("photo"):
                     profile.photo = request.FILES.get("photo")
 
                 profile.save()
 
-                # ===== ACADEMIC DETAILS =====
-                academic, _ = AcademicDetails.objects.get_or_create(
-                    user=request.user
-                )
+                # ---------------- ACADEMIC DETAILS ----------------
+                academic, _ = AcademicDetails.objects.get_or_create(user=request.user)
 
                 academic.student_id = request.POST.get("student_id", "")
                 academic.degree = request.POST.get("degree", "")
@@ -402,10 +375,8 @@ def complete_profile(request):
 
                 academic.save()
 
-                # ===== PROFESSIONAL DETAILS =====
-                professional, _ = ProfessionalDetails.objects.get_or_create(
-                    user=request.user
-                )
+                # ---------------- PROFESSIONAL DETAILS ----------------
+                professional, _ = ProfessionalDetails.objects.get_or_create(user=request.user)
 
                 professional.current_designation = request.POST.get("current_designation", "")
                 professional.current_company = request.POST.get("current_company", "")
@@ -421,10 +392,8 @@ def complete_profile(request):
 
                 professional.save()
 
-                # ===== CONTACT DETAILS =====
-                contact, _ = ContactDetails.objects.get_or_create(
-                    user=request.user
-                )
+                # ---------------- CONTACT DETAILS ----------------
+                contact, _ = ContactDetails.objects.get_or_create(user=request.user)
 
                 contact.phone_number = request.POST.get("phone_number", "")
                 contact.alternate_phone = request.POST.get("alternate_phone", "")
@@ -432,7 +401,7 @@ def complete_profile(request):
 
                 contact.save()
 
-                # ===== APPROVAL TRIGGER =====
+                # ---------------- METADATA ----------------
                 metadata.profile_completion = 100
                 metadata.status = "PENDING"
                 metadata.save()
@@ -1101,3 +1070,5 @@ def alumni_delete_event(request, event_id):
     event.delete()
     messages.success(request, "Event deleted successfully.")
     return redirect("alumni_eventpost")
+
+

@@ -127,24 +127,36 @@ def approved_alumni(request):
     })
 
 
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+from alumni_module.models import (
+    AlumniProfile,
+    AcademicDetails,
+    ProfessionalDetails,
+    ContactDetails,
+)
+
 @login_required
 def teacher_view_alumni(request, user_id):
-    user = get_object_or_404(User, id=user_id)
 
-    profile = AlumniProfile.objects.filter(user=user).first()
-    academic = AcademicDetails.objects.filter(user=user).first()
-    professional = ProfessionalDetails.objects.filter(user=user).first()
-    contact = ContactDetails.objects.filter(user=user).first()
-    metadata = SystemMetadata.objects.filter(user=user).first()
+    alumni_user = get_object_or_404(User, id=user_id)
 
-    return render(request, "teacher/alumni_detail.html", {
-        "alumni_user": user,
+    # SAFE GET OR EMPTY OBJECTS
+    profile, _ = AlumniProfile.objects.get_or_create(user=alumni_user)
+    academic, _ = AcademicDetails.objects.get_or_create(user=alumni_user)
+    professional, _ = ProfessionalDetails.objects.get_or_create(user=alumni_user)
+    contact, _ = ContactDetails.objects.get_or_create(user=alumni_user)
+
+    context = {
+        "alumni_user": alumni_user,
         "profile": profile,
         "academic": academic,
         "professional": professional,
         "contact": contact,
-        "metadata": metadata,
-    })
+    }
+
+    return render(request, "teacher/alumni_detail.html", context)
 
 @login_required
 def reject_alumni(request, user_id):

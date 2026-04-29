@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [
 
     path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
-    path('admin-module/login/', views.admin_login, name='admin_login'),
     path('login/', views.admin_login, name='admin_login'),
 
     # alumni management
