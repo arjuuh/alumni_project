@@ -998,6 +998,7 @@ def alumni_jobpost(request):
         job_type = request.POST.get("job_type", "").strip()
         apply_link = request.POST.get("apply_link", "").strip()
         description = request.POST.get("description", "").strip()
+        deadline = request.POST.get("deadline")   
 
         if title and company and description:
             Job.objects.create(
@@ -1008,6 +1009,7 @@ def alumni_jobpost(request):
                 job_type=job_type,
                 apply_link=apply_link,
                 description=description,
+                deadline=deadline,
             )
             messages.success(request, "Job posted successfully.")
             return redirect("alumni_jobpost")
@@ -1028,11 +1030,15 @@ def alumni_delete_job(request, job_id):
     messages.success(request, "Job deleted successfully.")
     return redirect("alumni_jobpost")
 
+from itertools import chain
+
 def jobs_view(request):
-    jobs = Job.objects.all().order_by("-id")
-    return render(request, "alumni/jobs.html", {
-        "jobs": jobs
-    })
+    jobs = sorted(
+        chain(Job.objects.all(), JobPost.objects.all()),
+        key=lambda x: x.id,
+        reverse=True
+    )
+    return render(request, "alumni/jobs.html", {"jobs": jobs})
 
 from .models import Event   # make sure this model exists
 

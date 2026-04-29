@@ -353,10 +353,20 @@
             {% else %}
               <span class="jb-tag jb-tag-type">Full-time</span>
             {% endif %}
+            {% if job.deadline %}
+    {% if job.deadline|stringformat:"s" < today %}
+        <span class="jb-tag jb-tag-deadline-past">
+            <i class="fas fa-clock"></i> Expired
+        </span>
+        {% else %}
             <span class="jb-tag jb-tag-deadline-ok">
-              <i class="fas fa-clock" style="margin-right:3px;"></i>
-              Deadline: {{ job.deadline|date:"M d" }}
+                <i class="fas fa-clock"></i>
+                Deadline: {{ job.deadline|date:"M d" }}
             </span>
+        {% endif %}
+      {% else %}
+          <span class="jb-tag jb-tag-type">Open</span>
+      {% endif %}
           </div>
         </div>
       </div>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — Alumni Portal</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --primary: #6c63ff;
+    --primary-dark: #574fd6;
+    --bg: #f2f3f7;
+    --white: #ffffff;
+    --text: #1c1c2e;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CARD */
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    animation: fadeUp 0.5s ease;
+}
+
+/* HEADER */
+.login-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #2d2a5e, #6c63ff);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    color: white;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.login-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.login-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* INPUT */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.input-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #fafafa;
+    transition: 0.2s;
+}
+
+.input-box:focus-within {
+    border-color: var(--primary);
+    background: white;
+}
+
+.input-box i {
+    color: var(--muted);
+    margin-right: 8px;
+}
+
+.input-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    background: transparent;
+}
+
+/* BUTTON */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(108,99,255,0.3);
+}
+
+/* ERROR */
+.error-msg {
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+/* ANIMATION */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <div class="login-header">
+        <div class="logo">A</div>
+        <div class="login-title">Admin Login</div>
+        <div class="login-sub">Alumni Portal Control Panel</div>
+    </div>
+
+    {% for message in messages %}
+        <div class="error-msg">{{ message }}</div>
+    {% endfor %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label">Username</label>
+            <div class="input-box">
+                <i class="fas fa-user"></i>
+                <input type="text" name="username" placeholder="Enter admin username" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-box">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="password" placeholder="Enter password" required>
+            </div>
+        </div>
+
+        <button type="submit" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+
+</div>
+
+</body>
+</html>

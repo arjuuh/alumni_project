@@ -167,6 +167,7 @@ def post_job(request):
         job_type = request.POST.get("job_type", "")
         apply_link = request.POST.get("apply_link", "")
         description = request.POST.get("description")
+        deadline = request.POST.get("deadline")
 
         if title and company and description:
             JobPost.objects.create(
@@ -177,6 +178,7 @@ def post_job(request):
                 job_type=job_type,
                 apply_link=apply_link,
                 description=description,
+                deadline=deadline,
             )
             messages.success(request, "Job posted successfully.")
             return redirect("post_job")   # ✅ stay on post job page
@@ -248,10 +250,11 @@ def delete_event(request, event_id):
     return redirect("teacher_dashboard")
 
 from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 def teacher_logout(request):
     logout(request)
-    return redirect("login")   # or "teacher_login" if you want separate page
+    return redirect('teacher_login')
 
 
 

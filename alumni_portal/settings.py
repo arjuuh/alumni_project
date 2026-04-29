@@ -145,5 +145,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'alumniportal06@gmail.com'
 EMAIL_HOST_PASSWORD = 'hagv xhmg ygpc xyqm'
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/login/'
+LOGIN_URL = '/admin-module/login/'
+LOGIN_REDIRECT_URL = '/admin-module/dashboard/'
