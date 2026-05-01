@@ -37,28 +37,39 @@ def admin_login(request):
         else:
             messages.error(request, "Invalid admin credentials")
 
-    return render(request, "admin/login.html")
+    return render(request, "admin_module/login.html")
 
 
 # ================= DASHBOARD =================
 @login_required
+@login_required
 def admin_dashboard(request):
 
-    total_alumni = SystemMetadata.objects.filter(status="APPROVED").count()
-    pending_alumni = SystemMetadata.objects.filter(status="PENDING").count()
+    total_alumni = SystemMetadata.objects.filter(
+        status="APPROVED",
+        user__is_superuser=False,
+        user__is_staff=False
+    ).count()
+
+    pending_alumni = SystemMetadata.objects.filter(
+        status="PENDING",
+        user__is_superuser=False,
+        user__is_staff=False
+    ).count()
 
     total_posts = Post.objects.count()
+
     total_jobs = Job.objects.count() + JobPost.objects.count()
+
     total_events = Event.objects.count() + EventPost.objects.count()
 
-    return render(request, "admin/dashboard.html", {
+    return render(request, "admin_module/dashboard.html", {
         "total_alumni": total_alumni,
         "pending_alumni": pending_alumni,
         "total_posts": total_posts,
         "total_jobs": total_jobs,
         "total_events": total_events,
-    })
-
+    })  
 
 # ================= ALUMNI MANAGEMENT =================
 @login_required
@@ -69,7 +80,7 @@ def manage_alumni(request):
         user__is_staff=False
     ).order_by("-id")
 
-    return render(request, "admin/manage_alumni.html", {
+    return render(request, "admin_module/manage_alumni.html", {
         "alumni": alumni
     })
 
@@ -129,7 +140,7 @@ def alumni_detail_admin(request, user_id):
 
     user = get_object_or_404(User, id=user_id)
 
-    return render(request, "admin/alumni_detail.html", {
+    return render(request, "admin_module/alumni_detail.html", {
         "alumni_user": user,
         "profile": AlumniProfile.objects.filter(user=user).first(),
         "academic": AcademicDetails.objects.filter(user=user).first(),
@@ -144,7 +155,7 @@ def alumni_detail_admin(request, user_id):
 def manage_posts(request):
     posts = Post.objects.all().order_by("-created_at")
 
-    return render(request, "admin/manage_posts.html", {
+    return render(request, "admin_module/manage_posts.html", {
         "posts": posts
     })
 
@@ -171,7 +182,7 @@ def manage_jobs(request):
         reverse=True
     )
 
-    return render(request, "admin/manage_jobs.html", {
+    return render(request, "admin_module/manage_jobs.html", {
         "jobs": jobs
     })
 
@@ -180,24 +191,34 @@ def manage_jobs(request):
 def job_detail_admin(request, job_id):
 
     job = Job.objects.filter(id=job_id).first()
+    model_type = "job"
+
     if not job:
         job = JobPost.objects.filter(id=job_id).first()
+        model_type = "jobpost"
 
     if not job:
+        messages.error(request, "Job not found")
         return redirect("manage_jobs")
 
-    return render(request, "admin/job_detail.html", {
-        "job": job
-    })
+    # Normalize posted_by field
+    posted_by = None
 
+    if model_type == "job":
+        posted_by = getattr(job, "posted_by", None)
+    else:
+        posted_by = getattr(job, "user", None) or getattr(job, "posted_by", None)
+
+    return render(request, "admin_module/job_detail.html", {
+        "job": job,
+        "posted_by": posted_by
+    })
 
 @require_POST
 @login_required
 def delete_job(request, job_id):
 
-    job = Job.objects.filter(id=job_id).first()
-    if not job:
-        job = JobPost.objects.filter(id=job_id).first()
+    job = Job.objects.filter(id=job_id).first() or JobPost.objects.filter(id=job_id).first()
 
     if job:
         job.delete()
@@ -218,7 +239,7 @@ def manage_events(request):
         reverse=True
     )
 
-    return render(request, "admin/manage_events.html", {
+    return render(request, "admin_module/manage_events.html", {
         "events": events
     })
 
@@ -226,15 +247,15 @@ def manage_events(request):
 @login_required
 def event_detail_admin(request, event_id):
 
-    event = Event.objects.filter(id=event_id).first()
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.DoesNotExist:
+        try:
+            event = EventPost.objects.get(id=event_id)
+        except EventPost.DoesNotExist:
+            return redirect("manage_events")
 
-    if not event:
-        event = EventPost.objects.filter(id=event_id).first()
-
-    if not event:
-        return redirect("manage_events")
-
-    return render(request, "admin/event_detail.html", {
+    return render(request, "admin_module/event_detail.html", {
         "event": event
     })
 
@@ -243,10 +264,15 @@ def event_detail_admin(request, event_id):
 @login_required
 def delete_event(request, event_id):
 
-    event = Event.objects.filter(id=event_id).first()
+    event = None
 
-    if not event:
-        event = EventPost.objects.filter(id=event_id).first()
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.DoesNotExist:
+        try:
+            event = EventPost.objects.get(id=event_id)
+        except EventPost.DoesNotExist:
+            event = None
 
     if event:
         event.delete()

@@ -51,7 +51,7 @@ class JobPost(models.Model):
     apply_link = models.URLField(blank=True)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
+    deadline = models.DateField(null=True, blank=True)
     def __str__(self):
         return self.title
 

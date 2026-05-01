@@ -16,7 +16,7 @@ urlpatterns = [
 
     # posts
     path('posts/', views.manage_posts, name='manage_posts'),
-    path('admin/delete-post/<int:post_id>/', views.delete_post, name='admin_delete_post'),
+    path('delete-post/<int:post_id>/', views.delete_post, name='admin_delete_post'),
     # jobs
     path('jobs/', views.manage_jobs, name='manage_jobs'),
     path('jobs/<int:job_id>/', views.job_detail_admin, name='job_detail_admin'),
@@ -27,7 +27,7 @@ urlpatterns = [
     path('events/<int:event_id>/', views.event_detail_admin, name='event_detail_admin'),
     path('events/delete/<int:event_id>/', views.delete_event, name='delete_event'),
 
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', views.logout_view, name='admin_logout'),
     path('', views.home1, name='home1'),
 
 ]
