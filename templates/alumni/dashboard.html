@@ -105,8 +105,8 @@
                         {% if academic.degree %}
                             🎓 {{ academic.degree }}{% if academic.year_of_graduation %} • Class of {{ academic.year_of_graduation }}{% endif %}<br>
                         {% endif %}
-                        {% if profile.city %}
-                            📍 {{ profile.city }}{% if profile.state %}, {{ profile.state }}{% endif %}<br>
+                        {% if profile.address %}
+                            📍 {{ profile.address }}<br>
                         {% endif %}
                         {% if contact.email %}
                             ✉ <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
@@ -303,9 +303,7 @@
                 <div class="detail-row"><span class="detail-label">Last Name</span><span class="detail-value">{{ profile.last_name }}</span></div>
                 <div class="detail-row"><span class="detail-label">Gender</span><span class="detail-value">{{ profile.gender }}</span></div>
                 <div class="detail-row"><span class="detail-label">Date of Birth</span><span class="detail-value">{{ profile.date_of_birth }}</span></div>
-                <div class="detail-row"><span class="detail-label">City</span><span class="detail-value">{{ profile.city }}</span></div>
-                <div class="detail-row"><span class="detail-label">State</span><span class="detail-value">{{ profile.state }}</span></div>
-                <div class="detail-row"><span class="detail-label">Country</span><span class="detail-value">{{ profile.country }}</span></div>
+                <div class="detail-row"><span class="detail-label">Address</span><span class="detail-value">{{ profile.address|default:"—" }}</span></div>
             </div>
         </div>
 
@@ -393,8 +391,8 @@
                 {% if professional.current_company %}
                 <div class="side-meta-row"><span class="sm-label">Company</span><span class="sm-value">{{ professional.current_company }}</span></div>
                 {% endif %}
-                {% if profile.city %}
-                <div class="side-meta-row"><span class="sm-label">Location</span><span class="sm-value">{{ profile.city }}, {{ profile.state }}</span></div>
+                {% if profile.address %}
+                <div class="side-meta-row"><span class="sm-label">Address</span><span class="sm-value">{{ profile.address }}</span></div>
                 {% endif %}
                 <div class="side-meta-row"><span class="sm-label">Posts</span><span class="sm-value">{{ posts_count }} Active</span></div>
             </div>

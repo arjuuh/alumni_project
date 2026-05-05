@@ -431,7 +431,7 @@ def alumni_list_view(request):
     alumni = AlumniProfile.objects.select_related("user").filter(
         user__is_staff=False,
         user__is_superuser=False,
-        user__systemmetadata__status="APPROVED"
+        is_approved=True   # ✅ ADD THIS LINE
     )
 
     if q:
