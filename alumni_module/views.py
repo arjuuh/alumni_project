@@ -424,14 +424,14 @@ def user_logout(request):
     logout(request)
     return redirect("home")   # or your login page name
 
-from django.db.models import Q
+@login_required
 def alumni_list_view(request):
     q = request.GET.get("q", "").strip()
 
     alumni = AlumniProfile.objects.select_related("user").filter(
         user__is_staff=False,
         user__is_superuser=False,
-        is_approved=True   # ✅ ADD THIS LINE
+        user__systemmetadata__status="APPROVED"
     )
 
     if q:
@@ -452,7 +452,6 @@ def alumni_list_view(request):
         "q": q,
         "following_ids": following_ids
     })
-
 from django.http import JsonResponse
 
 @login_required
