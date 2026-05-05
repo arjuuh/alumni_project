@@ -8,6 +8,8 @@ from admin_module.models import SystemMetadata
 from alumni_module.models import Opportunity, AlumniProfile, AcademicDetails, ProfessionalDetails, ContactDetails
 from alumni_module.models import Notification
 from .models import JobPost, EventPost, TeacherProfile
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def teacher_login(request):
@@ -85,6 +87,9 @@ def verify_alumni(request):
     })
 
 
+
+
+
 @login_required
 def approve_alumni(request, user_id):
     teacher_profile = TeacherProfile.objects.filter(user=request.user).first()
@@ -102,10 +107,23 @@ def approve_alumni(request, user_id):
         messages.error(request, "Student not found in your department.")
         return redirect("verify_alumni")
 
+    # Approve alumni
     metadata.status = "APPROVED"
     metadata.save()
 
-    messages.success(request, "Alumni approved successfully")
+    # Send Email Notification
+    user_email = metadata.user.email
+
+    if user_email:
+        send_mail(
+            subject="Alumni Approval",
+            message="Congratulations! Your alumni account has been approved successfully by the department.",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[user_email],
+            fail_silently=False,
+        )
+
+    messages.success(request, "Alumni approved successfully and email sent.")
     return redirect("verify_alumni")
 
 
@@ -125,7 +143,6 @@ def approved_alumni(request):
         "approved": approved,
         "teacher_profile": teacher_profile,
     })
-
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -158,17 +175,42 @@ def teacher_view_alumni(request, user_id):
 
     return render(request, "teacher/alumni_detail.html", context)
 
+
 @login_required
 def reject_alumni(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+    teacher_profile = TeacherProfile.objects.filter(user=request.user).first()
 
-    metadata, _ = SystemMetadata.objects.get_or_create(user=user)
+    if not teacher_profile:
+        return redirect("teacher_login")
+
+    metadata = SystemMetadata.objects.filter(
+        user_id=user_id,
+        status="PENDING",
+        user__alumniprofile__department=teacher_profile.department
+    ).first()
+
+    if not metadata:
+        messages.error(request, "Student not found in your department.")
+        return redirect("verify_alumni")
+
+    # Reject alumni
     metadata.status = "REJECTED"
     metadata.save()
 
-    messages.error(request, "Alumni rejected")
+    # Send rejection email
+    user_email = metadata.user.email
 
-    return redirect("teacher_dashboard")
+    if user_email:
+        send_mail(
+            subject="Alumni Application Rejected",
+            message="We regret to inform you that your alumni registration has been rejected. Please contact the college for more details.",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[user_email],
+            fail_silently=False,
+        )
+
+    messages.error(request, "Alumni rejected and email sent.")
+    return redirect("verify_alumni")
 
 @login_required
 def post_job(request):
