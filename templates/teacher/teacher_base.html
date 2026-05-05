@@ -299,6 +299,11 @@
            class="nav-item {% if request.resolver_match.url_name == 'post_event' %}active{% endif %}">
             <i class="fas fa-calendar"></i> Post Event
         </a>
+
+        <a href="{% url 'teacher_logout' %}" class="nav-item">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+        
     </div>
 </aside>
 

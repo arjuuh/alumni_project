@@ -269,4 +269,21 @@ def teacher_logout(request):
     return redirect('teacher_login')
 
 
+@login_required
+def view_alumni(request, user_id):
+    alumni_user = get_object_or_404(User, id=user_id)
 
+    profile, _ = AlumniProfile.objects.get_or_create(user=alumni_user)
+    academic, _ = AcademicDetails.objects.get_or_create(user=alumni_user)
+    professional, _ = ProfessionalDetails.objects.get_or_create(user=alumni_user)
+    contact, _ = ContactDetails.objects.get_or_create(user=alumni_user)
+
+    context = {
+        "alumni_user": alumni_user,
+        "profile": profile,
+        "academic": academic,
+        "professional": professional,
+        "contact": contact,
+    }
+
+    return render(request, "teacher/view_alumni.html", context)

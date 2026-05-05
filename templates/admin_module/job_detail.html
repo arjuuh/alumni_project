@@ -6,151 +6,58 @@
 {% block content %}
 
 <style>
-    .wrap{
-        max-width: 900px;
-        margin: auto;
-    }
-
-    .header{
-        background: linear-gradient(135deg, #6C63FF, #8B85FF);
-        color: #fff;
-        padding: 25px;
-        border-radius: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 10px 25px rgba(108,99,255,0.25);
-    }
-
-    .header h2{
-        margin: 0;
-        font-size: 26px;
-    }
-
-    .card{
-        background: linear-gradient(135deg, #1e293b, #0f172a);
-        color: #fff;
-        padding: 25px;
-        border-radius: 18px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-    }
-
-    .row{
-        margin-bottom: 15px;
-    }
-
-    .label{
-        font-size: 13px;
-        opacity: 0.7;
-    }
-
-    .value{
-        font-weight: 700;
-        margin-top: 3px;
-    }
-
-    .btn{
-        text-decoration: none;
-        padding: 10px 16px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        margin-right: 10px;
-        display: inline-block;
-    }
-
-    .btn-delete{
-        background: #ef4444;
-        color: #fff;
-    }
-
-    .btn-back{
-        background: #e5e7eb;
-        color: #000;
-    }
+.job-card{
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: #fff;
+    border-radius: 18px;
+    padding: 25px;
+}
+.label{opacity:0.7;font-size:13px;}
+.value{font-weight:700;margin-bottom:15px;}
+.btn{padding:10px 15px;border-radius:10px;text-decoration:none;}
+.btn-delete{background:#ef4444;color:#fff;}
+.btn-back{background:#e5e7eb;color:#000;}
 </style>
 
-<div class="wrap">
+<div class="job-card">
 
-    <!-- HEADER -->
-    <div class="header">
-        <h2>{{ job.title }}</h2>
-        <p>{{ job.company|default:"No company" }}</p>
+    <h2>{{ job.title }}</h2>
+
+    <div class="label">Company</div>
+    <div class="value">{{ job.company }}</div>
+
+    <div class="label">Location</div>
+    <div class="value">{{ job.location|default:"Not added" }}</div>
+
+    <div class="label">Job Type</div>
+    <div class="value">{{ job.job_type|default:"Not added" }}</div>
+
+    <div class="label">Apply Link</div>
+    <div class="value">
+        {% if job.apply_link %}
+            <a href="{{ job.apply_link }}" target="_blank" style="color:#60a5fa;">
+                Apply Here
+            </a>
+        {% else %}
+            Not added
+        {% endif %}
     </div>
 
-    <!-- CARD -->
-    <div class="card">
+    <div class="label">Description</div>
+    <div class="value">{{ job.description }}</div>
 
-        <div class="row">
-            <div class="label">Location</div>
-            <div class="value">{{ job.location|default:"Not added" }}</div>
-        </div>
+    <div class="label">Posted By</div>
+    <div class="value">{{ job.posted_by.username }}</div>
 
-        <div class="row">
-            <div class="label">Job Type</div>
-            <div class="value">{{ job.job_type|default:"Not added" }}</div>
-        </div>
+    <br>
 
-        <div class="row">
-            <div class="label">Apply Link</div>
-            <div class="value">
-                {% if job.apply_link %}
-                    <a href="{{ job.apply_link }}" target="_blank" style="color:#60a5fa;">
-                        Apply Here
-                    </a>
-                {% else %}
-                    Not added
-                {% endif %}
-            </div>
-        </div>
+    <a href="{% url 'delete_job' job.id %}" class="btn btn-delete"
+       onclick="return confirm('Delete this job?')">
+       Delete
+    </a>
 
-        <div class="row">
-            <div class="label">Description</div>
-            <div class="value">{{ job.description|default:"Not added" }}</div>
-        </div>
-
-        <div class="row">
-            <div class="label">Posted By</div>
-            <div class="value">
-                {% if job.posted_by %}
-                    {{ job.posted_by.username }}
-                {% elif job.user %}
-                    {{ job.user.username }}
-                {% else %}
-                    Unknown
-                {% endif %}
-            </div>
-        </div>
-
-        <br>
-
-        <!-- DELETE (SAFE POST VERSION) -->
-        <a href="#"
-           class="btn btn-delete"
-           onclick="return confirmDelete({{ job.id }});">
-           Delete
-        </a>
-
-        <form id="delete-form-{{ job.id }}"
-              action="{% url 'delete_job' job.id %}"
-              method="POST"
-              style="display:none;">
-            {% csrf_token %}
-        </form>
-
-        <a href="{% url 'manage_jobs' %}" class="btn btn-back">
-            Back
-        </a>
-
-    </div>
+    <a href="{% url 'manage_jobs' %}" class="btn btn-back">Back</a>
 
 </div>
-
-<script>
-function confirmDelete(id){
-    if(confirm("Delete this job?")){
-        document.getElementById("delete-form-" + id).submit();
-    }
-    return false;
-}
-</script>
 
 {% endblock %}

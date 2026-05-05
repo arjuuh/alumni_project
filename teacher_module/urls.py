@@ -14,8 +14,7 @@ urlpatterns = [
     path("delete-job/<int:job_id>/", views.delete_job, name="delete_job"),
     path("delete-event/<int:event_id>/", views.delete_event, name="delete_event"),
     path('logout/', views.teacher_logout, name='teacher_logout'),
-
-    # ✅ default redirect (optional)
+    path('view-alumni/<int:user_id>/', views.view_alumni, name='view_alumni'),
     path('', views.teacher_login, name='teacher_login'),
     
 ]

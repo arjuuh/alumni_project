@@ -1,0 +1,351 @@
+{% extends 'teacher/teacher_base.html' %}
+{% block title %}Alumni Profile – AlumniHub{% endblock %}
+{% block topbar_title %}Alumni Profile{% endblock %}
+
+{% block page_content %}
+
+<style>
+:root{
+    --primary:#6c63ff;
+    --primary-dark:#574fd6;
+    --primary-light:#edeaff;
+    --green:#22c55e;
+    --green-bg:#dcfce7;
+    --orange:#f97316;
+    --orange-bg:#fff3e8;
+    --blue:#3b82f6;
+    --blue-bg:#dbeafe;
+    --bg:#f2f3f7;
+    --white:#fff;
+    --text:#1c1c2e;
+    --muted:#6b7280;
+    --light:#9ca3af;
+    --border:#e5e7eb;
+    --radius:14px;
+    --shadow:0 2px 10px rgba(0,0,0,.06);
+    --shadow-hover:0 8px 28px rgba(108,99,255,.15);
+}
+
+.page-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+}
+
+/* HERO */
+.hero-card{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:28px 32px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:24px;
+    box-shadow:var(--shadow);
+}
+
+.hero-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.hero-avatar{
+    width:72px;
+    height:72px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#2d2a5e,#6c63ff);
+    color:#fff;
+    font-size:24px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 6px 18px rgba(108,99,255,.25);
+}
+
+.hero-name{
+    font-size:22px;
+    font-weight:800;
+    color:var(--text);
+    margin-bottom:6px;
+}
+
+.hero-email{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:12px;
+}
+
+.hero-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.hero-tag{
+    padding:6px 12px;
+    border-radius:20px;
+    background:var(--primary-light);
+    color:var(--primary-dark);
+    border:1px solid #d5d0ff;
+    font-size:11px;
+    font-weight:700;
+}
+
+.profile-badge{
+    padding:10px 18px;
+    border-radius:10px;
+    background:var(--green-bg);
+    color:#166534;
+    border:1px solid #bbf7d0;
+    font-size:12px;
+    font-weight:800;
+}
+
+/* GRID */
+.content-grid{
+    display:grid;
+    grid-template-columns:1fr 320px;
+    gap:20px;
+}
+
+.left-stack{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.side-stack{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* CARD */
+.card{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.card-header{
+    padding:18px 22px;
+    border-bottom:1px solid var(--border);
+    font-size:14px;
+    font-weight:800;
+    color:var(--text);
+}
+
+.card-body{
+    padding:22px;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 30px;
+}
+
+.info-label{
+    font-size:11px;
+    text-transform:uppercase;
+    color:var(--light);
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.info-value{
+    font-size:14px;
+    color:var(--text);
+    font-weight:600;
+}
+
+.quick-row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.quick-row:last-child{
+    border-bottom:none;
+}
+
+.quick-label{
+    font-size:12px;
+    color:var(--muted);
+    font-weight:600;
+}
+
+.quick-value{
+    font-size:13px;
+    font-weight:700;
+    color:var(--text);
+    text-align:right;
+}
+
+.back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 16px;
+    border-radius:10px;
+    background:var(--primary-light);
+    border:1px solid #d5d0ff;
+    color:var(--primary-dark);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    transition:.2s;
+}
+
+.back-btn:hover{
+    background:var(--primary);
+    color:white;
+}
+
+@media(max-width:900px){
+    .content-grid{
+        grid-template-columns:1fr;
+    }
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+
+<div class="page-wrap">
+
+    <a href="{% url 'approved_alumni' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Approved Alumni
+    </a>
+
+    <div class="hero-card">
+        <div class="hero-left">
+            <div class="hero-avatar">
+                {{ profile.first_name|first|upper }}{{ profile.last_name|first|upper }}
+            </div>
+
+            <div>
+                <div class="hero-name">
+                    {{ profile.first_name }} {{ profile.last_name }}
+                </div>
+
+                <div class="hero-email">
+                    <i class="fas fa-envelope"></i>
+                    {{ alumni_user.email }}
+                </div>
+
+                <div class="hero-tags">
+                    <span class="hero-tag">{{ academic.department|default:"Department N/A" }}</span>
+                    <span class="hero-tag">{{ academic.degree|default:"Degree N/A" }}</span>
+                    <span class="hero-tag">Batch {{ academic.year_of_graduation|default:"N/A" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-badge">
+            <i class="fas fa-user-check"></i> Alumni Profile
+        </div>
+    </div>
+
+    <div class="content-grid">
+
+        <div class="left-stack">
+
+            <div class="card">
+                <div class="card-header">Personal Information</div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div>
+                            <div class="info-label">First Name</div>
+                            <div class="info-value">{{ profile.first_name|default:"—" }}</div>
+                        </div>
+                        <div>
+                            <div class="info-label">Last Name</div>
+                            <div class="info-value">{{ profile.last_name|default:"—" }}</div>
+                        </div>
+                        <div>
+                            <div class="info-label">Gender</div>
+                            <div class="info-value">{{ profile.gender|default:"—" }}</div>
+                        </div>
+                        <div>
+                            <div class="info-label">Email</div>
+                            <div class="info-value">{{ alumni_user.email|default:"—" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Academic Information</div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div><div class="info-label">Department</div><div class="info-value">{{ academic.department|default:"—" }}</div></div>
+                        <div><div class="info-label">Degree</div><div class="info-value">{{ academic.degree|default:"—" }}</div></div>
+                        <div><div class="info-label">Student ID</div><div class="info-value">{{ academic.student_id|default:"—" }}</div></div>
+                        <div><div class="info-label">Admission Year</div><div class="info-value">{{ academic.year_of_admission|default:"—" }}</div></div>
+                        <div><div class="info-label">Graduation Year</div><div class="info-value">{{ academic.year_of_graduation|default:"—" }}</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Professional Information</div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div><div class="info-label">Company</div><div class="info-value">{{ professional.current_company|default:"—" }}</div></div>
+                        <div><div class="info-label">Designation</div><div class="info-value">{{ professional.current_designation|default:"—" }}</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Contact Information</div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div><div class="info-label">Phone</div><div class="info-value">{{ contact.phone|default:"—" }}</div></div>
+                        <div><div class="info-label">Location</div><div class="info-value">{{ contact.location|default:"—" }}</div></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="side-stack">
+            <div class="card">
+                <div class="card-header">Quick Summary</div>
+                <div class="card-body">
+                    <div class="quick-row">
+                        <span class="quick-label">Student ID</span>
+                        <span class="quick-value">{{ academic.student_id|default:"—" }}</span>
+                    </div>
+                    <div class="quick-row">
+                        <span class="quick-label">Department</span>
+                        <span class="quick-value">{{ academic.department|default:"—" }}</span>
+                    </div>
+                    <div class="quick-row">
+                        <span class="quick-label">Degree</span>
+                        <span class="quick-value">{{ academic.degree|default:"—" }}</span>
+                    </div>
+                    <div class="quick-row">
+                        <span class="quick-label">Graduation</span>
+                        <span class="quick-value">{{ academic.year_of_graduation|default:"—" }}</span>
+                    </div>
+                    <div class="quick-row">
+                        <span class="quick-label">Current Role</span>
+                        <span class="quick-value">{{ professional.current_designation|default:"—" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

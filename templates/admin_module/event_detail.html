@@ -54,7 +54,6 @@
         font-size: 14px;
         font-weight: 600;
         margin-right: 10px;
-        display: inline-block;
     }
 
     .btn-delete{
@@ -70,13 +69,11 @@
 
 <div class="wrap">
 
-    <!-- HEADER -->
     <div class="header">
         <h2>{{ event.title }}</h2>
         <p>{{ event.event_date }}</p>
     </div>
 
-    <!-- CARD -->
     <div class="card">
 
         <div class="row">
@@ -86,37 +83,22 @@
 
         <div class="row">
             <div class="label">Description</div>
-            <div class="value">{{ event.description|default:"Not added" }}</div>
+            <div class="value">{{ event.description }}</div>
         </div>
 
         <div class="row">
             <div class="label">Posted By</div>
-            <div class="value">
-                {% if event.posted_by %}
-                    {{ event.posted_by.username }}
-                {% else %}
-                    Unknown
-                {% endif %}
-            </div>
+            <div class="value">{{ event.posted_by.username }}</div>
         </div>
 
         <br>
 
-        <!-- DELETE BUTTON (SAFE POST METHOD) -->
-        <a href="#"
+        <a href="{% url 'delete_event' event.id %}" 
            class="btn btn-delete"
-           onclick="return confirmDeleteEvent({{ event.id }});">
-            Delete
+           onclick="return confirm('Delete this event?')">
+           Delete
         </a>
 
-        <form id="delete-event-{{ event.id }}"
-              action="{% url 'delete_event' event.id %}"
-              method="POST"
-              style="display:none;">
-            {% csrf_token %}
-        </form>
-
-        <!-- BACK BUTTON -->
         <a href="{% url 'manage_events' %}" class="btn btn-back">
             Back
         </a>
@@ -124,14 +106,5 @@
     </div>
 
 </div>
-
-<script>
-function confirmDeleteEvent(id) {
-    if (confirm("Are you sure you want to delete this event?")) {
-        document.getElementById("delete-event-" + id).submit();
-    }
-    return false;
-}
-</script>
 
 {% endblock %}

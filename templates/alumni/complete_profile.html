@@ -720,7 +720,24 @@
                 </div>
 
                 <div class="input-group" style="margin-top:16px;">
-                    <input type="text" name="degree" placeholder=" ">
+                    <select name="degree" required onchange="this.classList.toggle('has-value', this.value !== '')">
+                        <option value=""></option>
+
+                        <option value="Integrated M.Sc. Computer Science (AI & ML)">
+                            Integrated M.Sc. Computer Science (AI & ML)
+                        </option>
+                        <option value="B.A Economics">B.A Economics</option>
+                        <option value="B.Sc Mathematics">B.Sc Mathematics</option>
+                        <option value="B.Sc Statistics">B.Sc Statistics</option>
+                        <option value="B.A History">B.A History</option>
+                        <option value="B.Sc Physics">B.Sc Physics</option>
+                        <option value="B.Sc Zoology">B.Sc Zoology</option>
+                        <option value="B.A Malayalam">B.A Malayalam</option>
+                        <option value="B.A English">B.A English</option>
+                        <option value="B.Com">B.Com</option>
+                        <option value="B.Sc Polymer Chemistry">B.Sc Polymer Chemistry</option>
+                        <option value="B.Sc Plant Science">B.Sc Plant Science</option>
+                    </select>
                     <label>Degree / Programme</label>
                 </div>
 
@@ -762,7 +779,7 @@
                                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.61 19.79 19.79 0 01.01 5 2 2 0 012 2.81h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.06 6.06l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
                             </svg>
                         </div>
-                        <input type="tel" name="phone_number" placeholder=" ">
+                        <input type="tel" name="phone_number" placeholder=" " required pattern="[0-9]{10}">
                         <label style="left:42px;">Phone Number</label>
                     </div>
                 </div>

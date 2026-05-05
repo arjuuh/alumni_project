@@ -530,11 +530,6 @@
             <i class="fas fa-user-check"></i> Verify Alumni
         </a>
 
-        <a href="{% url 'approved_alumni' %}"
-           class="nav-item {% if request.resolver_match.url_name == 'approved_alumni' %}active{% endif %}">
-            <i class="fas fa-user-graduate"></i> Approved Alumni
-        </a>
-
         <div class="nav-label" style="margin-top:15px;">Opportunities</div>
 
         <a href="{% url 'post_job' %}" class="nav-item">
@@ -612,17 +607,6 @@
         <div class="two-col">
 
             <div>
-                <div class="verify-card">
-                    <div class="vc-icon"><i class="fas fa-user-check"></i></div>
-                    <div class="vc-text">
-                        <div class="vc-title">Verify Alumni</div>
-                        <div class="vc-sub">Review and approve pending alumni requests from your department.</div>
-                    </div>
-                    <a href="{% url 'verify_alumni' %}" class="vc-btn">
-                        <i class="fas fa-arrow-right"></i> Go to Verify
-                    </a>
-                </div>
-
                 <div class="card">
                     <div class="card-hdr">
                         <div class="card-title"><i class="fas fa-user-clock"></i> Pending Verifications</div>
@@ -727,3 +711,5 @@
 
 </body>
 </html>
+
+ 
