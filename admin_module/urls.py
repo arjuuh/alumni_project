@@ -11,7 +11,6 @@ urlpatterns = [
     path('alumni/', views.manage_alumni, name='manage_alumni'),
     path('approve/<int:user_id>/', views.approve_alumni_admin, name='approve_alumni_admin'),
     path('reject/<int:user_id>/', views.reject_alumni_admin, name='reject_alumni_admin'),
-    path('delete/<int:user_id>/', views.delete_alumni, name='delete_alumni'),
     path('alumni/<int:user_id>/', views.alumni_detail_admin, name='alumni_detail_admin'),
 
     # posts

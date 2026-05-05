@@ -105,33 +105,6 @@ def reject_alumni_admin(request, user_id):
     return redirect("manage_alumni")
 
 
-# ================= DELETE ALUMNI =================
-@require_POST
-@login_required
-def delete_alumni(request, user_id):
-
-    if not request.user.is_superuser:
-        messages.error(request, "Permission denied")
-        return redirect("admin_dashboard")
-
-    if request.user.id == user_id:
-        messages.error(request, "You cannot delete yourself")
-        return redirect("manage_alumni")
-
-    try:
-        with transaction.atomic():
-            Post.objects.filter(user_id=user_id).delete()
-            Job.objects.filter(user_id=user_id).delete()
-            AlumniProfile.objects.filter(user_id=user_id).delete()
-            SystemMetadata.objects.filter(user_id=user_id).delete()
-            User.objects.filter(id=user_id).delete()
-
-        messages.success(request, "Alumni deleted successfully")
-
-    except Exception as e:
-        messages.error(request, f"Delete failed: {str(e)}")
-
-    return redirect("manage_alumni")
 
 
 # ================= ALUMNI DETAIL =================
@@ -224,6 +197,8 @@ def delete_job(request, job_id):
         job.delete()
 
     return redirect("manage_jobs")
+
+
 
 
 # ================= EVENTS =================

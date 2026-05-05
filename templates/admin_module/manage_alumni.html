@@ -128,15 +128,6 @@
                     <a href="{% url 'approve_alumni_admin' a.user.id %}" class="btn green">Approve</a>
                 {% endif %}
 
-                <!-- ✅ DELETE (always visible) -->
-                <form action="{% url 'delete_alumni' a.user.id %}" method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn delete"
-                        onclick="return confirm('Are you sure you want to permanently delete this alumni?');">
-                        Delete
-                    </button>
-                </form>
-
             </td>
         </tr>
         {% endfor %}
